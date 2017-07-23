@@ -1,0 +1,23 @@
+{
+  "name": "bill",
+  "version": "1.0.0",
+  "description": "A discord bot to bridge between ingame text chat and discord text chat",
+  "main": "bill.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "discord",
+    "bot",
+    "text",
+    "ingame"
+  ],
+  "author": "Niek Candaele",
+  "license": "ISC",
+  "dependencies": {
+    "discord.js": "^11.1.0",
+    "erlpack": "github:hammerandchisel/erlpack",
+    "request": "^2.81.0",
+    "uws": "^8.14.0"
+  }
+}
