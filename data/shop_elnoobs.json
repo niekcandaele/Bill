@@ -1,0 +1,373 @@
+[
+  {
+    "item": "chain link",
+    "quantity": 10,
+    "price": "10.00 Zombie Coins",
+    "category": "chain",
+    "id number": "In-game Type: /buy 37531"
+  },
+  {
+    "item": "chain link corner bottom",
+    "quantity": 10,
+    "price": "10.00 Zombie Coins",
+    "category": "chain",
+    "id number": "In-game Type: /buy 37532"
+  },
+  {
+    "item": "chain link corner top",
+    "quantity": 10,
+    "price": "10.00 Zombie Coins",
+    "category": "chain",
+    "id number": "In-game Type: /buy 37533"
+  },
+  {
+    "item": "chain link fence bottom",
+    "quantity": 10,
+    "price": "10.00 Zombie Coins",
+    "category": "chain",
+    "id number": "In-game Type: /buy 37534"
+  },
+  {
+    "item": "chain link fence top",
+    "quantity": 10,
+    "price": "10.00 Zombie Coins",
+    "category": "chain",
+    "id number": "In-game Type: /buy 37535"
+  },
+  {
+    "item": "chain link fence top pole",
+    "quantity": 10,
+    "price": "10.00 Zombie Coins",
+    "category": "chain",
+    "id number": "In-game Type: /buy 37536"
+  },
+  {
+    "item": "chain link fence top pole2",
+    "quantity": 10,
+    "price": "10.00 Zombie Coins",
+    "category": "chain",
+    "id number": "In-game Type: /buy 37537"
+  },
+  {
+    "item": "chain link pole",
+    "quantity": 10,
+    "price": "10.00 Zombie Coins",
+    "category": "chain",
+    "id number": "In-game Type: /buy 37538"
+  },
+  {
+    "item": "chain link",
+    "quantity": 100,
+    "price": "50.00 Zombie Coins",
+    "category": "chain",
+    "id number": "In-game Type: /buy 49365"
+  },
+  {
+    "item": "book case",
+    "quantity": 5,
+    "price": "15.00 Zombie Coins",
+    "category": "deco",
+    "id number": "In-game Type: /buy 43840"
+  },
+  {
+    "item": "red bar stool",
+    "quantity": 5,
+    "price": "10.00 Zombie Coins",
+    "category": "deco",
+    "id number": "In-game Type: /buy 44208"
+  },
+  {
+    "item": "oven",
+    "quantity": 1,
+    "price": "5.00 Zombie Coins",
+    "category": "deco",
+    "id number": "In-game Type: /buy 44296"
+  },
+  {
+    "item": "wall oven",
+    "quantity": 1,
+    "price": "5.00 Zombie Coins",
+    "category": "deco",
+    "id number": "In-game Type: /buy 44297"
+  },
+  {
+    "item": "pill case",
+    "quantity": 2,
+    "price": "5.00 Zombie Coins",
+    "category": "deco",
+    "id number": "In-game Type: /buy 44353"
+  },
+  {
+    "item": "forest flower",
+    "quantity": 50,
+    "price": "10.00 Zombie Coins",
+    "category": "deco",
+    "id number": "In-game Type: /buy 45254"
+  },
+  {
+    "item": "cobweb",
+    "quantity": 50,
+    "price": "10.00 Zombie Coins",
+    "category": "deco",
+    "id number": "In-game Type: /buy 45255"
+  },
+  {
+    "item": "forest flower",
+    "quantity": 24,
+    "price": "5.00 Zombie Coins",
+    "category": "deco",
+    "id number": "In-game Type: /buy 46416"
+  },
+  {
+    "item": "corrigated metal block",
+    "quantity": 500,
+    "price": "100.00 Zombie Coins",
+    "category": "deco",
+    "id number": "In-game Type: /buy 46989"
+  },
+  {
+    "item": "corridgated metal ramp",
+    "quantity": 500,
+    "price": "100.00 Zombie Coins",
+    "category": "deco",
+    "id number": "In-game Type: /buy 46990"
+  },
+  {
+    "item": "matal pipe cap",
+    "quantity": 30,
+    "price": "15.00 Zombie Coins",
+    "category": "deco",
+    "id number": "In-game Type: /buy 47507"
+  },
+  {
+    "item": "metal pipe corner",
+    "quantity": 40,
+    "price": "15.00 Zombie Coins",
+    "category": "deco",
+    "id number": "In-game Type: /buy 47508"
+  },
+  {
+    "item": "metal pipe flange",
+    "quantity": 40,
+    "price": "15.00 Zombie Coins",
+    "category": "deco",
+    "id number": "In-game Type: /buy 47509"
+  },
+  {
+    "item": "metal pipe joint",
+    "quantity": 40,
+    "price": "15.00 Zombie Coins",
+    "category": "deco",
+    "id number": "In-game Type: /buy 47510"
+  },
+  {
+    "item": "metal pipe stright",
+    "quantity": 40,
+    "price": "15.00 Zombie Coins",
+    "category": "deco",
+    "id number": "In-game Type: /buy 47511"
+  },
+  {
+    "item": "metal pipe valve",
+    "quantity": 40,
+    "price": "15.00 Zombie Coins",
+    "category": "deco",
+    "id number": "In-game Type: /buy 47512"
+  },
+  {
+    "item": "tree azalea",
+    "quantity": 100,
+    "price": "50.00 Zombie Coins",
+    "category": "deco",
+    "id number": "In-game Type: /buy 48312"
+  },
+  {
+    "item": "embers",
+    "quantity": 25,
+    "price": "25.00 Zombie Coins",
+    "category": "defence",
+    "id number": "In-game Type: /buy 55748"
+  },
+  {
+    "item": "engine",
+    "quantity": 1,
+    "price": "150.00 Zombie Coins",
+    "category": "energy",
+    "id number": "In-game Type: /buy 55821"
+  },
+  {
+    "item": "battery",
+    "quantity": 1,
+    "price": "150.00 Zombie Coins",
+    "category": "energy",
+    "id number": "In-game Type: /buy 55822"
+  },
+  {
+    "item": "battery bank",
+    "quantity": 1,
+    "price": "150.00 Zombie Coins",
+    "category": "energy",
+    "id number": "In-game Type: /buy 55823"
+  },
+  {
+    "item": "solar bank",
+    "quantity": 1,
+    "price": "150.00 Zombie Coins",
+    "category": "energy",
+    "id number": "In-game Type: /buy 55825"
+  },
+  {
+    "item": "solar cell",
+    "quantity": 1,
+    "price": "150.00 Zombie Coins",
+    "category": "energy",
+    "id number": "In-game Type: /buy 55826"
+  },
+  {
+    "item": "eggs",
+    "quantity": 20,
+    "price": "100.00 Zombie Coins",
+    "category": "food",
+    "id number": "In-game Type: /buy 39261"
+  },
+  {
+    "item": "beaker",
+    "quantity": 2,
+    "price": "15.00 Zombie Coins",
+    "category": "medical",
+    "id number": "In-game Type: /buy 53857"
+  },
+  {
+    "item": "air filter",
+    "quantity": 1,
+    "price": "15.00 Zombie Coins",
+    "category": "misc",
+    "id number": "In-game Type: /buy 37070"
+  },
+  {
+    "item": "gunpowder",
+    "quantity": 1000,
+    "price": "250.00 Zombie Coins",
+    "category": "misc",
+    "id number": "In-game Type: /buy 43512"
+  },
+  {
+    "item": "ducktape",
+    "quantity": 20,
+    "price": "20.00 Zombie Coins",
+    "category": "misc",
+    "id number": "In-game Type: /buy 55820"
+  },
+  {
+    "item": "bridge rivet block",
+    "quantity": 25,
+    "price": "25.00 Zombie Coins",
+    "category": "rivet",
+    "id number": "In-game Type: /buy 35050"
+  },
+  {
+    "item": "bridge rivet block",
+    "quantity": 100,
+    "price": "100.00 Zombie Coins",
+    "category": "rivet",
+    "id number": "In-game Type: /buy 35071"
+  },
+  {
+    "item": "bridge rivet block",
+    "quantity": 500,
+    "price": "400.00 Zombie Coins",
+    "category": "rivet",
+    "id number": "In-game Type: /buy 44669"
+  },
+  {
+    "item": "rivet sheet",
+    "quantity": 50,
+    "price": "50.00 Zombie Coins",
+    "category": "rivet",
+    "id number": "In-game Type: /buy 45114"
+  },
+  {
+    "item": "sandbag corner",
+    "quantity": 30,
+    "price": "30.00 Zombie Coins",
+    "category": "Sandbag",
+    "id number": "In-game Type: /buy 47788"
+  },
+  {
+    "item": "sandbag corner 2",
+    "quantity": 30,
+    "price": "30.00 Zombie Coins",
+    "category": "Sandbag",
+    "id number": "In-game Type: /buy 47789"
+  },
+  {
+    "item": "sandbag end damaged 2",
+    "quantity": 30,
+    "price": "30.00 Zombie Coins",
+    "category": "Sandbag",
+    "id number": "In-game Type: /buy 47790"
+  },
+  {
+    "item": "sandbag end damaged 1",
+    "quantity": 30,
+    "price": "30.00 Zombie Coins",
+    "category": "Sandbag",
+    "id number": "In-game Type: /buy 47791"
+  },
+  {
+    "item": "sandbag end",
+    "quantity": 30,
+    "price": "30.00 Zombie Coins",
+    "category": "Sandbag",
+    "id number": "In-game Type: /buy 47792"
+  },
+  {
+    "item": "sandbag end 2",
+    "quantity": 30,
+    "price": "30.00 Zombie Coins",
+    "category": "Sandbag",
+    "id number": "In-game Type: /buy 47793"
+  },
+  {
+    "item": "sandbag 1",
+    "quantity": 30,
+    "price": "30.00 Zombie Coins",
+    "category": "Sandbag",
+    "id number": "In-game Type: /buy 47794"
+  },
+  {
+    "item": "sandbag 2",
+    "quantity": 30,
+    "price": "30.00 Zombie Coins",
+    "category": "Sandbag",
+    "id number": "In-game Type: /buy 47795"
+  },
+  {
+    "item": "sandbag 3",
+    "quantity": 30,
+    "price": "30.00 Zombie Coins",
+    "category": "Sandbag",
+    "id number": "In-game Type: /buy 47797"
+  },
+  {
+    "item": "sandbag 3",
+    "quantity": 30,
+    "price": "30.00 Zombie Coins",
+    "category": "Sandbag",
+    "id number": "In-game Type: /buy 47798"
+  },
+  {
+    "item": "sandbag 4",
+    "quantity": 30,
+    "price": "30.00 Zombie Coins",
+    "category": "Sandbag",
+    "id number": "In-game Type: /buy 47799"
+  },
+  {
+    "item": "sandbag damaged 1",
+    "quantity": 30,
+    "price": "30.00 Zombie Coins",
+    "category": "Sandbag",
+    "id number": "In-game Type: /buy 47800"
+  }
+]

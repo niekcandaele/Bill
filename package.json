@@ -15,6 +15,7 @@
   "author": "Niek Candaele",
   "license": "ISC",
   "dependencies": {
+    "babyparse": "^0.4.6",
     "discord.js": "^11.1.0",
     "erlpack": "github:hammerandchisel/erlpack",
     "request": "^2.81.0",
