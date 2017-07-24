@@ -38,10 +38,7 @@ client.on('message', message => {
 client.on('message', message => {
   if (message.content === '!day7') {
     request('http://193.70.81.12:28248/api/getstats', function(error, response, body) {
-      console.log('error:', error); // Print the error if one occurred
-      console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received
       var body = JSON.parse(body);
-      console.log(body);
       var date = new Date();
 
       var embed = {
@@ -91,6 +88,25 @@ client.on('message', message => {
         }
       }
       message.channel.send(embed);
+    });
+  }
+
+});
+
+client.on('message', message => {
+  if (message.content === '!players') {
+    request('http://193.70.81.12:28248/api/getplayerslocation', function(error, response, body) {
+      var data = JSON.parse(body);
+      var onlinePlayerList = "";
+      var onlinePlayers = 0;
+      for (var i = 0; i < data.length; i++) {
+        var player = data[i];
+        if (player.online == true) {
+          onlinePlayerList += player.name + ", ";
+          onlinePlayers += 1;
+        }
+      }
+      message.channel.send("There are currently " + onlinePlayers + " players online! \n" + onlinePlayerList);
     });
   }
 
