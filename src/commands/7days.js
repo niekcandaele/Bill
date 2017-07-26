@@ -81,7 +81,7 @@ exports.day7 = function(client, message) {
         }
       }
       message.channel.send(embed);
-        })
+    })
   });
 }
 
@@ -91,33 +91,36 @@ exports.shop = function(client, message) {
   if (args == "") {
     return message.channel.send("Specify a category please! Misc, Rivet, Sandbag, Medical, Food, Energy, Defence, Deco, Chain \n Example: !shop misc")
   }
-  //var categories = misc,
-  //  rivet, Sandbag, medical, food, energy, defence, deco, chain
-  message.author.createDM().then(function(value) {
-    if (msgToSend == "") {
-      return message.channel.send("ERROR: no results! Wrong arguments?")
-    } else {
-      return value.send(msgToSend);
-    }
-  });
 
   function shopLine(article) {
     var item = article.item;
     var quantity = article.quantity;
     var price = article.price;
     var category = article.category;
-    var id = article[ 'id number' ].slice(18);
+    var id = article['id number'].slice(18);
     //var id = article.'id number';
-    shopString = quantity + " " + item + " ----- Price: " + article.price + " ----- ID:"+ id +" \n";
+    shopString = quantity + " " + item + " ----- Price: " + article.price + " ----- ID:" + id + " \n";
     return shopString
   }
-  var msgToSend = "";
-  for (var i = 0; i < data.length; i++) {
-    if (data[i].category.toLocaleUpperCase() == args.toLocaleUpperCase()) {
-      msgToSend += shopLine(data[i]);
+
+  function buildMsg(data) {
+    var msg = new Discord.RichEmbed();
+    msg.setTitle("In-game Type: /buy <ID>")
+      .setColor(0x00AE86)
+      .setTimestamp()
+    for (var i = 0; i < data.length; i++) {
+      if (data[i].category.toLocaleUpperCase() == args.toLocaleUpperCase()) {
+        var id = data[i]['id number'].slice(18);
+        msg.addField(id + " " + data[i].item,data[i].price);
+      }
     }
+    return msg
   }
-  msgToSend = "```\n" + msgToSend + "\n```";
+
+  var embed = buildMsg(data)
+  message.channel.send({
+    embed
+  });
 
   //console.log(dmChannel);
 }
@@ -156,19 +159,19 @@ exports.playtime = function(client, message) {
     t = Number(time);
 
     var d = Math.floor(t / 86400);
-    t -= (d*86400);
+    t -= (d * 86400);
     var h = Math.floor(t / 3600);
-    t-= (h*3600);
+    t -= (h * 3600);
     var m = Math.floor(t / 60);
-    t-= (m*60);
+    t -= (m * 60);
     var s = Math.floor(t);
 
     return "D: " + d + " H: " + h + " M: " + m + " S: " + s;
   }
 
   function isEven(n) {
-   return n % 2 == 0;
-}
+    return n % 2 == 0;
+  }
 
   function buildMsg(arr) {
     var msg = new Discord.RichEmbed();
@@ -177,7 +180,7 @@ exports.playtime = function(client, message) {
       .setTimestamp()
     for (var i = 0; i < 10; i++) {
       //console.log("Adding to embed: " + arr[i]);
-      msg.addField(i+1 + ". " + arr[i][0], secondsToDhms(arr[i][1]), true);
+      msg.addField(i + 1 + ". " + arr[i][0], secondsToDhms(arr[i][1]), true);
       if (!isEven(i) && !(i == 9)) {
         msg.addBlankField();
       }
@@ -194,4 +197,4 @@ exports.playtime = function(client, message) {
   }
 
   getPlayers(callbackF);
-  }
+}
