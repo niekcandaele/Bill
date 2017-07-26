@@ -1,2 +1,2 @@
 # Bill
-A discord bot that makes a bridge between ingame chat and discord chat
+Bill the discord bot likes to play 7 days to die.

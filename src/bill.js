@@ -24,6 +24,9 @@ client.on('message', message => {
   if (message.content.startsWith('!shop')) {
     command.shop(client,message);
   }
+  if (message.content === '!top') {
+    command.playtime(client,message);
+  }
 });
 
 

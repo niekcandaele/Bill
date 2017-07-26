@@ -1,5 +1,6 @@
 const request = require('request');
 const Baby = require('babyparse');
+const Discord = require('discord.js')
 
 // COMMANDS
 // 7 DAYS COMMAND
@@ -80,6 +81,7 @@ exports.day7 = function(client, message) {
         }
       }
       message.channel.send(embed);
+      console.log(message.author.username + " has used command !day7");
     })
   });
 }
@@ -118,4 +120,79 @@ exports.shop = function(client, message) {
   msgToSend = "```\n" + msgToSend + "\n```";
 
   //console.log(dmChannel);
+}
+
+exports.playtime = function(client, message) {
+  var players = new Array();
+  var date = new Date();
+
+  function getPlayers(callback) {
+    request('http://193.70.81.12:28248/api/getplayerslocation', function(error, response, body) {
+      var data = JSON.parse(body);
+      //console.log(data);
+      for (var i = 0; i < data.length; i++) {
+        players[i] = new Array(data[i].name, data[i].totalplaytime);
+        //console.log(players);
+      }
+      return callback(players);
+    });
+  }
+
+  function bubbleSort(arr) {
+    var len = arr.length;
+    for (var i = len - 1; i >= 0; i--) {
+      for (var j = 1; j <= i; j++) {
+        if (arr[j - 1][1] < arr[j][1]) {
+          var temp = arr[j - 1];
+          arr[j - 1] = arr[j];
+          arr[j] = temp;
+        }
+      }
+    }
+    return arr;
+  }
+
+  function secondsToDhms(time) {
+    t = Number(time);
+
+    var d = Math.floor(t / 86400);
+    t -= (d*86400);
+    var h = Math.floor(t / 3600);
+    t-= (h*24);
+    var m = Math.floor(t / 60);
+    t-= (m*60);
+    var s = Math.floor(t);
+
+    return "D: " + d + " H: " + h + " M: " + m + " S: " + s;
+  }
+
+  function isEven(n) {
+   return n % 2 == 0;
+}
+
+  function buildMsg(arr) {
+    var msg = new Discord.RichEmbed();
+    msg.setTitle("Top players by playtime")
+      .setColor(0x00AE86)
+      .setTimestamp()
+    for (var i = 0; i < 10; i++) {
+      //console.log("Adding to embed: " + arr[i]);
+      msg.addField(i+1 + ". " + arr[i][0], secondsToDhms(arr[i][1]), true);
+      if (!isEven(i)) {
+        msg.addBlankField();
+      }
+    }
+    //console.log(msg);
+    return msg
+  }
+
+  function callbackF(arr) {
+    var embed = buildMsg(bubbleSort(arr));
+    message.channel.send({
+      embed
+    });
+  }
+
+  getPlayers(callbackF);
+  console.log(message.author.username + " has used command !top");
 }
