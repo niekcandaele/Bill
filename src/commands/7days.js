@@ -81,8 +81,7 @@ exports.day7 = function(client, message) {
         }
       }
       message.channel.send(embed);
-      console.log(message.author.username + " has used command !day7");
-    })
+        })
   });
 }
 
@@ -90,7 +89,7 @@ exports.shop = function(client, message) {
   const data = require('../../data/shop_elnoobs.json');
   var args = message.content.slice(6, message.length);
   if (args == "") {
-    return message.channel.send("Specify a category please! Misc, Rivet, Sandbag, Medical, Food, Energy, Defence, Deco, Chain")
+    return message.channel.send("Specify a category please! Misc, Rivet, Sandbag, Medical, Food, Energy, Defence, Deco, Chain \n Example: !shop misc")
   }
   //var categories = misc,
   //  rivet, Sandbag, medical, food, energy, defence, deco, chain
@@ -107,8 +106,9 @@ exports.shop = function(client, message) {
     var quantity = article.quantity;
     var price = article.price;
     var category = article.category;
+    var id = article[ 'id number' ].slice(18);
     //var id = article.'id number';
-    shopString = quantity + " " + item + " ----- Price: " + article.price + " \n";
+    shopString = quantity + " " + item + " ----- Price: " + article.price + " ----- ID:"+ id +" \n";
     return shopString
   }
   var msgToSend = "";
@@ -178,7 +178,7 @@ exports.playtime = function(client, message) {
     for (var i = 0; i < 10; i++) {
       //console.log("Adding to embed: " + arr[i]);
       msg.addField(i+1 + ". " + arr[i][0], secondsToDhms(arr[i][1]), true);
-      if (!isEven(i)) {
+      if (!isEven(i) && !(i == 9)) {
         msg.addBlankField();
       }
     }
@@ -194,5 +194,4 @@ exports.playtime = function(client, message) {
   }
 
   getPlayers(callbackF);
-  console.log(message.author.username + " has used command !top");
-}
+  }

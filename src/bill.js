@@ -20,12 +20,16 @@ client.on('message', message => {
   }
   if (message.content === '!day7') {
     command.day7(client,message);
+    console.log(message.author.username + " has used command !day7");
   }
   if (message.content.startsWith('!shop')) {
     command.shop(client,message);
+    console.log(message.author.username + " has used command !shop with args:" + message.content.slice(5));
+
   }
   if (message.content === '!top') {
     command.playtime(client,message);
+    console.log(message.author.username + " has used command !top");
   }
 });
 
