@@ -31,6 +31,10 @@ client.on('message', message => {
     command.playtime(client,message);
     console.log(message.author.username + " has used command !top");
   }
+  if (message.content.startsWith('!seen')) {
+    command.seen(client,message);
+    console.log(message.author.username + " has used command !seen with args:" + message.content.slice(5));
+  }
 });
 
 

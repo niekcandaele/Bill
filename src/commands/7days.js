@@ -111,7 +111,7 @@ exports.shop = function(client, message) {
     for (var i = 0; i < data.length; i++) {
       if (data[i].category.toLocaleUpperCase() == args.toLocaleUpperCase()) {
         var id = data[i]['id number'].slice(18);
-        msg.addField(id + " " + data[i].item,data[i].price);
+        msg.addField(id + " " + data[i].item, data[i].price);
       }
     }
     return msg
@@ -166,7 +166,7 @@ exports.playtime = function(client, message) {
     t -= (m * 60);
     var s = Math.floor(t);
 
-    return "D: " + d + " H: " + h + " M: " + m + " S: " + s;
+    return d + "D " + h + "H " + m + "M " + s + "S ";
   }
 
   function isEven(n) {
@@ -197,4 +197,33 @@ exports.playtime = function(client, message) {
   }
 
   getPlayers(callbackF);
+}
+
+exports.seen = function(client, message) {
+  var timeLastOnline;
+  var args = message.content.slice(6, message.length);
+  if (args == "") {
+    return message.channel.send("Specify a player please! \n Example: !seen <playername>");
+  }
+
+  function getPlayers() {
+    request('http://193.70.81.12:28248/api/getplayerslocation', function(error, response, body) {
+      var data = JSON.parse(body);
+      //console.log(data);
+      var i = 0;
+      args = args.toLocaleUpperCase();
+
+      for (var i = 0; i < data.length; i++) {
+        var playername = data[i].name.toLocaleUpperCase();
+        if (playername == args) {
+          var d = new Date(data[i].lastonline);
+          return message.channel.send("Player " + args + " was last seen on " + d)
+        }
+      }
+      message.channel.send("Player not found! (Mistyped?)")
+
+    });
+  }
+  getPlayers();
+
 }
