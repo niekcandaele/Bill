@@ -3,29 +3,44 @@ const fs = require('fs');
 const request = require('request');
 const path = require('path');
 const logger = require('logger');
+const persistentCollection = require('djs-collection-persistent');
 
 const client = new Commando.Client({
   owner: '220554523561820160'
 });
 
 client.on('ready', () => {
+  client.logger = logger.createLogger('../logs/development.log');
   client.logger.info('Bot has logged in');
-  client.logger.setLevel('debug'),
+  client.logger.setLevel('debug');
+  client.logger.info("Loading guildsconfigs");
+  client.guildConf = new persistentCollection({name: 'guildConf'});
   console.log('Bill\'s  ready!');
 });
 
+// Logs when a command is run (monitoring for beta stage)
 client.on('commandRun', (command,promise,message) => {
   client.logger.info("COMMAND RAN: " + command.name + " run by " + message.author.username + " like this: " + message.cleanContent);
-})
+});
+client.on("guildCreate", guild => {
+  client.logger.info("New guild added, default settings loaded. --" + guild.name)
+  client.guildConf.set(guild.id, defaultSettings);
+});
 
-client.logger = logger.createLogger('../logs/development.log');
+const defaultSettings = {
+  prefix: "$",
+  modLogChannel: "mod-log",
+  modRole: "Moderator",
+  adminRole: "Administrator",
+  serverip: "localhost"
+}
 
 // Registers all built-in groups, commands, and argument types
 client.registry.registerDefaults();
 client.registry.registerGroup("7dtd");
+client.registry.registerGroup("config");
     // Registers all of your commands in the ./commands/ directory
 client.registry.registerCommandsIn(path.join(__dirname, '/commands'));
-
 
 // read config file
 fs.readFile('../config.json', 'utf8', function(err, data) {

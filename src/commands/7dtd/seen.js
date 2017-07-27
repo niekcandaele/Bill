@@ -23,7 +23,6 @@ class Seen extends Commando.Command {
     function getPlayers() {
       request('http://147.135.220.171:18246/api/getplayerslocation', function(error, response, body) {
         var data = JSON.parse(body);
-        //console.log(data);
         var i = 0;
         args = args.toLocaleUpperCase();
 
