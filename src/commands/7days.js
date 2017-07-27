@@ -12,7 +12,7 @@ exports.day7 = function(client, message) {
 
   function getOnlinePlayers(callback) {
     var onlinePlayerList = "";
-    request('http://193.70.81.12:28248/api/getplayerslocation', function(error, response, body) {
+    request('http://147.135.220.171:18246/api/getplayerslocation', function(error, response, body) {
       var data = JSON.parse(body);
       for (var i = 0; i < data.length; i++) {
         var player = data[i];
@@ -25,7 +25,7 @@ exports.day7 = function(client, message) {
     });
   }
 
-  request('http://193.70.81.12:28248/api/getstats', function(error, response, body) {
+  request('http://147.135.220.171:18246/api/getstats', function(error, response, body) {
     var body = JSON.parse(body);
     days = body.gametime.days;
     hours = body.gametime.hours;
@@ -130,7 +130,7 @@ exports.playtime = function(client, message) {
   var date = new Date();
 
   function getPlayers(callback) {
-    request('http://193.70.81.12:28248/api/getplayerslocation', function(error, response, body) {
+    request('http://147.135.220.171:18246/api/getplayerslocation', function(error, response, body) {
       var data = JSON.parse(body);
       //console.log(data);
       for (var i = 0; i < data.length; i++) {
@@ -207,7 +207,7 @@ exports.seen = function(client, message) {
   }
 
   function getPlayers() {
-    request('http://193.70.81.12:28248/api/getplayerslocation', function(error, response, body) {
+    request('http://147.135.220.171:18246/api/getplayerslocation', function(error, response, body) {
       var data = JSON.parse(body);
       //console.log(data);
       var i = 0;
