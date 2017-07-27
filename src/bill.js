@@ -9,9 +9,14 @@ const client = new Commando.Client({
 });
 
 client.on('ready', () => {
-  client.logger.info('Bot has logged in')
+  client.logger.info('Bot has logged in');
+  client.logger.setLevel('debug'),
   console.log('Bill\'s  ready!');
 });
+
+client.on('commandRun', (command,promise,message) => {
+  client.logger.info("COMMAND RAN: " + command.name + " run by " + message.author.username + " like this: " + message.cleanContent);
+})
 
 client.logger = logger.createLogger('../logs/development.log');
 

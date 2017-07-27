@@ -16,37 +16,33 @@ class Day7 extends Commando.Command {
 
   async run(msg, args) {
     const client = msg.client;
-    client.logger.info("Command day7 used by " + msg.author.username);
     var date = new Date();
-    var embed
-
-
-    async function buildMsg() {
-      function getOnlinePlayers() {
-        // !!!!!!!!!!!!!!!!!!! ADD ERROR CATCH
-        var onlinePlayerList = "";
-        request('http://147.135.220.171:18246/api/getplayerslocation', function(error, response, body) {
-          var data = JSON.parse(body);
-          for (var i = 0; i < data.length; i++) {
-            var player = data[i];
-            if (player.online == true) {
-              onlinePlayerList += player.name + ", ";
-            }
+    function getOnlinePlayers() {
+      // !!!!!!!!!!!!!!!!!!! ADD ERROR CATCH
+      var onlinePlayerList = "";
+      request('http://147.135.220.171:18246/api/getplayerslocation', function(error, response, body) {
+        var data = JSON.parse(body);
+        for (var i = 0; i < data.length; i++) {
+          var player = data[i];
+          if (player.online == true) {
+            onlinePlayerList += player.name + ", ";
           }
-          //console.log("Function online players: " + onlinePlayerList);
-          return onlinePlayerList;
-        });
-      }
+        }
+        return getDay7Data(onlinePlayerList);
+      });
+    }
+    function getDay7Data(onlinePlayersList) {
+      request('http://147.135.220.171:18246/api/getstats', function(error, response, body) {
+        //  !!!!!!!!!!!!!!!!!!! ADD ERROR CATCH
+        return buildMsg([onlinePlayersList,JSON.parse(body)]);
+      });
+    }
 
-      function getDay7Data() {
-        request('http://147.135.220.171:18246/api/getstats', function(error, response, body) {
-          //  !!!!!!!!!!!!!!!!!!! ADD ERROR CATCH
-          return JSON.parse(body);
-        });
-      }
+    async function buildMsg(dataArray) {
+      const onlinePlayers = dataArray[0];
+      const day7data = dataArray[1];
+      client.logger.debug("COMMAND DAY7: buildmsg data: onlinePlayers: " + onlinePlayers + "day7data: " + day7data);
 
-      const onlinePlayers = await getOnlinePlayers();
-      const day7data = await getDay7Data();
       var embed = {
         "content": "7 Days",
         "embed": {
@@ -93,9 +89,11 @@ class Day7 extends Commando.Command {
           ]
         }
       }
-      return embed
+      msg.channel.send(embed);
     }
-    msg.channel.send(await buildMsg());
+
+    getOnlinePlayers();
+
   }
 }
 
