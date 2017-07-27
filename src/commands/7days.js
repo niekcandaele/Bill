@@ -1,5 +1,5 @@
+/*
 const request = require('request');
-const Baby = require('babyparse');
 const Discord = require('discord.js')
 
 // COMMANDS
@@ -227,3 +227,5 @@ exports.seen = function(client, message) {
   getPlayers();
 
 }
+
+*/

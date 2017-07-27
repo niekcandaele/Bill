@@ -17,7 +17,10 @@
   "dependencies": {
     "babyparse": "^0.4.6",
     "discord.js": "^11.1.0",
+    "discord.js-commando": "^0.9.0",
+    "djs-collection-persistent": "^0.1.3",
     "erlpack": "github:hammerandchisel/erlpack",
+    "logger": "0.0.1",
     "request": "^2.81.0",
     "uws": "^8.14.0"
   }

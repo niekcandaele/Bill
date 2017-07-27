@@ -1,41 +1,25 @@
-const Discord = require('discord.js');
+const Commando = require('discord.js-commando');
 const fs = require('fs');
 const request = require('request');
+const path = require('path');
+const logger = require('logger');
 
-var command = require('./commands/7days.js');
-
-const client = new Discord.Client();
-var token;
-var owner;
-var prefix;
+const client = new Commando.Client({
+  owner: '220554523561820160'
+});
 
 client.on('ready', () => {
+  client.logger.info('Bot has logged in')
   console.log('Bill\'s  ready!');
 });
 
-// PING COMMAND
-client.on('message', message => {
-  if (message.content === 'ping') {
-    message.reply('pong');
-  }
-  if (message.content === '!day7') {
-    command.day7(client,message);
-    console.log(message.author.username + " has used command !day7");
-  }
-  if (message.content.startsWith('!shop')) {
-    command.shop(client,message);
-    console.log(message.author.username + " has used command !shop with args:" + message.content.slice(5));
+client.logger = logger.createLogger('../logs/development.log');
 
-  }
-  if (message.content === '!top') {
-    command.playtime(client,message);
-    console.log(message.author.username + " has used command !top");
-  }
-  if (message.content.startsWith('!seen')) {
-    command.seen(client,message);
-    console.log(message.author.username + " has used command !seen with args:" + message.content.slice(5));
-  }
-});
+// Registers all built-in groups, commands, and argument types
+client.registry.registerDefaults();
+client.registry.registerGroup("7dtd");
+    // Registers all of your commands in the ./commands/ directory
+client.registry.registerCommandsIn(path.join(__dirname, '/commands'));
 
 
 // read config file
@@ -45,8 +29,7 @@ fs.readFile('../config.json', 'utf8', function(err, data) {
     return console.log(err);
   }
   data = JSON.parse(data);
-  owner = data.owner;
-  token = data.token;
-  prefix = data.prefix;
+  //owner = data.owner;
+  var token = data.token;
   client.login(token);
 });
