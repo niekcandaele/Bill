@@ -15,13 +15,15 @@ class Seen extends Commando.Command {
 
   async run(msg, args) {
     const client = msg.client;
+    const thisConf = await client.guildConf.get(msg.guild.id);
+    const serverip = thisConf.serverip;
     var timeLastOnline;
     if (args == "") {
       return msg.channel.send("Specify a player please! \n Example: !seen <playername>");
     }
 
     function getPlayers() {
-      request('http://147.135.220.171:18246/api/getplayerslocation', function(error, response, body) {
+      request('http://' + serverip + '/api/getplayerslocation', function(error, response, body) {
         var data = JSON.parse(body);
         var i = 0;
         args = args.toLocaleUpperCase();

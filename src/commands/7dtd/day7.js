@@ -16,11 +16,13 @@ class Day7 extends Commando.Command {
 
   async run(msg, args) {
     const client = msg.client;
+    const thisConf = await client.guildConf.get(msg.guild.id);
+    const serverip = thisConf.serverip;
     var date = new Date();
     function getOnlinePlayers() {
       // !!!!!!!!!!!!!!!!!!! ADD ERROR CATCH
       var onlinePlayerList = "";
-      request('http://147.135.220.171:18246/api/getplayerslocation', function(error, response, body) {
+      request('http://' + serverip + '/api/getplayerslocation', function(error, response, body) {
         var data = JSON.parse(body);
         for (var i = 0; i < data.length; i++) {
           var player = data[i];
@@ -32,7 +34,7 @@ class Day7 extends Commando.Command {
       });
     }
     function getDay7Data(onlinePlayersList) {
-      request('http://147.135.220.171:18246/api/getstats', function(error, response, body) {
+      request('http://' + serverip + '/api/getstats', function(error, response, body) {
         //  !!!!!!!!!!!!!!!!!!! ADD ERROR CATCH
         return buildMsg([onlinePlayersList,JSON.parse(body)]);
       });

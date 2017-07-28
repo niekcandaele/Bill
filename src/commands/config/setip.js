@@ -7,8 +7,8 @@ class Setip extends Commando.Command {
       name: 'setip',
       group: 'config',
       memberName: 'setip',
-      description: 'Sets the ip of your server',
-      examples: ['setip 192.168.0.1']
+      description: 'Sets the ip of your server. Expects the port aswell \n Can only be used by guild owner!',
+      examples: ['setip 192.168.0.1:1234']
     });
   }
 
@@ -18,7 +18,7 @@ class Setip extends Commando.Command {
     const ownerRole = thisConf.guildOwner;
 
     if (ownerRole !== msg.author.id) {
-      client.logger.info(msg.author.username + " tried to run setip command but is not authorized!");
+      client.logger.info(msg.author.username + " tried to run " + msg + " command but is not authorized!");
       return msg.reply("You're not the guildowner, sorrynotsorry!");
     }
 

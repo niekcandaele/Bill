@@ -9,10 +9,12 @@ const client = new Commando.Client({
   owner: '220554523561820160'
 });
 
+var loggerLevel;
+
 client.on('ready', () => {
   client.logger = logger.createLogger('../logs/development.log');
   client.logger.info('Bot has logged in');
-  client.logger.setLevel('debug');
+  client.logger.setLevel(loggerLevel);
   client.logger.info("Loading guildsconfigs");
   client.guildConf = new persistentCollection({
     name: 'guildConf',
@@ -66,5 +68,6 @@ fs.readFile('../config.json', 'utf8', function(err, data) {
   data = JSON.parse(data);
   //owner = data.owner;
   var token = data.token;
+  loggerLevel = data.loggerLevel;
   client.login(token);
 });

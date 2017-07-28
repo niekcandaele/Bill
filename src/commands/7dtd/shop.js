@@ -8,7 +8,7 @@ class Shop extends Commando.Command {
       name: 'shop',
       group: '7dtd',
       memberName: 'shop',
-      description: 'Gives information about the zcoin shop',
+      description: 'Gives information about the zcoin shop \n not multi guild supported yet!',
       details: "Specify a category",
       examples: ['shop misc']
     });
