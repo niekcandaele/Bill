@@ -20,9 +20,12 @@ class Day7 extends Commando.Command {
     const serverip = thisConf.serverip;
     var date = new Date();
     function getOnlinePlayers() {
-      // !!!!!!!!!!!!!!!!!!! ADD ERROR CATCH
       var onlinePlayerList = "";
       request('http://' + serverip + '/api/getplayerslocation', function(error, response, body) {
+        if (error) {
+          client.logger.error(error);
+          return msg.reply("Error! Request to server failed, did you set a correct IP?");
+        }
         var data = JSON.parse(body);
         for (var i = 0; i < data.length; i++) {
           var player = data[i];
@@ -35,7 +38,10 @@ class Day7 extends Commando.Command {
     }
     function getDay7Data(onlinePlayersList) {
       request('http://' + serverip + '/api/getstats', function(error, response, body) {
-        //  !!!!!!!!!!!!!!!!!!! ADD ERROR CATCH
+        if (error) {
+          client.logger.error(error);
+          return msg.reply("Error! Request to server failed, did you set a correct IP?");
+        }
         return buildMsg([onlinePlayersList,JSON.parse(body)]);
       });
     }

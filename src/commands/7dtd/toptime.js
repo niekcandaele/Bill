@@ -23,11 +23,13 @@ class TopTime extends Commando.Command {
 
     function getPlayers(callback) {
       request('http://' + serverip + '/api/getplayerslocation', function(error, response, body) {
+        if (error) {
+          client.logger.error(error);
+          return msg.reply("Error! Request to server failed, did you set a correct IP?");
+        }
         var data = JSON.parse(body);
-        //console.log(data);
         for (var i = 0; i < data.length; i++) {
           players[i] = new Array(data[i].name, data[i].totalplaytime);
-          //console.log(players);
         }
         return callback(players);
       });

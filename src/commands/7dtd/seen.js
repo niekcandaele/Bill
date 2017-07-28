@@ -24,6 +24,10 @@ class Seen extends Commando.Command {
 
     function getPlayers() {
       request('http://' + serverip + '/api/getplayerslocation', function(error, response, body) {
+        if (error) {
+          client.logger.error(error);
+          return msg.reply("Error! Request to server failed, did you set a correct IP?");
+        }
         var data = JSON.parse(body);
         var i = 0;
         args = args.toLocaleUpperCase();
