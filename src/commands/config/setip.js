@@ -17,7 +17,7 @@ class Setip extends Commando.Command {
     const thisConf = await client.guildConf.get(msg.guild.id);
     const ownerRole = thisConf.guildOwner;
 
-    if (ownerRole !== msg.author.id) {
+    if (ownerRole !== msg.author.id && client.owner !== msg.author.id) {
       client.logger.info(msg.author.username + " tried to run " + msg + " command but is not authorized!");
       return msg.reply("You're not the guildowner, sorrynotsorry!");
     }
