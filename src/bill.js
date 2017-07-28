@@ -14,12 +14,15 @@ client.on('ready', () => {
   client.logger.info('Bot has logged in');
   client.logger.setLevel('debug');
   client.logger.info("Loading guildsconfigs");
-  client.guildConf = new persistentCollection({name: 'guildConf'});
+  client.guildConf = new persistentCollection({
+    name: 'guildConf',
+    dataDir: '../data'
+  });
   console.log('Bill\'s  ready!');
 });
 
 // Logs when a command is run (monitoring for beta stage)
-client.on('commandRun', (command,promise,message) => {
+client.on('commandRun', (command, promise, message) => {
   client.logger.info("COMMAND RAN: " + command.name + " run by " + message.author.username + " like this: " + message.cleanContent);
 });
 client.on("guildCreate", guild => {
@@ -39,7 +42,7 @@ const defaultSettings = {
 client.registry.registerDefaults();
 client.registry.registerGroup("7dtd");
 client.registry.registerGroup("config");
-    // Registers all of your commands in the ./commands/ directory
+// Registers all of your commands in the ./commands/ directory
 client.registry.registerCommandsIn(path.join(__dirname, '/commands'));
 
 // read config file

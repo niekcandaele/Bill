@@ -97,3 +97,6 @@ typings/
 
 #Bot credentials
 config.json
+
+#Data directory
+data/
