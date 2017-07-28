@@ -26,8 +26,19 @@ client.on('commandRun', (command, promise, message) => {
   client.logger.info("COMMAND RAN: " + command.name + " run by " + message.author.username + " like this: " + message.cleanContent);
 });
 client.on("guildCreate", guild => {
-  client.logger.info("New guild added, default settings loaded. --" + guild.name)
-  client.guildConf.set(guild.id, defaultSettings);
+  if (!client.guildConf.has(guild.id)) {
+    client.logger.info("New guild added, default settings loaded. -- " + guild.name);
+    var thisConf = defaultSettings;
+    thisConf.guildOwner = guild.ownerID;
+    client.guildConf.set(guild.id, defaultSettings);
+  }
+});
+
+client.on("guildDelete", guild => {
+  if (client.guildConf.has(guild.id)) {
+    client.logger.info("Guild deleted, deleting settings! -- " + guild.name);
+    client.guildConf.delete(guild.id);
+  }
 });
 
 const defaultSettings = {
@@ -35,6 +46,7 @@ const defaultSettings = {
   modLogChannel: "mod-log",
   modRole: "Moderator",
   adminRole: "Administrator",
+  guildOwner: "id",
   serverip: "localhost"
 }
 

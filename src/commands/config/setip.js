@@ -14,20 +14,26 @@ class Setip extends Commando.Command {
 
   async run(msg, args) {
     const client = msg.client;
-    const thisConf = client.guildConf.get(msg.guild.id);
-    const adminRole = msg.guild.roles.find("name", guildConf.adminRole);
+    const thisConf = await client.guildConf.get(msg.guild.id);
+    const ownerRole = thisConf.guildOwner;
 
-    if (!adminRole || !msg.member.has(adminRole.id)) {
+    if (ownerRole !== msg.author.id) {
       client.logger.info(msg.author.username + " tried to run setip command but is not authorized!");
-      return msg.reply("You're not an admin, sorrynotsorry!");
+      return msg.reply("You're not the guildowner, sorrynotsorry!");
     }
 
     if (args == "") {
       return msg.reply("Arguments cannot be empty!");
-      console.log("set IP");
     }
-
-    thisConf.serverip = "args";
+    try {
+      client.logger.debug("Trying to set IP for " + msg.guild.id + " to: " + args);
+      thisConf.serverip = args;
+      client.guildConf.set(msg.guild.id,thisConf);
+    } catch (e) {
+      client.logger.error(e);
+    }
+    msg.reply("You've set the server IP for this guild to be: " + thisConf.serverip);
+    client.logger.debug("IP for " + msg.guild.id + " was set to: " + thisConf.serverip);
   }
 }
 
