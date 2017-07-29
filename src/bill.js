@@ -58,6 +58,7 @@ const defaultSettings = {
 };
 
 async function initData() {
+    client.botStats.set('cmdsRan', 0);
     client.botStats.set('githubLink', "https://github.com/niekcandaele/Bill");
     client.botStats.set('website', "http://niekca.ndaele.com");
     console.log(await client.botStats);
