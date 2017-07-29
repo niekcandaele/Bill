@@ -20,12 +20,21 @@ client.on('ready', () => {
     name: 'guildConf',
     dataDir: '../data'
   });
+  client.botStats = new persistentCollection({
+    name: 'botStats',
+    dataDir: '../data'
+  });
+  if (typeof client.botStats.cmdsRan == 'undefined') {
+    initData();
+  }
   console.log('Bill\'s  ready!');
 });
 
 // Logs when a command is run (monitoring for beta stage)
 client.on('commandRun', (command, promise, message) => {
   client.logger.info("COMMAND RAN: " + command.name + " run by " + message.author.username + " like this: " + message.cleanContent);
+  var cmdsRan = client.botStats.get('cmdsRan');
+  client.botStats.set('cmdsRan', cmdsRan+1);
 });
 client.on("guildCreate", guild => {
   if (!client.guildConf.has(guild.id)) {
@@ -45,11 +54,15 @@ client.on("guildDelete", guild => {
 
 const defaultSettings = {
   prefix: "$",
-  modLogChannel: "mod-log",
   modRole: "Moderator",
   adminRole: "Administrator",
   guildOwner: "id",
   serverip: "localhost"
+};
+
+function initData() {
+    client.logger.info("First time startup, initializing botStats data!");
+    client.botStats.set('cmdsRan', 0);
 }
 
 // Registers all built-in groups, commands, and argument types
@@ -62,12 +75,12 @@ client.registry.registerCommandsIn(path.join(__dirname, '/commands'));
 // read config file
 fs.readFile('../config.json', 'utf8', function(err, data) {
   if (err) {
-    console.log("Error: config failed to load!");
+    client.logger.error(err);
     return console.log(err);
   }
   data = JSON.parse(data);
   //owner = data.owner;
   var token = data.token;
-  loggerLevel = data.loggerLevel;
+  loggerLevel = data.loggerLevel; // TODO: add this as option during startup
   client.login(token);
 });
