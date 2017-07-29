@@ -24,7 +24,7 @@ client.on('ready', () => {
     name: 'botStats',
     dataDir: '../data'
   });
-  if (typeof client.botStats.cmdsRan == 'undefined') {
+  if (typeof client.botStats.get("cmdsRan") == 'undefined') {
     initData();
   }
   console.log('Bill\'s  ready!');
@@ -61,8 +61,11 @@ const defaultSettings = {
 };
 
 function initData() {
+    // No data in botStats yet
     client.logger.info("First time startup, initializing botStats data!");
     client.botStats.set('cmdsRan', 0);
+    client.botStats.set('githubLink', "https://github.com/niekcandaele/Bill");
+    client.botStats.set('website', "http://niekca.ndaele.com");
 }
 
 // Registers all built-in groups, commands, and argument types
