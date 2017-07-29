@@ -15,12 +15,17 @@ class BotInfo extends Commando.Command {
     const client = msg.client;
 
     async function getData(callback) {
-      var website = await client.botStats.get("website");
-      var githubLink = await client.botStats.get("githubLink");
-      var cmdsRan = await client.botStats.get("cmdsRan");
-      var amountGuilds = await client.guilds.size;
-      var amountUsers = await client.users.size;
-      console.log(amountUsers, amountGuilds,website,githubLink,cmdsRan);
+      try {
+        client.logger.debug("COMMAND BOTINFO GETTING DATA");
+        var website = await client.botStats.get("website");
+        var githubLink = await client.botStats.get("githubLink");
+        var cmdsRan = await client.botStats.get("cmdsRan");
+        var amountGuilds = await client.guilds.size;
+        var amountUsers = await client.users.size;
+      } catch (e) {
+        client.logger.error("COMMAND BOTINFO \n" + e);
+        return msg.reply(e);
+      }
       return callback(website,githubLink,cmdsRan, amountGuilds, amountUsers);
     }
 
@@ -28,7 +33,6 @@ class BotInfo extends Commando.Command {
       var embed = {
         "content": "Bot Info",
         "embed": {
-          "title": "Information on Bill",
           "url": client.botStats.get("githubLink"),
           "color": 15312430,
           "timestamp": new Date(),

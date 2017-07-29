@@ -24,9 +24,7 @@ client.on('ready', () => {
     name: 'botStats',
     dataDir: '../data'
   });
-  if (typeof client.botStats.get("cmdsRan") == 'undefined') {
-    initData();
-  }
+  initData();
   console.log('Bill\'s  ready!');
 });
 
@@ -44,7 +42,6 @@ client.on("guildCreate", guild => {
     client.guildConf.set(guild.id, defaultSettings);
   }
 });
-
 client.on("guildDelete", guild => {
   if (client.guildConf.has(guild.id)) {
     client.logger.info("Guild deleted, deleting settings! -- " + guild.name);
@@ -60,12 +57,15 @@ const defaultSettings = {
   serverip: "localhost"
 };
 
-function initData() {
+async function initData() {
     // No data in botStats yet
-    client.logger.info("First time startup, initializing botStats data!");
-    client.botStats.set('cmdsRan', 0);
-    client.botStats.set('githubLink', "https://github.com/niekcandaele/Bill");
-    client.botStats.set('website', "http://niekca.ndaele.com");
+    var cmdsRan = await client.botStats.get("cmdsRans");
+    if (typeof cmdsRan == undefined) {
+      client.logger.info("First time startup, initializing botStats data!");
+      client.botStats.set('cmdsRan', 0);
+      client.botStats.set('githubLink', "https://github.com/niekcandaele/Bill");
+      client.botStats.set('website', "http://niekca.ndaele.com");
+    }
 }
 
 // Registers all built-in groups, commands, and argument types
