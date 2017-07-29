@@ -4,7 +4,7 @@ class BotInfo extends Commando.Command {
   constructor(client) {
     super(client, {
       name: 'botinfo',
-      group: '7dtd',
+      group: 'config',
       memberName: 'botinfo',
       description: 'Show information about the bot.',
       examples: ['botinfo']
@@ -22,6 +22,10 @@ class BotInfo extends Commando.Command {
         var cmdsRan = await client.botStats.get("cmdsRan");
         var amountGuilds = await client.guilds.size;
         var amountUsers = await client.users.size;
+        if (typeof cmdsRan == NaN) {
+          await client.botStats.set("cmdsRan", 0);
+          cmdsRan = 0;
+        }
       } catch (e) {
         client.logger.error("COMMAND BOTINFO \n" + e);
         return msg.reply(e);
