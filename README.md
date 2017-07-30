@@ -1,5 +1,17 @@
 Currently doing testing with the first public version of this bot. Let me know if there is any problems, bugs or feature requests!
 
+## Features
+
+![alt text](https://github.com/niekcandaele/Bill/tree/master/data/img/Usage-screenshot.png "Logo Title Text 1")
+
+- !day7
+ * Shows information about the currently configured guild.
+- !toptime
+ * Shows top 15 players by playtime on server
+- !seen
+ * When was a player last online?
+
+
 ## How to add the bot to your server
 
 1. [Add the bot to your server](https://discordapp.com/oauth2/authorize?client_id=340416036610244609&scope=bot&permissions=35840)
