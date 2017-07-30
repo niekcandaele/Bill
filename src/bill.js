@@ -58,10 +58,10 @@ const defaultSettings = {
 };
 
 async function initData() {
-    client.botStats.set('cmdsRan', 0);
+  client.logger.info("Initializing data");
+    //client.botStats.set('cmdsRan', 0);
     client.botStats.set('githubLink', "https://github.com/niekcandaele/Bill");
-    client.botStats.set('website', "http://niekca.ndaele.com");
-    console.log(await client.botStats);
+    client.botStats.set('website', "https://niekcandaele.github.io/Bill/");
 }
 
 // Registers all built-in groups, commands, and argument types
