@@ -72,12 +72,13 @@ class TopTime extends Commando.Command {
       embed.setTitle("Top players by playtime")
         .setColor(0x00AE86)
         .setTimestamp()
-      for (var i = 0; i < 10; i++) {
+      for (var i = 0; i < 15; i++) {
         //console.log("Adding to embed: " + arr[i]);
         embed.addField(i + 1 + ". " + arr[i][0], secondsToDhms(arr[i][1]), true);
+        /*
         if (!isEven(i) && !(i == 9)) {
           embed.addBlankField();
-        }
+        }*/
       }
       //console.log(msg);
       return embed
