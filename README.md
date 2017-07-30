@@ -2,7 +2,7 @@ Currently doing testing with the first public version of this bot. Let me know i
 
 ## Features
 
-![alt text](https://github.com/niekcandaele/Bill/blob/master/docs/img/Usage-screenshot.png "Logo Title Text 1")
+![feature_img](https://github.com/niekcandaele/Bill/raw/master/docs/img/Usage-screenshot.png "Logo Title Text 1")
 
 - !day7
  * Shows information about the currently configured guild.
