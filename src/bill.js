@@ -25,6 +25,7 @@ client.on('ready', () => {
     dataDir: '../data'
   });
   initData();
+  client.user.setGame("!botinfo");
   console.log('Bill\'s  ready!');
 });
 
