@@ -1,5 +1,3 @@
-# Bill
-
 Currently doing testing with the first public version of this bot. Let me know if there is any problems, bugs or feature requests!
 
 ## How to add the bot to your server
