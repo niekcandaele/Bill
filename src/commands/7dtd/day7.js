@@ -19,10 +19,12 @@ class Day7 extends Commando.Command {
     const client = msg.client;
     const thisConf = await client.guildConf.get(msg.guild.id);
     const serverip = thisConf.serverip;
+    const webPort = thisConf.webPort;
+    const serverAdress = "http://" + serverip + ":" + webPort;
     var date = new Date();
     function getOnlinePlayers() {
       var onlinePlayerList = "";
-      request('http://' + serverip + '/api/getplayerslocation', function(error, response, body) {
+      request(serverAdress + '/api/getplayerslocation', function(error, response, body) {
         if (error) {
           client.logger.error(error);
           return msg.reply("Error! Request to server failed, did you set a correct IP?");
@@ -38,7 +40,7 @@ class Day7 extends Commando.Command {
       });
     }
     function getDay7Data(onlinePlayersList) {
-      request('http://' + serverip + '/api/getstats', function(error, response, body) {
+      request(serverAdress + '/api/getstats', function(error, response, body) {
         if (error) {
           client.logger.error(error);
           return msg.reply("Error! Request to server failed, did you set a correct IP?");

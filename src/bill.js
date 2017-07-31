@@ -58,7 +58,8 @@ const defaultSettings = {
   modRole: "Moderator",
   adminRole: "Administrator",
   guildOwner: "id",
-  serverip: "localhost"
+  serverip: "localhost",
+  webPort: "1234"
 };
 
 async function initData() {
