@@ -6,7 +6,9 @@ const logger = require('logger');
 const persistentCollection = require('djs-collection-persistent');
 
 const client = new Commando.Client({
-  owner: '220554523561820160'
+  owner: '220554523561820160',
+  commandPrefix: '$',
+  invite: "https://discordapp.com/invite/kuDJG6e"
 });
 
 var loggerLevel;
@@ -26,6 +28,7 @@ client.on('ready', () => {
   });
   initData();
   client.user.setGame("!botinfo");
+  client.commandPrefix = client.guildConf.get("prefix");
   console.log('Bill\'s  ready!');
 });
 
