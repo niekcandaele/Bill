@@ -1,6 +1,7 @@
 const Commando = require('discord.js-commando');
 const request = require('request');
 
+
 class Day7 extends Commando.Command {
   constructor(client) {
     super(client, {

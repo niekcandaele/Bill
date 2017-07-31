@@ -1,15 +1,13 @@
-const Discord = require('discord.js');
 const Commando = require('discord.js-commando');
-const validateIP = require('validate-ip-node');
 
-class Setip extends Commando.Command {
+class Setport extends Commando.Command {
   constructor(client) {
     super(client, {
-      name: 'setip',
+      name: 'setport',
       group: 'config',
-      memberName: 'setip',
-      description: 'Sets the ip of your server. \n Can only be used by guild owner!',
-      examples: ['setip 192.168.0.1']
+      memberName: 'setport',
+      description: 'Sets the port of your server. \n Can only be used by guild owner! \n Port number is serverport+2 refer to the site for more info',
+      examples: ['setport 20056']
     });
   }
 
@@ -27,20 +25,16 @@ class Setip extends Commando.Command {
       return msg.reply("Arguments cannot be empty!");
     }
 
-    if (!validateIP(args)) {
-      return msg.reply("Invalid IP! Make sure you set a correct IP address");
-    }
-
     try {
-      client.logger.debug("Trying to set IP for " + msg.guild.id + " to: " + args);
-      thisConf.serverip = args;
+      client.logger.debug("Trying to set port for " + msg.guild.id + " to: " + args);
+      thisConf.webPort = args;
       client.guildConf.set(msg.guild.id,thisConf);
     } catch (e) {
       client.logger.error(e);
     }
-    msg.reply("You've set the server IP for this guild to be: " + thisConf.serverip);
-    client.logger.debug("IP for " + msg.guild.id + " was set to: " + thisConf.serverip);
+    msg.reply("You've set the server port for this guild to be: " + thisConf.webPort);
+    client.logger.debug("Port for " + msg.guild.id + " was set to: " + thisConf.webPort);
   }
 }
 
-module.exports = Setip;
+module.exports = Setport;
