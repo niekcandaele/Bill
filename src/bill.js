@@ -48,8 +48,7 @@ client.on("guildCreate", guild => {
 });
 client.on("guildDelete", guild => {
   if (client.guildConf.has(guild.id)) {
-    client.logger.info("Guild deleted, deleting settings! -- " + guild.name);
-    client.guildConf.delete(guild.id);
+    client.logger.info("Guild deleted -- " + guild.name);
   }
 });
 

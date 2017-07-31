@@ -17,6 +17,8 @@ class Seen extends Commando.Command {
     const client = msg.client;
     const thisConf = await client.guildConf.get(msg.guild.id);
     const serverip = thisConf.serverip;
+    const webPort = thisConf.webPort;
+    const serverAdress = "http://" + serverip + ":" + webPort;
     var timeLastOnline;
     var msgToSend = ""; // Used for building the message to send
     if (args == "") {
@@ -24,7 +26,7 @@ class Seen extends Commando.Command {
     }
 
     function getPlayers() {
-      request('http://' + serverip + '/api/getplayerslocation', function(error, response, body) {
+      request(serverAdress + '/api/getplayerslocation', function(error, response, body) {
         if (error) {
           client.logger.error(error);
           return msg.reply("Error! Request to server failed, did you set a correct IP?");
