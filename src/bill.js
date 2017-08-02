@@ -78,7 +78,6 @@ client.registry.registerCommandsIn(path.join(__dirname, '/commands'));
 // read config file
 fs.readFile('../config.json', 'utf8', function(err, data) {
   if (err) {
-    client.logger.error(err);
     return console.log(err);
   }
   data = JSON.parse(data);
