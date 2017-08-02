@@ -33,11 +33,11 @@ class Day7 extends Commando.Command {
         var data = JSON.parse(body);
         for (var i = 0; i < data.length; i++) {
           var player = data[i];
-          if (player.online == true) {
+          if (player.online == true ) {
             onlinePlayerList += player.name + ", ";
           }
         }
-        return getDay7Data(onlinePlayerList);
+        return getDay7Data(onlinePlayerList.substr(0,onlinePlayerList.length-2));
       });
     }
     function getDay7Data(onlinePlayersList) {
