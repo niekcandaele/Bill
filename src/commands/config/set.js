@@ -69,7 +69,6 @@ class Set extends Commando.Command {
     };
 
     function setPort(args) {
-
       let oldVal = thisConf.webPort;
       try {
         client.logger.debug("Trying to set port for " + msg.guild.id + " to: " + args);
@@ -84,9 +83,51 @@ class Set extends Commando.Command {
     }
 
 
-    function setAuthName(args) {};
+    function setAuthName(args) {
+      if (!msg.deletable) {
+        client.logger.debug("set.js:setAuthName :: bot does not have permission to delete messages");
+        client.logError(msg, "set.js:setAuthName :: bot does not have permission to delete messages")
+        return msg.reply("You need to give the bot permission to delete messages to use this command.")
+      }
 
-    function setAuthToken(args) {};
+      let oldVal = thisConf.authName;
+      try {
+        client.logger.debug("Trying to set authName for " + msg.guild.id + " to: " + args);
+        thisConf.authName = args;
+        client.guildConf.set(msg.guild.id, thisConf);
+      } catch (e) {
+        client.logger.error(e);
+      }
+      let message = "authName for " + msg.guild.name + " was changed"; // \nFrom: " + oldVal + " \nTo:   " + thisConf.authName
+      client.logger.debug(message);
+      deleteMsg();
+      return msg.channel.send(message, {code: true})
+    }
+
+    function setAuthToken(args) {
+      if (!msg.deletable) {
+        client.logger.debug(msg, "set.js:setAuthToken :: bot does not have permission to delete messages");
+        client.logError(msg, "set.js:setAuthToken :: bot does not have permission to delete messages")
+        return msg.reply("You need to give the bot permission to delete messages to use this command.")
+      }
+
+      let oldVal = thisConf.authToken;
+      try {
+        client.logger.debug("Trying to set authToken for " + msg.guild.id + " to: " + args);
+        thisConf.authToken = args;
+        client.guildConf.set(msg.guild.id, thisConf);
+      } catch (e) {
+        client.logger.error(e);
+      }
+      let message = "authToken for " + msg.guild.name + " was changed"; // \nFrom: " + oldVal + " \nTo:   " + thisConf.authToken
+      client.logger.debug(message);
+      deleteMsg();
+      return msg.channel.send(message, {code: true})
+    }
+
+    function deleteMsg() {
+      msg.delete();
+    }
   }
 }
 module.exports = Set;
