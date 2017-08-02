@@ -62,21 +62,18 @@ class Day7 extends Commando.Command {
       var embed = {
         "content": "7 Days",
         "embed": {
-          "title": "7 Days",
-          "url": "https://discordapp.com",
+          "title": "Bill - A discord bot for 7 days to die",
+          "url": "https://niekcandaele.github.io/Bill/",
           "color": 15312430,
           "timestamp": date,
           "footer": {
-            "icon_url": "https://cdn.discordapp.com/embed/avatars/0.png",
+            "icon_url": "http://i.imgur.com/ljZEihK.png",
             "text": "Bill"
-          },
-          "thumbnail": {
-            "url": client.displayAvatarURL
           },
           "author": {
             "name": client.username,
-            "url": "https://discordapp.com",
-            "icon_url": "https://cdn.discordapp.com/embed/avatars/0.png"
+            "url": "https://niekcandaele.github.io/Bill/",
+            "icon_url": "http://i.imgur.com/ljZEihK.png"
           },
           "fields": [{
               "name": "Gametime",
