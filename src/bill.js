@@ -27,8 +27,8 @@ client.on('ready', () => {
     dataDir: '../data'
   });
   initData();
-  client.user.setGame("!botinfo");
   client.commandPrefix = client.guildConf.get("prefix");
+  client.user.setGame(client.commandPrefix + "botinfo");
   console.log('Bill\'s  ready!');
 });
 
