@@ -20,16 +20,21 @@ class BotInfo extends Commando.Command {
         var website = await client.botStats.get("website");
         var githubLink = await client.botStats.get("githubLink");
         var cmdsRan = await client.botStats.get("cmdsRan");
+        var bootTime = await client.botStats.get("bootTime");
         var amountGuilds = await client.guilds.size;
         var amountUsers = await client.users.size;
       } catch (e) {
         client.logger.error("COMMAND BOTINFO \n" + e);
         return msg.reply(e);
       }
-      return callback(website,githubLink,cmdsRan, amountGuilds, amountUsers);
+      return callback(website,githubLink,cmdsRan, amountGuilds, amountUsers, bootTime);
     }
 
-    function buildMsg(website, githubLink, cmdsRan, amountGuilds, amountUsers) {
+    function buildMsg(website, githubLink, cmdsRan, amountGuilds, amountUsers, bootTime) {
+      const currentDate = new Date();
+      let time = process.uptime();
+      let uptime = (time + "").toHHMMSS();
+
       var embed = {
         "content": "Bot Info",
         "embed": {
@@ -49,13 +54,13 @@ class BotInfo extends Commando.Command {
             "icon_url": "https://cdn.discordapp.com/embed/avatars/0.png"
           },
           "fields": [{
-              "name": "Discord guilds served",
-              "value": amountGuilds,
+              "name": "Discord guilds served: " + amountGuilds,
+              "value": "Users: " + amountUsers,
               "inline": true
             },
             {
-              "name": "Users",
-              "value": amountUsers,
+              "name": "Uptime",
+              "value": uptime,
               "inline": true
             },
             {

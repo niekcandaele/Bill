@@ -100,13 +100,28 @@ function getDateStamp() {
   if (hh < 10) {
     hh = '0' + hh
   }
-  return currentDate = dd + '.' + mM + '.' + yyyy + '.' + hh + ':' + mm;
+  return currentDate = dd + '.' + mM + '.' + yyyy + '.' + hh;
 }
+String.prototype.toHHMMSS = function () {
+    var sec_num = parseInt(this, 10); // don't forget the second param
+    var days    = Math.floor(sec_num / (3600 * 24));
+    var hours   = Math.floor((sec_num - (days * (3600 * 24))) / 3600);
+    var minutes = Math.floor((sec_num - (hours * 3600)) / 60);
+    var seconds = sec_num - (hours * 3600) - (minutes * 60);
+
+    if (hours   < 10) {hours   = "0"+hours;}
+    if (minutes < 10) {minutes = "0"+minutes;}
+    if (seconds < 10) {seconds = "0"+seconds;}
+    var time    = days+":"+hours+':'+minutes+':'+seconds;
+    return time;
+}
+
 async function initData() {
   client.logger.info("Initializing data");
   //client.botStats.set('cmdsRan', 0);
   client.botStats.set('githubLink', "https://github.com/niekcandaele/Bill");
   client.botStats.set('website', "https://niekcandaele.github.io/Bill/");
+  client.botStats.set('bootTime', new Date().getTime());
 }
 
 // Registers all built-in groups, commands, and argument types
