@@ -12,18 +12,6 @@ class Setport extends Commando.Command {
   }
 
   async run(msg, args) {
-    const client = msg.client;
-    const thisConf = await client.guildConf.get(msg.guild.id);
-    const ownerRole = thisConf.guildOwner;
-
-    if (ownerRole !== msg.author.id && client.owner !== msg.author.id) {
-      client.logger.info(msg.author.username + " tried to run " + msg + " command but is not authorized!");
-      return msg.reply("You're not the guildowner.");
-    }
-
-    if (args == "") {
-      return msg.reply("Arguments cannot be empty!");
-    }
 
     try {
       client.logger.debug("Trying to set port for " + msg.guild.id + " to: " + args);

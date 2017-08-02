@@ -22,8 +22,8 @@ class Set extends Commando.Command {
     var configTypes = new Map([
       ["ip", setIP],
       ["port", setPort],
-      ["authName", setAuthName],
-      ["authToken", setAuthToken]
+      ["authname", setAuthName],
+      ["authtoken", setAuthToken]
     ]);
 
     // Check if author of command is guild owner or bot owner
@@ -32,6 +32,7 @@ class Set extends Commando.Command {
       return msg.reply("You're not the guildowner.");
     }
 
+    // Check if empty command
     if (args == "") {
       return msg.reply("Arguments cannot be empty!");
     } else if (argsArr[1] == undefined) {
@@ -39,9 +40,9 @@ class Set extends Commando.Command {
     }
 
     // Select the function which needs to be executed
-    let configType = configTypes.get(argsArr[0]);
+    let configType = configTypes.get(argsArr[0].toLowerCase());
     // Execute function, leaving out the first argument
-    let newArgs = argsArr.splice(1,argsArr.length)
+    let newArgs = argsArr.splice(1, argsArr.length)
     configType(newArgs);
 
 
@@ -57,19 +58,31 @@ class Set extends Commando.Command {
       try {
         client.logger.debug("Trying to set IP for " + msg.guild.id + " to: " + args);
         thisConf.serverip = args;
-        client.guildConf.set(msg.guild.id,thisConf);
+        client.guildConf.set(msg.guild.id, thisConf);
       } catch (e) {
         client.logger.error(e);
         client.logError(msg, e);
       }
-      let message = "IP for " + msg.guild.name + " was changed from " + oldVal + " to: " + thisConf.serverip
+      let message = "IP for " + msg.guild.name + " was changed \nFrom: " + oldVal + " \nTo:   " + thisConf.serverip
       client.logger.debug(message);
-      return msg.channel.send(message)
+      return msg.channel.send(message, {code: true})
     };
 
     function setPort(args) {
-      return msg.reply("test")
-    };
+
+      let oldVal = thisConf.webPort;
+      try {
+        client.logger.debug("Trying to set port for " + msg.guild.id + " to: " + args);
+        thisConf.webPort = args;
+        client.guildConf.set(msg.guild.id, thisConf);
+      } catch (e) {
+        client.logger.error(e);
+      }
+      let message = "Port for " + msg.guild.name + " was changed \nFrom: " + oldVal + " \nTo:   " + thisConf.webPort;
+      client.logger.debug(message);
+      return msg.channel.send(message, {code: true})
+    }
+
 
     function setAuthName(args) {};
 
