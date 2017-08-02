@@ -36,7 +36,7 @@ client.on('ready', () => {
 client.on('commandRun', (command, promise, message) => {
   client.logger.info("COMMAND RAN: " + command.name + " run by " + message.author.username + " like this: " + message.cleanContent);
   var cmdsRan = client.botStats.get('cmdsRan');
-  client.botStats.set('cmdsRan', cmdsRan+1);
+  client.botStats.set('cmdsRan', cmdsRan + 1);
 });
 client.on("guildCreate", guild => {
   if (!client.guildConf.has(guild.id)) {
@@ -52,6 +52,17 @@ client.on("guildDelete", guild => {
   }
 });
 
+client.on("commandError", (command, err, message) => {
+  client.logError(message, err);
+});
+
+client.logError = async function(msg, error) {
+  client.logger.error("Logging error to dev server");
+  const devGuild = await client.guilds.get("336821518250147850");
+  const errorChannel = await devGuild.channels.get("342274412877447168");
+  var msgToSend = "ERROR MESSAGE \n\nGuild: " + msg.guild.name + "\n" + "author: " + msg.member.displayName + "\n" + error
+  errorChannel.send("```\n" + msgToSend + "\n```");
+}
 const defaultSettings = {
   prefix: "$",
   modRole: "Moderator",
@@ -63,9 +74,9 @@ const defaultSettings = {
 
 async function initData() {
   client.logger.info("Initializing data");
-    //client.botStats.set('cmdsRan', 0);
-    client.botStats.set('githubLink', "https://github.com/niekcandaele/Bill");
-    client.botStats.set('website', "https://niekcandaele.github.io/Bill/");
+  //client.botStats.set('cmdsRan', 0);
+  client.botStats.set('githubLink', "https://github.com/niekcandaele/Bill");
+  client.botStats.set('website', "https://niekcandaele.github.io/Bill/");
 }
 
 // Registers all built-in groups, commands, and argument types

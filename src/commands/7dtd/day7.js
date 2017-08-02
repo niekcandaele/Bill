@@ -22,6 +22,7 @@ class Day7 extends Commando.Command {
     const webPort = thisConf.webPort;
     const serverAdress = "http://" + serverip + ":" + webPort;
     var date = new Date();
+
     function getOnlinePlayers() {
       var onlinePlayerList = "";
       request(serverAdress + '/api/getplayerslocation', function(error, response, body) {
