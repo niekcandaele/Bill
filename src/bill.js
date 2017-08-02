@@ -75,8 +75,10 @@ const defaultSettings = {
   adminRole: "Administrator",
   guildOwner: "id",
   serverip: "localhost",
-  webPort: "1234"
-};
+  webPort: "1234",
+  authName: "bill",
+  authToken: "secretToken"
+}; // authToken should be changed!
 
 async function initData() {
   client.logger.info("Initializing data");
