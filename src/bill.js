@@ -14,7 +14,8 @@ const client = new Commando.Client({
 var loggerLevel;
 
 client.on('ready', () => {
-  client.logger = logger.createLogger('../logs/development.log');
+
+  client.logger = logger.createLogger('../logs/' + getDateStamp() + ".log");
   client.logger.info('Bot has logged in');
   client.logger.setLevel(loggerLevel);
   client.logger.info("Loading guildsconfigs");
@@ -80,6 +81,27 @@ const defaultSettings = {
   authToken: "secretToken"
 }; // authToken should be changed!
 
+function getDateStamp() {
+  let currentDate = new Date();
+  let dd = currentDate.getDate();
+  let mM = currentDate.getMonth() + 1;
+  let hh = currentDate.getHours();
+  let mm = currentDate.getMinutes();
+  var yyyy = currentDate.getFullYear();
+  if (dd < 10) {
+    dd = '0' + dd
+  }
+  if (mm < 10) {
+    mm = '0' + mm
+  }
+  if (mM < 10) {
+    mM = '0' + mM
+  }
+  if (hh < 10) {
+    hh = '0' + hh
+  }
+  return currentDate = dd + '.' + mM + '.' + yyyy + '.' + hh + ':' + mm;
+}
 async function initData() {
   client.logger.info("Initializing data");
   //client.botStats.set('cmdsRan', 0);

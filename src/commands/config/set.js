@@ -85,8 +85,7 @@ class Set extends Commando.Command {
 
     function setAuthName(args) {
       if (!msg.deletable) {
-        client.logger.debug("set.js:setAuthName :: bot does not have permission to delete messages");
-        client.logError(msg, "set.js:setAuthName :: bot does not have permission to delete messages")
+        client.logger.debug("set.js:setAuthName ::" + msg.guild.name  + " bot does not have permission to delete messages");
         return msg.reply("You need to give the bot permission to delete messages to use this command.")
       }
 
