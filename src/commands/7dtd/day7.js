@@ -51,9 +51,13 @@ class Day7 extends Commando.Command {
     }
 
     async function buildMsg(dataArray) {
-      const onlinePlayers = dataArray[0];
+      let onlinePlayers = dataArray[0];
       const day7data = dataArray[1];
       client.logger.debug("COMMAND DAY7: buildmsg data: onlinePlayers: " + onlinePlayers + "day7data: " + day7data);
+
+      if (onlinePlayers == "") {
+        onlinePlayers = "No players online!"
+      }
 
       var embed = {
         "content": "7 Days",
