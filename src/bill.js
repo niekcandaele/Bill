@@ -63,6 +63,12 @@ client.logError = async function(msg, error) {
   var msgToSend = "ERROR MESSAGE \n\nGuild: " + msg.guild.name + "\n" + "author: " + msg.member.displayName + "\n" + error
   errorChannel.send("```\n" + msgToSend + "\n```");
 }
+
+process.on('uncaughtException', function(err) {
+  console.log(err); //Send some notification about the error
+  process.exit(1);
+});
+
 const defaultSettings = {
   prefix: "$",
   modRole: "Moderator",
