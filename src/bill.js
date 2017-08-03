@@ -57,6 +57,7 @@ client.on("guildCreate", guild => {
     var thisConf = defaultSettings;
     thisConf.guildOwner = guild.ownerID;
     client.guildConf.set(guild.id, defaultSettings);
+    client.textFiles.set(guild.id, {default: 'Default message'})
   }
 });
 client.on("guildDelete", guild => {
@@ -133,11 +134,19 @@ function getDateStamp() {
   return currentDate = yyyy + '.' + mM + '.' + dd;// + '.' + hh;
 }
 
-// Sends the txt in a pretty format
+// Format for sending messages that look consistent
 client.makeBillEmbed = function() {
+  const Colours = [
+    'D2FF28',
+    'D6F599',
+    '436436',
+    'C84C09'
+  ]
+  console.log('test');
+  var randomColour = Colours[Math.floor(Math.random()*Colours.length)]
   var embed = new Discord.RichEmbed()
     .setTitle("Bill - A discord bot for 7 days to die")
-    .setColor(3447003)
+    .setColor(randomColour)
     .setTimestamp()
     .setURL("https://niekcandaele.github.io/Bill/")
     .setFooter("-", "http://i.imgur.com/ljZEihK.png")

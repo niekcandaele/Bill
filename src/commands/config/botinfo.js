@@ -81,42 +81,6 @@ class BotInfo extends Commando.Command {
       let uptime = (time + "").toHHMMSS();
 
 
-      /*
-      var embed = {
-        "content": "Bot Info",
-        "embed": {
-          "url": client.botStats.get("githubLink"),
-          "color": 15312430,
-          "timestamp": new Date(),
-          "footer": {
-            "icon_url": "https://cdn.discordapp.com/embed/avatars/0.png",
-            "text": "Bill"
-          },
-          "thumbnail": {
-            "url": client.displayAvatarURL
-          },
-          "author": {
-            "name": client.username,
-            "url": "https://discordapp.com",
-            "icon_url": "https://cdn.discordapp.com/embed/avatars/0.png"
-          },
-          "fields": [{
-
-
-            {
-              "name": "Website",
-              "value": website,
-              "inline": true
-            },
-            {
-              "name": "Source code",
-              "value": githubLink,
-              "inline": true
-            },
-          ]
-        }
-      }
-      */
       var embed = new Discord.RichEmbed()
   .setTitle("Bill - A discord bot for 7 days to die")
   /*
