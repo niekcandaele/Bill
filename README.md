@@ -4,14 +4,14 @@ Currently doing testing with the first public version of this bot. Let me know i
 
 ![feature_img](http://i.imgur.com/cq4ecd5.png "Feature image")
 
-- __**day7**__
- - Shows information about the currently configured guild.
-- __**toptime**__
- - Shows top 15 players by playtime on server
-- __**seen**__
- - When was a player last online?
-- __**txt**__
- - Allows you to set custom messages. Useful for rules, serverip, votelinks, ...
+- **day7**
+  - Shows information about the currently configured guild.
+- **toptime**
+  - Shows top 15 players by playtime on server
+- **seen**
+  - When was a player last online?
+- **txt**
+  - Allows you to set custom messages. Useful for rules, serverip, votelinks, ...
 
 
 ## How to add the bot to your server
