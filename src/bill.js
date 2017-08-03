@@ -73,9 +73,11 @@ client.on("message", message => {
     if (textFiles[args] == undefined) {
       return client.logger.debug("Invalid command ran: --- " + message.content)
     } else {
-      const TxtCMD = client.registry.commands.get("txt");
       const txtToSend = textFiles[args];
-      client.sendTxt([args,txtToSend], message);
+      let embed = client.makeBillEmbed();
+      embed.setDescription(args)
+      embed.addField("Message", txtToSend);
+      message.channel.send({embed})
     }
 
   }
@@ -132,21 +134,15 @@ function getDateStamp() {
 }
 
 // Sends the txt in a pretty format
-client.sendTxt = function(txtArr, msg) {
-  let txtName = txtArr[0];
-  let message = txtArr[1];
+client.makeBillEmbed = function() {
   var embed = new Discord.RichEmbed()
     .setTitle("Bill - A discord bot for 7 days to die")
-    .setDescription(txtArr[0])
     .setColor(3447003)
     .setTimestamp()
     .setURL("https://niekcandaele.github.io/Bill/")
     .setFooter("-", "http://i.imgur.com/ljZEihK.png")
   //  .setThumbnail("http://i.imgur.com/ljZEihK.png")
-    .addField("Message", txtArr[1]);
-  msg.channel.send({
-    embed
-  });
+    return embed
 }
 
 String.prototype.toHHMMSS = function () {
