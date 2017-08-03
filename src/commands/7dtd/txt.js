@@ -64,7 +64,7 @@ class Txt extends Commando.Command {
         .setTimestamp()
         .setURL("https://niekcandaele.github.io/Bill/")
         .setFooter("-", "http://i.imgur.com/ljZEihK.png")
-        .setThumbnail("http://i.imgur.com/ljZEihK.png")
+      //  .setThumbnail("http://i.imgur.com/ljZEihK.png")
         .addField("Message", txtArr[1]);
       msg.channel.send({
         embed
@@ -72,34 +72,27 @@ class Txt extends Commando.Command {
     }
 
     function delTxt(args) {
-
       if (args.length > 1) {
         return msg.reply("Too many arguments");
       }
-
-      console.log(args);
-
+      let txtName = args[0];
+      delete textFiles[txtName];
+      client.txtFiles.set(msg.guild.id, textFiles);
       client.logger.debug("Deleted a text file, name: " + args[0]);
-
-
     }
 
     function setTxt(args) {
       client.logger.debug("Adding new text file for: " + msg.guild.name +  " name: " + args[0]);
       let txtName = args[0];
-      let txtText = args.slice(1, args.length);
+      let txtText = args.slice(1, args.length).join(" ");
       console.log(txtText);
 
       if (txtExist(txtName)) {
         client.logger.debug("Txt was already in config, overwriting! --- " + txtName);
         delTxt(txtName);
       }
-
-      textFiles[txtName] = txtText;
+      textFiles[txtName] = txtText.toString();
       client.txtFiles.set(msg.guild.id, textFiles);
-
-
-
 
       function txtExist(name) {
         if (textFiles.name == undefined) {
@@ -109,7 +102,6 @@ class Txt extends Commando.Command {
           return true
         }
       }
-
     }
 
 
