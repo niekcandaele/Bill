@@ -29,24 +29,26 @@ class Txt extends Commando.Command {
     if (args == "") {
       return msg.reply("Arguments cannot be empty!");
     }
-    if (args == "test") {
+    // Test command to see a list of txt entries
+    if (args == "cata-test") {
       return console.log(textFiles);
     }
+    // Sets a new txt entry
     if (argsArr[0] == 'set') {
       client.logger.debug("Setting a new textfile for " + msg.guild.name);
       setTxt(argsArr.splice(1, argsArr.length));
-      msg.channel.send("Your message has been saved! Use it by typing " + client.commandPrefix + this.name + " " + args.split(" ")[1]);
       return
     }
+    // Deletes a txt entry
     if (argsArr[0] == 'delete') {
       client.logger.debug("Deleting a textfile for " + msg.guild.name);
       delTxt(argsArr.splice(1, argsArr.length));
-      return msg.channel.send("Your message has been deleted! Say goodbye one last time ----- " + args.split(" ")[1])
+      return
     }
 
     // Finds text you want to send, calls the sendTxt func to handle it
     var name = argsArr[0];
-    var txtToSend = await textFiles[name];
+    var txtToSend = textFiles[name];
     if (txtToSend == undefined) {
       return msg.reply("Text not found! Mistyped?");
     } else {
@@ -55,7 +57,7 @@ class Txt extends Commando.Command {
     }
 
 
-
+    // Sends the txt in a pretty format
     function sendTxt(txtArr, msg) {
       var embed = new Discord.RichEmbed()
         .setTitle("Bill - A discord bot for 7 days to die")
@@ -71,6 +73,7 @@ class Txt extends Commando.Command {
       });
     }
 
+    // Deletes a text entry from the data
     function delTxt(args) {
       if (args.length > 1) {
         return msg.reply("Too many arguments");
@@ -79,13 +82,21 @@ class Txt extends Commando.Command {
       delete textFiles[txtName];
       client.txtFiles.set(msg.guild.id, textFiles);
       client.logger.debug("Deleted a text file, name: " + args[0]);
+      return msg.channel.send("Your message has been deleted! Say goodbye one last time ----- " + txtName);
+
     }
 
+    // Adds a new text entry
     function setTxt(args) {
       client.logger.debug("Adding new text file for: " + msg.guild.name +  " name: " + args[0]);
       let txtName = args[0];
       let txtText = args.slice(1, args.length).join(" ");
       console.log(txtText);
+
+      // Discord embed doens't allow messages longer than 1024.
+      if (txtText.length > 1000) {
+        return msg.reply("Messages can not be longer than 1000 characters");
+      }
 
       if (txtExist(txtName)) {
         client.logger.debug("Txt was already in config, overwriting! --- " + txtName);
@@ -93,6 +104,8 @@ class Txt extends Commando.Command {
       }
       textFiles[txtName] = txtText.toString();
       client.txtFiles.set(msg.guild.id, textFiles);
+      msg.channel.send("Your message has been saved! Use it by typing " + client.commandPrefix + "txt" + " " + txtName);
+
 
       function txtExist(name) {
         if (textFiles.name == undefined) {
