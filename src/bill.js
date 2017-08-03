@@ -27,10 +27,20 @@ client.on('ready', () => {
     name: 'botStats',
     dataDir: '../data'
   });
+  client.txtFiles = new persistentCollection({
+      name: 'txtFiles',
+      dataDir: '../data'
+    });
   initData();
   client.commandPrefix = client.guildConf.get("prefix");
   client.user.setGame(client.commandPrefix + "botinfo");
   console.log('Bill\'s  ready!');
+
+
+  // Reset data on test server
+  //client.guildConf.set("336821518250147850", defaultSettings);
+  // Set test data for txt files on test server
+  // client.txtFiles.set("336821518250147850", {default: 'test',default2: 'test2'});
 });
 
 // Logs when a command is run (monitoring for beta stage)
@@ -100,7 +110,7 @@ function getDateStamp() {
   if (hh < 10) {
     hh = '0' + hh
   }
-  return currentDate = dd + '.' + mM + '.' + yyyy + '.' + hh;
+  return currentDate = dd + '.' + mM + '.' + yyyy;// + '.' + hh;
 }
 String.prototype.toHHMMSS = function () {
     var sec_num = parseInt(this, 10); // don't forget the second param
