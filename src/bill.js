@@ -1,4 +1,5 @@
 const Commando = require('discord.js-commando');
+const Discord = require('discord.js');
 const fs = require('fs');
 const request = require('request');
 const path = require('path');
@@ -63,6 +64,22 @@ client.on("guildDelete", guild => {
     client.logger.info("Guild deleted -- " + guild.name);
   }
 });
+// Custom messages with txt command
+client.on("message", message => {
+  if (message.content.startsWith(client.commandPrefix)) {
+    let args = message.content.slice(1,message.content.length);
+    if (args.includes(" ")) {return}
+    const textFiles = client.txtFiles.get(message.guild.id);
+    if (textFiles[args] == undefined) {
+      return client.logger.debug("Invalid command ran: --- " + message.content)
+    } else {
+      const TxtCMD = client.registry.commands.get("txt");
+      const txtToSend = textFiles[args];
+      client.sendTxt([args,txtToSend], message);
+    }
+
+  }
+});
 
 client.on("commandError", (command, err, message) => {
   client.logError(message, err);
@@ -113,8 +130,27 @@ function getDateStamp() {
   }
   return currentDate = yyyy + '.' + mM + '.' + dd;// + '.' + hh;
 }
+
+// Sends the txt in a pretty format
+client.sendTxt = function(txtArr, msg) {
+  let txtName = txtArr[0];
+  let message = txtArr[1];
+  var embed = new Discord.RichEmbed()
+    .setTitle("Bill - A discord bot for 7 days to die")
+    .setDescription(txtArr[0])
+    .setColor(3447003)
+    .setTimestamp()
+    .setURL("https://niekcandaele.github.io/Bill/")
+    .setFooter("-", "http://i.imgur.com/ljZEihK.png")
+  //  .setThumbnail("http://i.imgur.com/ljZEihK.png")
+    .addField("Message", txtArr[1]);
+  msg.channel.send({
+    embed
+  });
+}
+
 String.prototype.toHHMMSS = function () {
-    var sec_num = parseInt(this, 10); // don't forget the second param
+    var sec_num = parseInt(this, 10);
     var days    = Math.floor(sec_num / (3600 * 24));
     var hours   = Math.floor((sec_num - (days * (3600 * 24))) / 3600);
     var minutes = Math.floor((sec_num - (hours * 3600)) / 60);

@@ -36,7 +36,7 @@ class Txt extends Commando.Command {
     // Sets a new txt entry
     if (argsArr[0] == 'set') {
       // Check if author of command is guild owner or bot owner
-      if (ownerRole !== msg.author.id && client.owner !== msg.author.id) {
+      if (ownerRole !== msg.author.id && !client.isOwner(msg.author.id)) {
         client.logger.info(msg.author.username + " tried to run " + msg + " command but is not authorized!");
         return msg.reply("You're not the guildowner.");
       }
@@ -46,7 +46,7 @@ class Txt extends Commando.Command {
     }
     // Deletes a txt entry
     if (argsArr[0] == 'delete') {
-      if (ownerRole !== msg.author.id && client.owner !== msg.author.id) {
+      if (ownerRole !== msg.author.id && !client.isOwner(msg.author.id)) {
         client.logger.info(msg.author.username + " tried to run " + msg + " command but is not authorized!");
         return msg.reply("You're not the guildowner.");
       }
@@ -68,6 +68,8 @@ class Txt extends Commando.Command {
 
     // Sends the txt in a pretty format
     function sendTxt(txtArr, msg) {
+      let txtName = txtArr[0];
+      let message = txtArr[1];
       var embed = new Discord.RichEmbed()
         .setTitle("Bill - A discord bot for 7 days to die")
         .setDescription(txtArr[0])
@@ -81,6 +83,7 @@ class Txt extends Commando.Command {
         embed
       });
     }
+
 
     // Deletes a text entry from the data
     function delTxt(args) {
