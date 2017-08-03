@@ -24,14 +24,14 @@ class Txt extends Commando.Command {
     const ownerRole = thisConf.guildOwner;
     var argsArr = args.split(" ");
 
+    if (textFiles == undefined) {
+      textFiles = {default: 'test',default2: 'test2'};
+      client.txtFiles.set(msg.guild.id, textFiles);
+    }
 
     // Check if empty command
     if (args == "") {
       return msg.reply("Arguments cannot be empty!");
-    }
-    // Test command to see a list of txt entries
-    if (args == "cata-test") {
-      return console.log(textFiles);
     }
     // Sets a new txt entry
     if (argsArr[0] == 'set') {
@@ -43,7 +43,7 @@ class Txt extends Commando.Command {
     if (argsArr[0] == 'delete') {
       client.logger.debug("Deleting a textfile for " + msg.guild.name);
       delTxt(argsArr.splice(1, argsArr.length));
-      return
+      return msg.channel.send("Your message has been deleted! Say goodbye one last time ----- " + txtName);
     }
 
     // Finds text you want to send, calls the sendTxt func to handle it
@@ -82,7 +82,7 @@ class Txt extends Commando.Command {
       delete textFiles[txtName];
       client.txtFiles.set(msg.guild.id, textFiles);
       client.logger.debug("Deleted a text file, name: " + args[0]);
-      return msg.channel.send("Your message has been deleted! Say goodbye one last time ----- " + txtName);
+      return
 
     }
 
@@ -91,7 +91,6 @@ class Txt extends Commando.Command {
       client.logger.debug("Adding new text file for: " + msg.guild.name +  " name: " + args[0]);
       let txtName = args[0];
       let txtText = args.slice(1, args.length).join(" ");
-      console.log(txtText);
 
       // Discord embed doens't allow messages longer than 1024.
       if (txtText.length > 1000) {
@@ -100,7 +99,7 @@ class Txt extends Commando.Command {
 
       if (txtExist(txtName)) {
         client.logger.debug("Txt was already in config, overwriting! --- " + txtName);
-        delTxt(txtName);
+        delTxt([txtName]);
       }
       textFiles[txtName] = txtText.toString();
       client.txtFiles.set(msg.guild.id, textFiles);
@@ -108,7 +107,7 @@ class Txt extends Commando.Command {
 
 
       function txtExist(name) {
-        if (textFiles.name == undefined) {
+        if (textFiles[name] == undefined) {
           client.logger.debug("Txt file doesn't exist! --- " + name);
           return false
         } else {
