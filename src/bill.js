@@ -57,12 +57,17 @@ client.on("guildCreate", guild => {
     var thisConf = defaultSettings;
     thisConf.guildOwner = guild.ownerID;
     client.guildConf.set(guild.id, defaultSettings);
-    client.textFiles.set(guild.id, {default: 'Default message'})
+    client.txtFiles.set(guild.id, {default: 'Default message'});
   }
 });
 client.on("guildDelete", guild => {
-  if (client.guildConf.has(guild.id)) {
+  try {
+    client.logger.info("Deleting guild -- " + guild.name);
+    client.guildConf.delete(guild.id);
+    client.txtFiles.delete(guild.id);
     client.logger.info("Guild deleted -- " + guild.name);
+  } catch (e) {
+    client.logger.error("Guild Delete " + e)
   }
 });
 // Custom messages with txt command
@@ -72,10 +77,11 @@ client.on("message", message => {
     if (args.includes(" ")) {return}
     const textFiles = client.txtFiles.get(message.guild.id);
     if (textFiles[args] == undefined) {
-      return client.logger.debug("Invalid command ran: --- " + message.content)
+      return
     } else {
       const txtToSend = textFiles[args];
       let embed = client.makeBillEmbed();
+      client.logger.debug("Short form of txt ran: --- " + message.guild.name + " " + message.content)
       embed.setDescription(args)
       embed.addField("Message", txtToSend);
       message.channel.send({embed})
