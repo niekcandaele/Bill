@@ -35,12 +35,21 @@ class Txt extends Commando.Command {
     }
     // Sets a new txt entry
     if (argsArr[0] == 'set') {
+      // Check if author of command is guild owner or bot owner
+      if (ownerRole !== msg.author.id && client.owner !== msg.author.id) {
+        client.logger.info(msg.author.username + " tried to run " + msg + " command but is not authorized!");
+        return msg.reply("You're not the guildowner.");
+      }
       client.logger.debug("Setting a new textfile for " + msg.guild.name);
       setTxt(argsArr.splice(1, argsArr.length));
       return
     }
     // Deletes a txt entry
     if (argsArr[0] == 'delete') {
+      if (ownerRole !== msg.author.id && client.owner !== msg.author.id) {
+        client.logger.info(msg.author.username + " tried to run " + msg + " command but is not authorized!");
+        return msg.reply("You're not the guildowner.");
+      }
       client.logger.debug("Deleting a textfile for " + msg.guild.name);
       delTxt(argsArr.splice(1, argsArr.length));
       return msg.channel.send("Your message has been deleted! Say goodbye one last time ----- " + txtName);
