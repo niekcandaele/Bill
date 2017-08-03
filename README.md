@@ -39,17 +39,17 @@ Locate your webpermissions.xml file and change the permission level of the follo
 
 Note: Permission 2000 means public, 1000 means steam-authorized users and anything below is to be customized. Currently the bot does not support webtokens but this is in the works for later. Features that are more security sensitive can then also be added.
 
-You can confirm this works by going to the relevant page, for example : <yourip>:<webport>/api/getstats
+You can confirm this works by going to the relevant page, for example : yourip:webport/api/getstats
 
 ### Setting up custom messages with $txt
 
 The txt command takes 2 config commands: set and delete.
-- Set adds a new message. The usage is: $txt set <textname> <text>
-<textname> is what you will type after txt to send a message
-<text> is the message that will be displayed
-- Delete deletes a message. The usage is: $txt delete <textname>
+- Set adds a new message. The usage is: $txt set textname text
+textname is what you will type after txt to send a message
+text is the message that will be displayed
+- Delete deletes a message. The usage is: $txt delete textname
 
-Note: textname is casesensitive!
+Note: textname is case sensitive!
 
 ![example_txt](http://imgur.com/ntOXWoM "Example for txt config")
 
