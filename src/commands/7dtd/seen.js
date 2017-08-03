@@ -37,8 +37,8 @@ class Seen extends Commando.Command {
 
         var amountOfLines = 0; // Amount of results
         for (var i = 0; i < data.length; i++) {
-          var playername = data[i].name.toLocaleUpperCase();
-          if (playername.includes(args)) {
+          var playername = data[i].name;
+          if (playername.toLocaleUpperCase().includes(args)) {
             var monthNames = ["January", "February", "March", "April", "May", "June",
               "July", "August", "September", "October", "November", "December"
             ];
