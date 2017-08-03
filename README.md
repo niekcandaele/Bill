@@ -16,7 +16,7 @@ Currently doing testing with the first public version of this bot. Let me know i
 
 ## How to add the bot to your server
 
-1. [Add the bot to your server](https://discordapp.com/oauth2/authorize?client_id=340416036610244609&scope=bot&permissions=35840)
+1. [Add the bot to your server](https://discordapp.com/oauth2/authorize?client_id=340416036610244609&scope=bot&permissions=158720)
 2. That's it! The bot should be running on your server and listening to commands.
 
 ## Configuring the bot

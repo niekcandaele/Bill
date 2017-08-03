@@ -8,7 +8,8 @@ const persistentCollection = require('djs-collection-persistent');
 const client = new Commando.Client({
   owner: '220554523561820160',
   commandPrefix: '$',
-  invite: "https://discordapp.com/invite/kuDJG6e"
+  invite: "https://discordapp.com/invite/kuDJG6e",
+  unknownCommandResponse: false
 });
 
 var loggerLevel;
@@ -110,7 +111,7 @@ function getDateStamp() {
   if (hh < 10) {
     hh = '0' + hh
   }
-  return currentDate = dd + '.' + mM + '.' + yyyy;// + '.' + hh;
+  return currentDate = yyyy + '.' + mM + '.' + dd;// + '.' + hh;
 }
 String.prototype.toHHMMSS = function () {
     var sec_num = parseInt(this, 10); // don't forget the second param
