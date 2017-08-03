@@ -4,13 +4,13 @@ Currently doing testing with the first public version of this bot. Let me know i
 
 ![feature_img](http://i.imgur.com/cq4ecd5.png "Feature image")
 
-- **day7**
+- **$day7**
   - Shows information about the currently configured guild.
-- **toptime**
+- **$toptime**
   - Shows top 15 players by playtime on server
-- **seen**
+- **$seen**
   - When was a player last online?
-- **txt**
+- **$txt**
   - Allows you to set custom messages. Useful for rules, serverip, votelinks, ...
 
 
@@ -45,9 +45,12 @@ You can confirm this works by going to the relevant page, for example : yourip:w
 
 The txt command takes 2 config commands: set and delete.
 - Set adds a new message. The usage is: $txt set textname text
-textname is what you will type after txt to send a message
-text is the message that will be displayed
+  - textname is what you will type after txt to send a message
+  - text is the message that will be displayed
+  - You can also use [Discord markdown](https://support.discordapp.com/hc/en-us/articles/210298617-Markdown-Text-101-Chat-Formatting-Bold-Italic-Underline-)!
 - Delete deletes a message. The usage is: $txt delete textname
+
+Users can then call your message with $textname
 
 Note: textname is case sensitive!
 
