@@ -39,8 +39,17 @@ class Seen extends Commando.Command {
         for (var i = 0; i < data.length; i++) {
           var playername = data[i].name.toLocaleUpperCase();
           if (playername.includes(args)) {
+            var monthNames = ["January", "February", "March", "April", "May", "June",
+              "July", "August", "September", "October", "November", "December"
+            ];
             var d = new Date(data[i].lastonline);
-            var line = "Player " + playername + " was last seen on " + d + "\n"
+            var day = d.getDate();
+            var month = monthNames[d.getMonth()];
+            var year = d.getFullYear();
+            var hours = d.getHours() + 1;
+            var minutes = d.getMinutes() + 1;
+            var date = day + " " + month + " " + year + " at " + hours + ":" + minutes;
+            var line = "Player " + playername + " was last seen on " + date + "\n"
             msgToSend += line;
             amountOfLines += 1;
           }
