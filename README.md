@@ -51,7 +51,7 @@ text is the message that will be displayed
 
 Note: textname is case sensitive!
 
-![example_txt](http://imgur.com/ntOXWoM "Example for txt config")
+![example_txt](http://imgur.com/ntOXWoM.png "Example for txt config")
 
 
 ## Run your own version
