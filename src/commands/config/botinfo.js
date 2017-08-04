@@ -72,7 +72,7 @@ class BotInfo extends Commando.Command {
         client.logger.error("COMMAND BOTINFO \n" + e);
         return msg.reply(e);
       }
-      return callback(website,githubLink,cmdsRan, amountGuilds, amountUsers, bootTime);
+      return callback(website, githubLink, cmdsRan, amountGuilds, amountUsers, bootTime);
     }
 
     function buildMsg(website, githubLink, cmdsRan, amountGuilds, amountUsers, bootTime) {
@@ -80,29 +80,17 @@ class BotInfo extends Commando.Command {
       let time = process.uptime();
       let uptime = (time + "").toHHMMSS();
 
+      var embed = client.makeBillEmbed();
+      embed.setTitle("Bill - A discord bot for 7 days to die")
+        .addField("Discord guilds served: " + amountGuilds, "Users: " + amountUsers, true)
+        .addField("Uptime", uptime, true)
+        .addField("Commands Ran", cmdsRan)
+        .addField("Website", website, true)
+        .addField("Source Code", githubLink, true)
 
-      var embed = new Discord.RichEmbed()
-  .setTitle("Bill - A discord bot for 7 days to die")
-  /*
-   * Alternatively, use "#00AE86", [0, 174, 134] or an integer number.
-   */
-  .setColor(3447003)
-  //.setDescription("Check the website for more info")
-  .setFooter("-", "http://i.imgur.com/ljZEihK.png")
-  .setThumbnail("http://i.imgur.com/ljZEihK.png")
-  /*
-   * Takes a Date object, defaults to current date.
-   */
-  .setTimestamp()
-  .setURL("https://niekcandaele.github.io/Bill/")
-
-  .addField("Discord guilds served: " + amountGuilds, "Users: " + amountUsers, true)
-  .addField("Uptime", uptime, true)
-  .addField("Commands Ran", cmdsRan)
-  .addField("Website", website, true)
-  .addField("Source Code", githubLink, true)
-
-      return {embed}
+      return {
+        embed
+      }
     }
 
     var msgToSend = await getData(buildMsg);

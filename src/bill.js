@@ -153,12 +153,12 @@ client.makeBillEmbed = function() {
   ]
   var randomColour = Colours[Math.floor(Math.random() * Colours.length)]
   var embed = new Discord.RichEmbed()
-    .setTitle("Bill - A discord bot for 7 days to die")
+//    .setTitle("Bill - A discord bot for 7 days to die")
     .setColor(randomColour)
     .setTimestamp()
     .setURL("https://niekcandaele.github.io/Bill/")
-    .setFooter("-", "http://i.imgur.com/ljZEihK.png")
-  //  .setThumbnail("http://i.imgur.com/ljZEihK.png")
+    .setFooter("-", "http://i.imgur.com/5bm3jzh.png")
+    .setThumbnail("http://i.imgur.com/5bm3jzh.png")
   return embed
 }
 

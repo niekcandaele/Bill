@@ -24,7 +24,7 @@ class Txt extends Commando.Command {
     const ownerRole = thisConf.guildOwner;
     var argsArr = args.split(" ");
 
-    if (textFiles == undefined) {
+    if (typeof textFiles == 'undefined') {
       textFiles = {default: 'test',default2: 'test2'};
       client.txtFiles.set(msg.guild.id, textFiles);
     }
