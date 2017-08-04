@@ -30,9 +30,9 @@ client.on('ready', () => {
     dataDir: '../data'
   });
   client.txtFiles = new persistentCollection({
-      name: 'txtFiles',
-      dataDir: '../data'
-    });
+    name: 'txtFiles',
+    dataDir: '../data'
+  });
   initData();
   client.commandPrefix = client.guildConf.get("prefix");
   client.user.setGame(client.commandPrefix + "botinfo");
@@ -57,7 +57,9 @@ client.on("guildCreate", guild => {
     var thisConf = defaultSettings;
     thisConf.guildOwner = guild.ownerID;
     client.guildConf.set(guild.id, defaultSettings);
-    client.txtFiles.set(guild.id, {default: 'Default message'});
+    client.txtFiles.set(guild.id, {
+      default: 'Default message'
+    });
   }
 });
 client.on("guildDelete", guild => {
@@ -73,20 +75,20 @@ client.on("guildDelete", guild => {
 // Custom messages with txt command
 client.on("message", message => {
   if (message.content.startsWith(client.commandPrefix)) {
-    let args = message.content.slice(1,message.content.length);
-    if (args.includes(" ")) {return}
-    const textFiles = client.txtFiles.get(message.guild.id);
-    if (textFiles[args] == undefined) {
+    let args = message.content.slice(1, message.content.length);
+    if (args.includes(" ")) {
       return
-    } else {
+    }
+    const textFiles = client.txtFiles.get(message.guild.id);
+
+    if (textFiles.hasOwnProperty(args)) {
       const txtToSend = textFiles[args];
       let embed = client.makeBillEmbed();
       client.logger.debug("Short form of txt ran: --- " + message.guild.name + " " + message.content)
       embed.setDescription(args)
       embed.addField("Message", txtToSend);
-      message.channel.send({embed})
+      return message.channel.send({embed});
     }
-
   }
 });
 
@@ -103,6 +105,7 @@ client.logError = async function(msg, error) {
 }
 
 process.on('uncaughtException', function(err) {
+  client.logger.error(err);
   console.log(err); //Send some notification about the error
   process.exit(1);
 });
@@ -137,7 +140,7 @@ function getDateStamp() {
   if (hh < 10) {
     hh = '0' + hh
   }
-  return currentDate = yyyy + '.' + mM + '.' + dd;// + '.' + hh;
+  return currentDate = yyyy + '.' + mM + '.' + dd; // + '.' + hh;
 }
 
 // Format for sending messages that look consistent
@@ -148,8 +151,7 @@ client.makeBillEmbed = function() {
     '436436',
     'C84C09'
   ]
-  console.log('test');
-  var randomColour = Colours[Math.floor(Math.random()*Colours.length)]
+  var randomColour = Colours[Math.floor(Math.random() * Colours.length)]
   var embed = new Discord.RichEmbed()
     .setTitle("Bill - A discord bot for 7 days to die")
     .setColor(randomColour)
@@ -157,21 +159,27 @@ client.makeBillEmbed = function() {
     .setURL("https://niekcandaele.github.io/Bill/")
     .setFooter("-", "http://i.imgur.com/ljZEihK.png")
   //  .setThumbnail("http://i.imgur.com/ljZEihK.png")
-    return embed
+  return embed
 }
 
-String.prototype.toHHMMSS = function () {
-    var sec_num = parseInt(this, 10);
-    var days    = Math.floor(sec_num / (3600 * 24));
-    var hours   = Math.floor((sec_num - (days * (3600 * 24))) / 3600);
-    var minutes = Math.floor((sec_num - (hours * 3600)) / 60);
-    var seconds = sec_num - (hours * 3600) - (minutes * 60);
+String.prototype.toHHMMSS = function() {
+  var sec_num = parseInt(this, 10);
+  var days = Math.floor(sec_num / (3600 * 24));
+  var hours = Math.floor((sec_num - (days * (3600 * 24))) / 3600);
+  var minutes = Math.floor((sec_num - (hours * 3600)) / 60);
+  var seconds = sec_num - (hours * 3600) - (minutes * 60);
 
-    if (hours   < 10) {hours   = "0"+hours;}
-    if (minutes < 10) {minutes = "0"+minutes;}
-    if (seconds < 10) {seconds = "0"+seconds;}
-    var time    = days+":"+hours+':'+minutes+':'+seconds;
-    return time;
+  if (hours < 10) {
+    hours = "0" + hours;
+  }
+  if (minutes < 10) {
+    minutes = "0" + minutes;
+  }
+  if (seconds < 10) {
+    seconds = "0" + seconds;
+  }
+  var time = days + ":" + hours + ':' + minutes + ':' + seconds;
+  return time;
 }
 
 async function initData() {
