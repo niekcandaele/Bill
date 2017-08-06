@@ -184,6 +184,9 @@ String.prototype.toHHMMSS = function() {
 
 async function initData() {
   client.logger.info("Initializing data");
+
+  const guilds = client.guilds;
+  const textFiles = client.txtFiles;
   //client.botStats.set('cmdsRan', 0);
   client.botStats.set('githubLink', "https://github.com/niekcandaele/Bill");
   client.botStats.set('website', "https://niekcandaele.github.io/Bill/");
