@@ -24,9 +24,6 @@ class BotInfo extends Commando.Command {
         var bootTime = await client.botStats.get("bootTime");
         var amountGuilds = await client.guilds.size;
         var amountUsers = await client.users.size;
-
-
-
         /*
 @@@@@@@@@@@@ !!!!!!!!!!!!  curl https://api.github.com/repos/niekcandaele/Bill/git/refs/heads/master
 {
@@ -70,7 +67,7 @@ class BotInfo extends Commando.Command {
         */
       } catch (e) {
         client.logger.error("COMMAND BOTINFO \n" + e);
-        return msg.reply(e);
+        return msg.channel.send("Error loading data!");
       }
       return callback(website, githubLink, cmdsRan, amountGuilds, amountUsers, bootTime);
     }
@@ -79,6 +76,13 @@ class BotInfo extends Commando.Command {
       const currentDate = new Date();
       let time = process.uptime();
       let uptime = (time + "").toHHMMSS();
+
+      client.logger.debug("Type of cmdsRan: " + typeof cmdsRan);
+      if (typeof cmdsRan !== "number") {
+        client.logger.error("BOTINFO CmdsRan == " + typeof cmdsRan + "--- Setting to 0");
+        cmdsRan = 0;
+        client.botStats.set("cmdsRan", cmdsRan);
+      }
 
       var embed = client.makeBillEmbed();
       embed.setTitle("Bill - A discord bot for 7 days to die")
