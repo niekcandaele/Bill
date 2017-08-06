@@ -42,7 +42,7 @@ client.on('ready', () => {
   // Reset data on test server
   //client.guildConf.set("336821518250147850", defaultSettings);
   // Set test data for txt files on test server
-  // client.txtFiles.set("336821518250147850", {default: 'test',default2: 'test2'});
+  //client.txtFiles.delete("336821518250147850", {default: 'test',default2: 'test2'});
 });
 
 // Logs when a command is run (monitoring for beta stage)
@@ -76,18 +76,24 @@ client.on("guildDelete", guild => {
 client.on("message", message => {
   if (message.content.startsWith(client.commandPrefix)) {
     let args = message.content.slice(1, message.content.length);
+    client.logger.debug(message.guild.name + " --- Invalid command --- By: " + message.author.username + " --- " + message.content)
     if (args.includes(" ")) {
       return
     }
     const textFiles = client.txtFiles.get(message.guild.id);
-
-    if (textFiles.hasOwnProperty(args)) {
-      const txtToSend = textFiles[args];
-      let embed = client.makeBillEmbed();
-      client.logger.debug("Short form of txt ran: --- " + message.guild.name + " " + message.content)
-      embed.setDescription(args)
-      embed.addField("Message", txtToSend);
-      return message.channel.send({embed});
+    if (textFiles) {
+      if (textFiles.hasOwnProperty(args)) {
+        const txtToSend = textFiles[args];
+        let embed = client.makeBillEmbed();
+        client.logger.debug("Short form of txt ran: --- " + message.guild.name + " " + message.content)
+        embed.setDescription(args)
+        embed.addField("Message", txtToSend);
+        return message.channel.send({
+          embed
+        });
+      }
+    } else {
+      client.logger.debug(message.guild.name + " --- Invalid command --- By: " + message.author.username + " --- " + message.content);
     }
   }
 });
@@ -105,7 +111,7 @@ client.logError = async function(msg, error) {
 }
 
 process.on('uncaughtException', function(err) {
-  client.logger.error(err);
+  //client.logger.error(err);
   console.log(err); //Send some notification about the error
   process.exit(1);
 });
@@ -153,7 +159,7 @@ client.makeBillEmbed = function() {
   ]
   var randomColour = Colours[Math.floor(Math.random() * Colours.length)]
   var embed = new Discord.RichEmbed()
-//    .setTitle("Bill - A discord bot for 7 days to die")
+    //    .setTitle("Bill - A discord bot for 7 days to die")
     .setColor(randomColour)
     .setTimestamp()
     .setURL("https://niekcandaele.github.io/Bill/")
@@ -184,13 +190,25 @@ String.prototype.toHHMMSS = function() {
 
 async function initData() {
   client.logger.info("Initializing data");
+  /*
+    const guilds = client.guilds.keys();
+    for (var v of guilds) {
+      let guildC
+      try {
+        console.log(typeof v + " " + v);
+        guildC = await client.guildConf.get(v);
+      } catch (e) {
+        console.log(e);
+      } finally {
+        console.log("old: " + guildC);
+      }
 
-  const guilds = client.guilds;
-  const textFiles = client.txtFiles;
-  //client.botStats.set('cmdsRan', 0);
-  client.botStats.set('githubLink', "https://github.com/niekcandaele/Bill");
-  client.botStats.set('website', "https://niekcandaele.github.io/Bill/");
-  client.botStats.set('bootTime', new Date().getTime());
+} */
+const textFiles = client.txtFiles;
+//client.botStats.set('cmdsRan', 0);
+client.botStats.set('githubLink', "https://github.com/niekcandaele/Bill");
+client.botStats.set('website', "https://niekcandaele.github.io/Bill/");
+client.botStats.set('bootTime', new Date().getTime());
 }
 
 // Registers all built-in groups, commands, and argument types
