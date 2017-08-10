@@ -17,7 +17,7 @@ var loggerLevel;
 
 client.on('ready', () => {
 
-  client.logger = logger.createLogger('../logs/' + getDateStamp() + ".log");
+  client.logger = logger.createLogger('../logs/development.log');
   client.logger.info('Bot has logged in');
   client.logger.setLevel(loggerLevel);
   client.logger.info("Loading guildsconfigs");
