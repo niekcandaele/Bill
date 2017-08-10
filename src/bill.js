@@ -86,8 +86,8 @@ client.on("message", message => {
         const txtToSend = textFiles[args];
         let embed = client.makeBillEmbed();
         client.logger.debug("Short form of txt ran: --- " + message.guild.name + " " + message.content)
-        embed.setDescription(args)
-        embed.addField("Message", txtToSend);
+        embed.setDescription(txtToSend)
+        .setTitle(args);
         return message.channel.send({
           embed
         });

@@ -70,15 +70,9 @@ class Txt extends Commando.Command {
     function sendTxt(txtArr, msg) {
       let txtName = txtArr[0];
       let message = txtArr[1];
-      var embed = new Discord.RichEmbed()
-        .setTitle("Bill - A discord bot for 7 days to die")
-        .setDescription(txtArr[0])
-        .setColor(3447003)
-        .setTimestamp()
-        .setURL("https://niekcandaele.github.io/Bill/")
-        .setFooter("-", "http://i.imgur.com/ljZEihK.png")
-      //  .setThumbnail("http://i.imgur.com/ljZEihK.png")
-        .addField("Message", txtArr[1]);
+      var embed = client.makeBillEmbed()
+      .setTitle(txtArr[0])
+      .setDescription(txtArr[1])
       msg.channel.send({
         embed
       });
