@@ -70,18 +70,12 @@ class TopTime extends Commando.Command {
     }
 
     function buildMsg(arr) {
-      var embed = new Discord.RichEmbed();
+      var embed = client.makeBillEmbed()
       var amountPlayersToShow = 10
       if (arr.length < 10) {
         amountPlayersToShow = arr.length
       }
-      embed.setTitle("Bill - A discord bot for 7 days to die")
-        .setDescription("Top players by playtime")
-        .setColor(3447003)
-        .setTimestamp()
-        .setURL("https://niekcandaele.github.io/Bill/")
-        .setFooter("-", "http://i.imgur.com/ljZEihK.png")
-        .setThumbnail("http://i.imgur.com/ljZEihK.png")
+      embed.setTitle("Top players by playtime");
 
 
       for (var i = 0; i < amountPlayersToShow; i++) {

@@ -106,8 +106,8 @@ class Set extends Commando.Command {
     function setAuthToken(args) {
       if (!msg.deletable) {
         client.logger.debug(msg, "set.js:setAuthToken :: bot does not have permission to delete messages");
-        client.logError(msg, "set.js:setAuthToken :: bot does not have permission to delete messages")
-        return msg.reply("You need to give the bot permission to delete messages to use this command.")
+        client.logError(msg, "set.js:setAuthToken :: bot does not have permission to delete messages");
+        return msg.channel.send("You need to give the bot permission to delete messages to use this command.")
       }
 
       let oldVal = thisConf.authToken;
