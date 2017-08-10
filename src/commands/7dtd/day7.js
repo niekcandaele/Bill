@@ -59,50 +59,13 @@ class Day7 extends Commando.Command {
         onlinePlayers = "No players online!"
       }
 
-      var embed = {
-        "content": "7 Days",
-        "embed": {
-          "title": "Bill - A discord bot for 7 days to die",
-          "url": "https://niekcandaele.github.io/Bill/",
-          "color": 15312430,
-          "timestamp": date,
-          "footer": {
-            "icon_url": "http://i.imgur.com/ljZEihK.png",
-            "text": "Bill"
-          },
-          "author": {
-            "name": client.username,
-            "url": "https://niekcandaele.github.io/Bill/",
-            "icon_url": "http://i.imgur.com/ljZEihK.png"
-          },
-          "fields": [{
-              "name": "Gametime",
-              "value": day7data.gametime.days + " days " + day7data.gametime.hours + " hours " + day7data.gametime.minutes + " minutes",
-              "inline": true
-            },
-            {
-              "name": "Players",
-              "value": day7data.players,
-              "inline": true
-            },
-            {
-              "name": "Online players",
-              "value": onlinePlayers
-            },
-            {
-              "name": "Hostiles",
-              "value": day7data.hostiles,
-              "inline": true
-            },
-            {
-              "name": "Animals",
-              "value": day7data.animals,
-              "inline": true
-            },
-          ]
-        }
-      }
-      msg.channel.send(embed);
+      var embed = client.makeBillEmbed();
+      embed.addField("Gametime", day7data.gametime.days + " days " + day7data.gametime.hours + " hours " + day7data.gametime.minutes + " minutes", true)
+      .addField("Players", day7data.players, true)
+      .addField("Online players", onlinePlayers)
+      .addField("Hostiles", day7data.hostiles,true)
+      .addField("Animals", day7data.animals,true)
+      msg.channel.send({embed});
     }
 
     getOnlinePlayers();
