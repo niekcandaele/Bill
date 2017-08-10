@@ -16,7 +16,7 @@ class Set extends Commando.Command {
   async run(msg, args) {
     const client = msg.client;
     const thisConf = await client.guildConf.get(msg.guild.id);
-    const ownerRole = thisConf.guildOwner;
+    const ownerRole = msg.guild.ownerID;
     var argsArr = args.split(" ");
 
     var configTypes = new Map([

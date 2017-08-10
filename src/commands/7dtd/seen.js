@@ -34,6 +34,8 @@ class Seen extends Commando.Command {
         var data = JSON.parse(body);
         var i = 0;
         args = args.toLocaleUpperCase();
+        let embed = client.makeBillEmbed();
+        embed.setTitle("Last seen");
 
         var amountOfLines = 0; // Amount of results
         for (var i = 0; i < data.length; i++) {
@@ -49,19 +51,18 @@ class Seen extends Commando.Command {
             var hours = d.getHours() + 1;
             var minutes = d.getMinutes() + 1;
             var date = day + " " + month + " " + year + " at " + hours + ":" + minutes;
-            var line = "Player " + playername + " was last seen on " + date + "\n"
-            msgToSend += line;
+            embed.addField(playername, date);
             amountOfLines += 1;
           }
           if (amountOfLines > 10) {
             client.logger.debug("COMMAND seen: too many results found! " + msg.author.username + " searched for " + args);
-            return msg.reply("Too many results! Please be more specific");
+            return msg.channel.send("Too many results! Please be more specific");
           }
         }
-        if (msgToSend == "") {
+        if (amountOfLines == 0) {
           msg.channel.send("Player not found! (Mistyped?)");
         } else {
-          msg.channel.send(msgToSend);
+          msg.channel.send({embed});
         }
 
       });
