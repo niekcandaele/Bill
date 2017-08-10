@@ -50,6 +50,16 @@ class Seen extends Commando.Command {
             var year = d.getFullYear();
             var hours = d.getHours() + 1;
             var minutes = d.getMinutes() + 1;
+            if (hours < 10) {
+              client.logger.debug("Seen command: adding 0 to hours for player: " + playername);
+              var newH = hours.toString();
+              hours = "0" + newH
+            }
+            if (minutes < 10) {
+              client.logger.debug("Seen command: adding 0 to minutes for player: " + playername);
+              var newM = minutes.toString();
+              minutes = "0" + newM
+            }
             var date = day + " " + month + " " + year + " at " + hours + ":" + minutes;
             embed.addField(playername, date);
             amountOfLines += 1;
