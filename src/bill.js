@@ -76,7 +76,7 @@ client.on("guildDelete", guild => {
 client.on("message", message => {
   if (message.content.startsWith(client.commandPrefix)) {
     let args = message.content.slice(1, message.content.length);
-    client.logger.debug(message.guild.name + " --- Invalid command --- By: " + message.author.username + " --- " + message.content)
+    //client.logger.debug(message.guild.name + " --- Invalid command --- By: " + message.author.username + " --- " + message.content)
     if (args.includes(" ")) {
       return
     }
@@ -91,9 +91,10 @@ client.on("message", message => {
         return message.channel.send({
           embed
         });
+      } else {
+        client.logger.debug(message.guild.name + " --- Invalid command --- By: " + message.author.username + " --- " + message.content);
+
       }
-    } else {
-      client.logger.debug(message.guild.name + " --- Invalid command --- By: " + message.author.username + " --- " + message.content);
     }
   }
 });
@@ -204,11 +205,11 @@ async function initData() {
       }
 
 } */
-const textFiles = client.txtFiles;
-//client.botStats.set('cmdsRan', 0);
-client.botStats.set('githubLink', "https://github.com/niekcandaele/Bill");
-client.botStats.set('website', "https://niekcandaele.github.io/Bill/");
-client.botStats.set('bootTime', new Date().getTime());
+  const textFiles = client.txtFiles;
+  //client.botStats.set('cmdsRan', 0);
+  client.botStats.set('githubLink', "https://github.com/niekcandaele/Bill");
+  client.botStats.set('website', "https://niekcandaele.github.io/Bill/");
+  client.botStats.set('bootTime', new Date().getTime());
 }
 
 // Registers all built-in groups, commands, and argument types

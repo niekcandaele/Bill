@@ -77,8 +77,8 @@ class BotInfo extends Commando.Command {
       let time = process.uptime();
       let uptime = (time + "").toHHMMSS();
 
-      client.logger.debug("Type of cmdsRan: " + typeof cmdsRan);
       if (typeof cmdsRan !== "number") {
+        client.logger.debug("Type of cmdsRan: " + typeof cmdsRan);
         client.logger.error("BOTINFO CmdsRan == " + typeof cmdsRan + "--- Setting to 0");
         cmdsRan = 0;
         client.botStats.set("cmdsRan", cmdsRan);
