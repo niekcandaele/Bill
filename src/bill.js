@@ -85,7 +85,7 @@ client.on("message", message => {
       if (textFiles.hasOwnProperty(args)) {
         const txtToSend = textFiles[args];
         let embed = client.makeBillEmbed();
-        client.logger.debug("Short form of txt ran: --- " + message.guild.name + " " + message.content)
+        client.logger.info("Short form of txt ran: --- " + message.guild.name + " " + message.content)
         embed.setDescription(txtToSend)
         .setTitle(args);
         return message.channel.send({

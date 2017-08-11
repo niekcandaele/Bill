@@ -52,8 +52,9 @@ class Txt extends Commando.Command {
         return msg.channel.send("Error: You're not the guildowner.");
       }
       client.logger.info("Deleting a textfile for " + msg.guild.name);
-      delTxt(argsArr.splice(1, argsArr.length));
-      return msg.channel.send("Your message has been deleted! Say goodbye one last time ----- " + txtName);
+      let newArgs = argsArr.splice(1, argsArr.length);
+      delTxt(newArgs);
+      return msg.channel.send("Your message has been deleted! Say goodbye one last time ----- " + newArgs);
     }
 
     // Finds text you want to send, calls the sendTxt func to handle it
@@ -88,7 +89,7 @@ class Txt extends Commando.Command {
       let txtName = args[0];
       delete textFiles[txtName];
       client.txtFiles.set(msg.guild.id, textFiles);
-      client.logger.debug("Deleted a text file, name: " + args[0]);
+      client.logger.debug("Deleted a text file, name: " + txtName);
       return
 
     }
