@@ -1,4 +1,4 @@
-Currently doing testing with the first public version of this bot. Let me know if there is any problems, bugs or feature requests!
+Currently doing testing with the first public version of this bot. Let me know if there are any problems, bugs or feature requests! There is an active support section on [my dev server](https://discordapp.com/invite/kuDJG6e) if you have trouble setting up the bot on your server.
 
 ## Features
 
@@ -59,7 +59,7 @@ Note: textname is case sensitive!
 
 ## Run your own version
 
-Mighty brave of you! Currently I am developing with just me hosting in mind. This is a feature for advanced users and should only be attempted if you have some experience with running discord bots.
+Mighty brave of you! Currently I am developing with just me hosting in mind. There's no support for this but you can copy the code to your machine and try to run it.
 
 ## Contact and support
 
