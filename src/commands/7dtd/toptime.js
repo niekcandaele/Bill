@@ -26,8 +26,8 @@ class TopTime extends Commando.Command {
     function getPlayers(callback) {
       request(serverAdress + '/api/getplayerslocation', function(error, response, body) {
         if (error) {
-          client.logger.error(error);
-          return msg.reply("Error! Request to server failed, did you set a correct IP?");
+          client.logger.error("Error! toptime getPlayers: " + error);
+          return msg.reply("Error! Request to server failed, did you set correct IP and/or port and permissions?");
         }
         var data = JSON.parse(body);
         for (var i = 0; i < data.length; i++) {
@@ -77,27 +77,20 @@ class TopTime extends Commando.Command {
       }
       embed.setTitle("Top players by playtime");
 
-
       for (var i = 0; i < amountPlayersToShow; i++) {
-        //console.log("Adding to embed: " + arr[i]);
         embed.addField(i + 1 + ". " + arr[i][0], secondsToDhms(arr[i][1]), true);
-        /*
-        if (!isEven(i) && !(i == 9)) {
-          embed.addBlankField();
-        }*/
+        return embed
       }
-      //console.log(msg);
-      return embed
-    }
 
-    function callbackF(arr) {
-      var embed = buildMsg(bubbleSort(arr));
-      msg.channel.send({
-        embed
-      });
-    }
+      function callbackF(arr) {
+        var embed = buildMsg(bubbleSort(arr));
+        msg.channel.send({
+          embed
+        });
+      }
 
-    getPlayers(callbackF);
+      getPlayers(callbackF);
+    }
   }
 }
 

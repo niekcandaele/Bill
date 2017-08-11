@@ -22,14 +22,14 @@ class Seen extends Commando.Command {
     var timeLastOnline;
     var msgToSend = ""; // Used for building the message to send
     if (args == "") {
-      return msg.channel.send("Specify a player please! \n Example: !seen <playername>");
+      return msg.channel.send("Specify a player please! \n Example: " + client.commandPrefix + "seen <playername>");
     }
 
     function getPlayers() {
       request(serverAdress + '/api/getplayerslocation', function(error, response, body) {
         if (error) {
-          client.logger.error(error);
-          return msg.reply("Error! Request to server failed, did you set a correct IP?");
+          client.logger.error("Error! seen getPlayers : " + error);
+          return msg.channel.send("Error! Request to server failed, did you set correct IP/port and permissions?");
         }
         var data = JSON.parse(body);
         var i = 0;

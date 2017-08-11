@@ -25,22 +25,23 @@ class Txt extends Commando.Command {
     var argsArr = args.split(" ");
 
     if (typeof textFiles == 'undefined') {
+      client.logger.error("Error textFiles = undefined --- Setting default settings")
       textFiles = {default: 'test',default2: 'test2'};
       client.txtFiles.set(msg.guild.id, textFiles);
     }
 
     // Check if empty command
     if (args == "") {
-      return msg.reply("Arguments cannot be empty!");
+      return msg.channel.send("Error: Arguments cannot be empty!");
     }
     // Sets a new txt entry
     if (argsArr[0] == 'set') {
       // Check if author of command is guild owner or bot owner
       if (ownerRole !== msg.author.id && !client.isOwner(msg.author.id)) {
         client.logger.info(msg.author.username + " tried to run " + msg + " command but is not authorized!");
-        return msg.reply("You're not the guildowner.");
+        return msg.channel.send("Error: You're not the guildowner.");
       }
-      client.logger.debug("Setting a new textfile for " + msg.guild.name);
+      client.logger.info("Setting a new textfile for " + msg.guild.name);
       setTxt(argsArr.splice(1, argsArr.length));
       return
     }
@@ -48,9 +49,9 @@ class Txt extends Commando.Command {
     if (argsArr[0] == 'delete') {
       if (ownerRole !== msg.author.id && !client.isOwner(msg.author.id)) {
         client.logger.info(msg.author.username + " tried to run " + msg + " command but is not authorized!");
-        return msg.reply("You're not the guildowner.");
+        return msg.channel.send("Error: You're not the guildowner.");
       }
-      client.logger.debug("Deleting a textfile for " + msg.guild.name);
+      client.logger.info("Deleting a textfile for " + msg.guild.name);
       delTxt(argsArr.splice(1, argsArr.length));
       return msg.channel.send("Your message has been deleted! Say goodbye one last time ----- " + txtName);
     }
@@ -58,8 +59,8 @@ class Txt extends Commando.Command {
     // Finds text you want to send, calls the sendTxt func to handle it
     var name = argsArr[0];
     var txtToSend = textFiles[name];
-    if (txtToSend == undefined) {
-      return msg.reply("Text not found! Mistyped?");
+    if (typeof txtToSend == "undefined") {
+      return msg.channel.send("Text not found! Mistyped?");
     } else {
       client.logger.debug("Sending txt message to: " + msg.guild.name + " ---- " + argsArr[0]);
       sendTxt([argsArr[0],txtToSend], msg);
@@ -82,7 +83,7 @@ class Txt extends Commando.Command {
     // Deletes a text entry from the data
     function delTxt(args) {
       if (args.length > 1) {
-        return msg.reply("Too many arguments");
+        return msg.channel.send("Error: Too many arguments");
       }
       let txtName = args[0];
       delete textFiles[txtName];
@@ -100,7 +101,7 @@ class Txt extends Commando.Command {
 
       // Discord embed doens't allow messages longer than 1024.
       if (txtText.length > 1000) {
-        return msg.reply("Messages can not be longer than 1000 characters");
+        return msg.channel.send("Messages can not be longer than 1000 characters");
       }
 
       if (txtExist(txtName)) {

@@ -104,7 +104,7 @@ client.on("commandError", (command, err, message) => {
 });
 
 client.logError = async function(msg, error) {
-  client.logger.error("Logging error to dev server");
+  client.logger.error("Logging error to dev server: " + error);
   const devGuild = await client.guilds.get("336821518250147850");
   const errorChannel = await devGuild.channels.get("342274412877447168");
   var msgToSend = "ERROR MESSAGE \n\nGuild: " + msg.guild.name + "\n" + "author: " + msg.member.displayName + "\n" + error

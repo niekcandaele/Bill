@@ -27,8 +27,8 @@ class Day7 extends Commando.Command {
       var onlinePlayerList = "";
       request(serverAdress + '/api/getplayerslocation', function(error, response, body) {
         if (error) {
-          client.logger.error(error);
-          return msg.reply("Error! Request to server failed, did you set a correct IP?");
+          client.logger.error("Error! day7 getOnlinePlayers: " + error);
+          return msg.channel.send("Error! Request to server failed, did you set correct IP and/or port and permissions?");
         }
         var data = JSON.parse(body);
         for (var i = 0; i < data.length; i++) {
@@ -43,8 +43,8 @@ class Day7 extends Commando.Command {
     function getDay7Data(onlinePlayersList) {
       request(serverAdress + '/api/getstats', function(error, response, body) {
         if (error) {
-          client.logger.error(error);
-          return msg.reply("Error! Request to server failed, did you set a correct IP?");
+          client.logger.error("Error! day7 getDay7Data: " + error);
+          return msg.channel.send("Error! Request to server failed, did you set correct IP and/or port and permissions?");
         }
         return buildMsg([onlinePlayersList,JSON.parse(body)]);
       });
@@ -53,7 +53,7 @@ class Day7 extends Commando.Command {
     async function buildMsg(dataArray) {
       let onlinePlayers = dataArray[0];
       const day7data = dataArray[1];
-      client.logger.debug("COMMAND DAY7: buildmsg data: onlinePlayers: " + onlinePlayers + "day7data: " + day7data);
+      client.logger.debug("COMMAND DAY7: buildmsg data: onlinePlayers: " + onlinePlayers + " --- day7data: ---" + day7data);
 
       if (onlinePlayers == "") {
         onlinePlayers = "No players online!"
