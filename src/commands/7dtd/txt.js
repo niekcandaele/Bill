@@ -23,6 +23,7 @@ class Txt extends Commando.Command {
     var textFiles = await client.txtFiles.get(msg.guild.id);
     const ownerRole = msg.guild.ownerID;
     var argsArr = args.split(" ");
+    const maxTextFiles = 20
 
     if (typeof textFiles == 'undefined') {
       client.logger.error("Error textFiles = undefined --- Setting default settings")
@@ -41,8 +42,12 @@ class Txt extends Commando.Command {
     if (argsArr[0] == 'set') {
       // Check if author of command is guild owner or bot owner
       if (ownerRole !== msg.author.id && !client.isOwner(msg.author.id)) {
-        client.logger.info(msg.author.username + " tried to run " + msg + " command but is not authorized!");
+        client.logger.error(msg.author.username + " tried to run " + msg + " command but is not authorized!");
         return msg.channel.send("Error: You're not the guildowner.");
+      }
+      if (client.getProperties(textFiles).length > maxTextFiles - 1 && !txtExist(argsArr[1])) {
+        client.logger.error(msg.author.username + " on server: " + msg.guild.name + " tried to set too much txtFiles!");
+        return msg.channel.send("Error: Currently you can only have a maximum of " + maxTextFiles + " txt files set. Consider deleting one to create a new file");
       }
       client.logger.info("Setting a new textfile for " + msg.guild.name);
       setTxt(argsArr.splice(1, argsArr.length));
@@ -62,8 +67,18 @@ class Txt extends Commando.Command {
 
     // Lists all current txt files set
     if (argsArr[0] == 'list') {
-
       client.logger.info("Listing textFiles for " + msg.guild.name);
+      listTxt();
+      return;
+    }
+
+    // Resets text files on server and sets a default message.
+    if (argsArr[0] == 'reset') {
+      client.logger.info("Resetting textFiles for " + msg.guild.name + " by " + msg.author.username);
+      client.txtFiles.set(msg.guild.id, {
+        default: 'Default message. See website for info on how to set up text messages!'
+      });
+      msg.channel.send("Your messages have been reset. A message will follow with your old text files if this was a mistake.");
       listTxt();
       return;
     }
@@ -105,7 +120,7 @@ class Txt extends Commando.Command {
       let txtName = args[0];
       let txtText = args.slice(1, args.length).join(" ");
 
-      // Discord embed doens't allow messages longer than 1024.
+      // Discord embed doesn't allow messages longer than 1024 characters.
       if (txtText.length > 1000) {
         return msg.channel.send("Messages can not be longer than 1000 characters");
       }
@@ -119,37 +134,38 @@ class Txt extends Commando.Command {
       msg.channel.send("Your message has been saved! Use it by typing " + client.commandPrefix + "txt" + " " + txtName);
 
 
-      function txtExist(name) {
-        if (textFiles[name] == undefined) {
-          client.logger.debug("Txt file doesn't exist! --- " + name);
-          return false
-        } else {
-          return true
-        }
-      }
     }
     // Lists the text entries set
     function listTxt() {
-      const textFilesArr = getProps(textFiles);
-      function getProps(obj) {
-        var result = [];
-        for (var i in obj) {
-          if (obj.hasOwnProperty(i)) {
-            result.push(i);
-          }
+      const textFilesArr = client.getProperties(textFiles);
+      try {
+        let embed = client.makeBillEmbed()
+          .setTitle("Amount of txt files configured: " + textFilesArr.length);
+        if (textFilesArr.length == 0) {
+          embed.setDescription("No text files set!");
+          return msg.channel.send({embed});
         }
-        return result;
+        for (var i = 0; i < textFilesArr.length; i++) {
+          embed.addField(textFilesArr[i], textFiles[textFilesArr[i]], true)
+        }
+        return msg.channel.send({
+          embed
+        });
+      } catch (e) {
+        client.logger.error("Error sending list of txt files: " + e);
+        return msg.channel.send("Error sending list of text files!")
       }
 
-      let embed = client.makeBillEmbed()
-        .setTitle("List of txt files configured");
-      for (var i = 0; i < textFilesArr.length; i++) {
-        embed.addField(textFilesArr[i],textFiles[textFilesArr[i]], true)
-      }
-      console.log(textFilesArr);
-      return msg.channel.send({embed});
     }
 
+    function txtExist(name) {
+      if (textFiles[name] == undefined) {
+        client.logger.debug("Txt file doesn't exist! --- " + name);
+        return false
+      } else {
+        return true
+      }
+    }
   }
 }
 

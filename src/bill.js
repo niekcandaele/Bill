@@ -58,7 +58,7 @@ client.on("guildCreate", guild => {
     thisConf.guildOwner = guild.ownerID;
     client.guildConf.set(guild.id, defaultSettings);
     client.txtFiles.set(guild.id, {
-      default: 'Default message'
+      default: 'Default message. See website for info on how to set up text messages!'
     });
   }
 });
@@ -167,6 +167,17 @@ client.makeBillEmbed = function() {
     .setFooter("-", "http://i.imgur.com/5bm3jzh.png")
     .setThumbnail("http://i.imgur.com/5bm3jzh.png")
   return embed
+}
+
+// Gets the properties of an object and returns an array with property names
+client.getProperties = function(obj) {
+  var result = [];
+  for (var i in obj) {
+    if (obj.hasOwnProperty(i)) {
+      result.push(i);
+    }
+  }
+  return result;
 }
 
 String.prototype.toHHMMSS = function() {
