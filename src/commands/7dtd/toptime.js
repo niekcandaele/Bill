@@ -22,7 +22,6 @@ class TopTime extends Commando.Command {
     const serverAdress = "http://" + serverip + ":" + webPort;
     var players = new Array();
     var date = new Date();
-
     function getPlayers(callback) {
       request(serverAdress + '/api/getplayerslocation', function(error, response, body) {
         if (error) {

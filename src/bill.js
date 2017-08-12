@@ -20,7 +20,7 @@ client.on('ready', () => {
   client.logger = logger.createLogger('../logs/development.log');
   client.logger.info('Bot has logged in');
   client.logger.setLevel(loggerLevel);
-  client.logger.info("Loading guildsconfigs");
+  client.logger.info("Loading guild Configs");
   client.guildConf = new persistentCollection({
     name: 'guildConf',
     dataDir: '../data'
@@ -36,7 +36,11 @@ client.on('ready', () => {
   client.defaultTxt = {
     default: 'Default message. See website for info on how to set up text messages!'
   };
-  initData();
+  // Wait for the collections to be loaded to start initializing data
+  client.txtFiles.event.on('ready', () => {
+    client.logger.info("Guild configs created");
+    initData();
+  })
   client.commandPrefix = client.guildConf.get("prefix");
   client.user.setGame(client.commandPrefix + "botinfo");
   console.log('Bill\'s  ready!');
@@ -46,6 +50,7 @@ client.on('ready', () => {
   //client.guildConf.set("336821518250147850", defaultSettings);
   // Set test data for txt files on test server
   //client.txtFiles.delete("336821518250147850"); //, {default: 'test',default2: 'test2'});
+
 });
 
 // Logs when a command is run (monitoring for beta stage)
@@ -73,30 +78,45 @@ client.on("guildDelete", guild => {
     client.logger.error("Guild Delete " + e)
   }
 });
-// Custom messages with txt command
+// Custom messages with txt command. This is where we check for shortform txt commands
 client.on("message", message => {
+  const Registry = client.registry;
+  const Commands = Registry.commands;
+  let args = message.content.slice(1, message.content.length);
+
+  // If message doesn't start with the command prefix, we don't do anything
   if (message.content.startsWith(client.commandPrefix)) {
-    let args = message.content.slice(1, message.content.length);
-    //client.logger.debug(message.guild.name + " --- Invalid command --- By: " + message.author.username + " --- " + message.content)
+    // Shortform text only has a textname without spaces.
     if (args.includes(" ")) {
       return
     }
     const textFiles = client.txtFiles.get(message.guild.id);
-    if (textFiles) {
-      if (textFiles.hasOwnProperty(args)) {
-        const txtToSend = textFiles[args];
-        let embed = client.makeBillEmbed();
-        client.logger.info("Short form of txt ran: --- " + message.guild.name + " " + message.content)
-        embed.setDescription(txtToSend)
-        .setTitle(args);
-        return message.channel.send({
-          embed
-        });
-      } else {
-        client.logger.debug(message.guild.name + " --- Invalid command --- By: " + message.author.username + " --- " + message.content);
-
-      }
+    if (!client.guildTextFilesExists(textFiles, message.guild)) {
+      return message.channel.send("Error! TextFiles undefined, setting defaults! Try running your command again")
     }
+    // TODO: test this
+    // Check if textFiles for guild is defined. (Data is sometimes not initialized properly if bot gets added when offline)
+    // Check if message exists in textfiles
+    if (textFiles[args]) {
+      const txtName = args
+      const txtToSend = textFiles[args];
+      // Sends the text
+      let embed = client.makeBillEmbed();
+      client.logger.info("Short form of txt ran: --- " + message.guild.name + " " + message.content)
+      embed.setDescription(txtToSend)
+        .setTitle(txtName);
+      return message.channel.send({
+        embed
+      });
+    } else {
+      // Check if it is a command
+      client.logger.debug("Message sent -- Is " + args + " in Commands? : " + Commands.has(args));
+      if (Commands.has(args)) {
+        return
+      }
+      return client.logger.info(message.guild.name + " --- Invalid command --- By: " + message.author.username + " --- " + message.content);
+    }
+
   }
 });
 
@@ -170,6 +190,16 @@ client.makeBillEmbed = function() {
   return embed
 }
 
+// Check if textFiles exist for a guild -- If not, sets the default settings
+client.guildTextFilesExists = function(textFiles, guild) {
+  if (typeof textFiles == 'undefined') {
+    client.logger.error("Error textFiles = undefined for guild: " + guild.name + "--- Setting default settings");
+    client.txtFiles.set(guild.id, client.defaultTxt);
+    return false
+  }
+  return true
+}
+
 // Gets the properties of an object and returns an array with property names
 client.getProperties = function(obj) {
   var result = [];
@@ -203,22 +233,8 @@ String.prototype.toHHMMSS = function() {
 
 async function initData() {
   client.logger.info("Initializing data");
-  /*
-    const guilds = client.guilds.keys();
-    for (var v of guilds) {
-      let guildC
-      try {
-        console.log(typeof v + " " + v);
-        guildC = await client.guildConf.get(v);
-      } catch (e) {
-        console.log(e);
-      } finally {
-        console.log("old: " + guildC);
-      }
-
-} */
-  const textFiles = client.txtFiles;
   //client.botStats.set('cmdsRan', 0);
+  client.logger.info("Loading botStats info");
   client.botStats.set('githubLink', "https://github.com/niekcandaele/Bill");
   client.botStats.set('website', "https://niekcandaele.github.io/Bill/");
   client.botStats.set('bootTime', new Date().getTime());
@@ -228,7 +244,7 @@ async function initData() {
 client.registry.registerDefaults();
 client.registry.registerGroup("7dtd");
 client.registry.registerGroup("config");
-// Registers all of your commands in the ./commands/ directory
+// Registers all commands in the ./commands/ directory
 client.registry.registerCommandsIn(path.join(__dirname, '/commands'));
 
 // read config file
