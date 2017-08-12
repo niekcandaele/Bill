@@ -74,6 +74,10 @@ class Txt extends Commando.Command {
 
     // Resets text files on server and sets a default message.
     if (argsArr[0] == 'reset') {
+      if (ownerRole !== msg.author.id && !client.isOwner(msg.author.id)) {
+        client.logger.info(msg.author.username + " tried to run " + msg + " command but is not authorized!");
+        return msg.channel.send("Error: You're not the guildowner.");
+      }
       client.logger.info("Resetting textFiles for " + msg.guild.name + " by " + msg.author.username);
       client.txtFiles.set(msg.guild.id, {
         default: 'Default message. See website for info on how to set up text messages!'
