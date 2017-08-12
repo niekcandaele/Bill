@@ -24,13 +24,10 @@ class Txt extends Commando.Command {
     const ownerRole = msg.guild.ownerID;
     var argsArr = args.split(" ");
     const maxTextFiles = 20
-
+    const defaultTxt = client.defaultTxt
     if (typeof textFiles == 'undefined') {
       client.logger.error("Error textFiles = undefined --- Setting default settings")
-      textFiles = {
-        default: 'test',
-        default2: 'test2'
-      };
+      textFiles = defaultTxt
       client.txtFiles.set(msg.guild.id, textFiles);
     }
 
@@ -79,9 +76,7 @@ class Txt extends Commando.Command {
         return msg.channel.send("Error: You're not the guildowner.");
       }
       client.logger.info("Resetting textFiles for " + msg.guild.name + " by " + msg.author.username);
-      client.txtFiles.set(msg.guild.id, {
-        default: 'Default message. See website for info on how to set up text messages!'
-      });
+      client.txtFiles.set(msg.guild.id, defaultTxt);
       msg.channel.send("Your messages have been reset. A message will follow with your old text files if this was a mistake.");
       listTxt();
       return;

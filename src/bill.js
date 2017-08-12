@@ -33,6 +33,9 @@ client.on('ready', () => {
     name: 'txtFiles',
     dataDir: '../data'
   });
+  client.defaultTxt = {
+    default: 'Default message. See website for info on how to set up text messages!'
+  };
   initData();
   client.commandPrefix = client.guildConf.get("prefix");
   client.user.setGame(client.commandPrefix + "botinfo");
@@ -42,7 +45,7 @@ client.on('ready', () => {
   // Reset data on test server
   //client.guildConf.set("336821518250147850", defaultSettings);
   // Set test data for txt files on test server
-  //client.txtFiles.delete("336821518250147850", {default: 'test',default2: 'test2'});
+  //client.txtFiles.delete("336821518250147850"); //, {default: 'test',default2: 'test2'});
 });
 
 // Logs when a command is run (monitoring for beta stage)
@@ -57,9 +60,7 @@ client.on("guildCreate", guild => {
     var thisConf = defaultSettings;
     thisConf.guildOwner = guild.ownerID;
     client.guildConf.set(guild.id, defaultSettings);
-    client.txtFiles.set(guild.id, {
-      default: 'Default message. See website for info on how to set up text messages!'
-    });
+    client.txtFiles.set(guild.id, client.defaultTxt);
   }
 });
 client.on("guildDelete", guild => {
