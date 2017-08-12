@@ -26,7 +26,10 @@ class Txt extends Commando.Command {
 
     if (typeof textFiles == 'undefined') {
       client.logger.error("Error textFiles = undefined --- Setting default settings")
-      textFiles = {default: 'test',default2: 'test2'};
+      textFiles = {
+        default: 'test',
+        default2: 'test2'
+      };
       client.txtFiles.set(msg.guild.id, textFiles);
     }
 
@@ -57,6 +60,14 @@ class Txt extends Commando.Command {
       return msg.channel.send("Your message has been deleted! Say goodbye one last time ----- " + newArgs);
     }
 
+    // Lists all current txt files set
+    if (argsArr[0] == 'list') {
+
+      client.logger.info("Listing textFiles for " + msg.guild.name);
+      listTxt();
+      return;
+    }
+
     // Finds text you want to send, calls the sendTxt func to handle it
     var name = argsArr[0];
     var txtToSend = textFiles[name];
@@ -64,23 +75,19 @@ class Txt extends Commando.Command {
       return msg.channel.send("Text not found! Mistyped?");
     } else {
       client.logger.debug("Sending txt message to: " + msg.guild.name + " ---- " + argsArr[0]);
-      sendTxt([argsArr[0],txtToSend], msg);
+      sendTxt([argsArr[0], txtToSend], msg);
     }
-
-
     // Sends the txt in a pretty format
     function sendTxt(txtArr, msg) {
       let txtName = txtArr[0];
       let message = txtArr[1];
       var embed = client.makeBillEmbed()
-      .setTitle(txtArr[0])
-      .setDescription(txtArr[1])
+        .setTitle(txtArr[0])
+        .setDescription(txtArr[1])
       msg.channel.send({
         embed
       });
     }
-
-
     // Deletes a text entry from the data
     function delTxt(args) {
       if (args.length > 1) {
@@ -91,12 +98,10 @@ class Txt extends Commando.Command {
       client.txtFiles.set(msg.guild.id, textFiles);
       client.logger.debug("Deleted a text file, name: " + txtName);
       return
-
     }
-
     // Adds a new text entry
     function setTxt(args) {
-      client.logger.debug("Adding new text file for: " + msg.guild.name +  " name: " + args[0]);
+      client.logger.debug("Adding new text file for: " + msg.guild.name + " name: " + args[0]);
       let txtName = args[0];
       let txtText = args.slice(1, args.length).join(" ");
 
@@ -123,7 +128,27 @@ class Txt extends Commando.Command {
         }
       }
     }
+    // Lists the text entries set
+    function listTxt() {
+      const textFilesArr = getProps(textFiles);
+      function getProps(obj) {
+        var result = [];
+        for (var i in obj) {
+          if (obj.hasOwnProperty(i)) {
+            result.push(i);
+          }
+        }
+        return result;
+      }
 
+      let embed = client.makeBillEmbed()
+        .setTitle("List of txt files configured");
+      for (var i = 0; i < textFilesArr.length; i++) {
+        embed.addField(textFilesArr[i],textFiles[textFilesArr[i]], true)
+      }
+      console.log(textFilesArr);
+      return msg.channel.send({embed});
+    }
 
   }
 }
