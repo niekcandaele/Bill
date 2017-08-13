@@ -90,11 +90,10 @@ client.on("message", message => {
       return
     }
     const textFiles = client.txtFiles.get(message.guild.id);
+    // Check if textFiles for guild is defined. (Data is sometimes not initialized properly if bot gets added when offline)
     if (!client.guildTextFilesExists(textFiles, message.guild)) {
       return message.channel.send("Error! TextFiles undefined, setting defaults! Try running your command again")
     }
-    // TODO: test this
-    // Check if textFiles for guild is defined. (Data is sometimes not initialized properly if bot gets added when offline)
     // Check if message exists in textfiles
     if (textFiles[args]) {
       const txtName = args
@@ -132,9 +131,10 @@ client.logError = async function(msg, error) {
 }
 
 process.on('uncaughtException', function(err) {
-  //client.logger.error(err);
+  client.logError(message, err);
+  client.logger.error(err);
   console.log(err); //Send some notification about the error
-  process.exit(1);
+  //process.exit(1);
 });
 
 const defaultSettings = {
