@@ -12,7 +12,10 @@ class Txt extends Commando.Command {
       details: "Set text specific to your guild, useful for serverip, rules, help, ...",
       examples: [
         'txt set yourtextname yourtext',
-        'txt yourtextname'
+        'yourtextname',
+        'txt delete yourtextname',
+        'txt reset',
+        'txt list'
       ]
     });
   }
