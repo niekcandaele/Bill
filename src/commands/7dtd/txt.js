@@ -24,8 +24,8 @@ class Txt extends Commando.Command {
     const client = msg.client;
     const thisConf = await client.guildConf.get(msg.guild.id);
     var textFiles = await client.txtFiles.get(msg.guild.id);
-    const guildOwner = msg.guild.owner
-    const adminRole = guildOwner.highestRole
+    const ownerRole = msg.guild.owner
+    const adminRole = ownerRole.highestRole
     var argsArr = args.split(" ");
     const maxTextFiles = 20
     const defaultTxt = client.defaultTxt
@@ -52,8 +52,8 @@ class Txt extends Commando.Command {
     }
     // Deletes a txt entry
     if (argsArr[0] == 'delete') {
-      if (ownerRole !== msg.author.id && !client.isOwner(msg.author.id)) {
-        client.logger.info(msg.author.username + " tried to run " + msg + " command but is not authorized!");
+      if (!checkIfAdmin(msg.member)) {
+        client.logger.error(msg.author.username + " tried to run " + msg + " command but is not authorized!");
         return msg.channel.send("Error: You're not the guildowner.");
       }
       client.logger.info("Deleting a textfile for " + msg.guild.name);
@@ -71,8 +71,8 @@ class Txt extends Commando.Command {
 
     // Resets text files on server and sets a default message.
     if (argsArr[0] == 'reset') {
-      if (ownerRole !== msg.author.id && !client.isOwner(msg.author.id)) {
-        client.logger.info(msg.author.username + " tried to run " + msg + " command but is not authorized!");
+      if (!checkIfAdmin(msg.member)) {
+        client.logger.error(msg.author.username + " tried to run " + msg + " command but is not authorized!");
         return msg.channel.send("Error: You're not the guildowner.");
       }
       client.logger.info("Resetting textFiles for " + msg.guild.name + " by " + msg.author.username);
