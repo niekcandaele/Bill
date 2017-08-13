@@ -87,7 +87,7 @@ class BotInfo extends Commando.Command {
       var embed = client.makeBillEmbed();
       embed.setTitle("Bill - A discord bot for 7 days to die")
         .addField("Discord guilds served: " + amountGuilds, "Users: " + amountUsers, true)
-        .addField("Uptime", uptime, true)
+        .addField("Uptime", uptime.days + ":" + uptime.hours + ":" + uptime.minutes + ":" + uptime.seconds, true)
         .addField("Commands Ran", cmdsRan)
         .addField("Website", website, true)
         .addField("Source Code", githubLink, true)

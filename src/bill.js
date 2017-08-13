@@ -204,7 +204,12 @@ String.prototype.toHHMMSS = function() {
   if (seconds < 10) {
     seconds = "0" + seconds;
   }
-  var time = days + ":" + hours + ':' + minutes + ':' + seconds;
+  var time = {
+    days: days,
+    hours: hours,
+    minutes: minutes,
+    seconds: seconds
+  };
   return time;
 }
 
@@ -214,7 +219,6 @@ async function initData() {
   client.logger.info("Loading botStats info");
   client.botStats.set('githubLink', "https://github.com/niekcandaele/Bill");
   client.botStats.set('website', "https://niekcandaele.github.io/Bill/");
-  client.botStats.set('bootTime', new Date().getTime());
 }
 
 // Registers all built-in groups, commands, and argument types
