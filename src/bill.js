@@ -119,19 +119,18 @@ client.on("message", message => {
 });
 
 client.on("commandError", (command, err, message) => {
-  client.logError(message, err);
+  client.logError(err);
 });
 
-client.logError = async function(msg, error) {
-  client.logger.error("Logging error to dev server: " + error);
-  const devGuild = await client.guilds.get("336821518250147850");
-  const errorChannel = await devGuild.channels.get("342274412877447168");
-  var msgToSend = "ERROR MESSAGE \n\nGuild: " + msg.guild.name + "\n" + "author: " + msg.member.displayName + "\n" + error
-  errorChannel.send("```\n" + msgToSend + "\n```");
+client.logError = function(error) {
+  client.logger.error("Logging error to dev server");
+  const devGuild = client.guilds.get("336821518250147850");
+  const errorChannel = devGuild.channels.get("336823516383150080");
+  errorChannel.send("Error!\nError trace: " + error, {code: true});
 }
 
 process.on('uncaughtException', function(err) {
-  client.logError(message, err);
+  client.logError(err);
   client.logger.error(err);
   console.log(err); //Send some notification about the error
   //process.exit(1);
