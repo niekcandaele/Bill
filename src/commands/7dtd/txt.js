@@ -25,6 +25,7 @@ class Txt extends Commando.Command {
     const thisConf = await client.guildConf.get(msg.guild.id);
     var textFiles = await client.txtFiles.get(msg.guild.id);
     const ownerRole = msg.guild.ownerID;
+    const adminRole = guildOwner.highestRole
     var argsArr = args.split(" ");
     const maxTextFiles = 20
     const defaultTxt = client.defaultTxt
@@ -37,7 +38,7 @@ class Txt extends Commando.Command {
     // Sets a new txt entry
     if (argsArr[0] == 'set') {
       // Check if author of command is guild owner or bot owner
-      if (ownerRole !== msg.author.id && !client.isOwner(msg.author.id)) {
+      if (!checkIfAdmin(msg.member)) {
         client.logger.error(msg.author.username + " tried to run " + msg + " command but is not authorized!");
         return msg.channel.send("Error: You're not the guildowner.");
       }
@@ -162,6 +163,15 @@ class Txt extends Commando.Command {
         return false
       } else {
         return true
+      }
+    }
+    function checkIfAdmin(member) {
+      var isAdmin = member.roles.has(adminRole.id);
+      client.logger.debug("Checking if " + member.user.username + " is admin. " + isAdmin);
+      if (isAdmin || client.isOwner(member.user)) {
+        return true
+      } else {
+        return false
       }
     }
   }

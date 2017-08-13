@@ -92,7 +92,7 @@ class ServerInfo extends Commando.Command {
         })
       })
       .catch(function(error) {
-        client.logger.error("Error! toptime getPlayers: " + error);
+        client.logger.error("Error! serverinfo building embed: " + error);
         return msg.channel.send("Error! Request to server failed, did you set correct IP and/or port and permissions?");
       })
 
