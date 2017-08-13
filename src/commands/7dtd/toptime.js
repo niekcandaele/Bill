@@ -1,6 +1,6 @@
 const Commando = require('discord.js-commando');
 const Discord = require('discord.js');
-const request = require('request');
+const request = require('request-promise');
 
 class TopTime extends Commando.Command {
   constructor(client) {
@@ -20,36 +20,44 @@ class TopTime extends Commando.Command {
     const serverip = thisConf.serverip;
     const webPort = thisConf.webPort;
     const serverAdress = "http://" + serverip + ":" + webPort;
+    var amountPlayersToShow = 10
     var players = new Array();
     var date = new Date();
-    function getPlayers(callback) {
-      request(serverAdress + '/api/getplayerslocation', function(error, response, body) {
-        if (error) {
-          client.logger.error("Error! toptime getPlayers: " + error);
-          return msg.reply("Error! Request to server failed, did you set correct IP and/or port and permissions?");
-        }
-        var data = JSON.parse(body);
-        for (var i = 0; i < data.length; i++) {
-          players[i] = new Array(data[i].name, data[i].totalplaytime);
-        }
-        return callback(players);
-      });
-    }
+    let requestOptions = {
+      uri: serverAdress + '/api/getplayerslocation',
+      json: true,
+      timeout: 2500
+    };
 
-    function bubbleSort(arr) {
-      var len = arr.length;
-      for (var i = len - 1; i >= 0; i--) {
-        for (var j = 1; j <= i; j++) {
-          if (arr[j - 1][1] < arr[j][1]) {
-            var temp = arr[j - 1];
-            arr[j - 1] = arr[j];
-            arr[j] = temp;
+    // Adapted from https://gist.github.com/paullewis/1982121
+    function sort(array) {
+      var length = array.length,
+        mid = Math.floor(length * 0.5),
+        left = array.slice(0, mid),
+        right = array.slice(mid, length);
+      if (length === 1) {
+        return array;
+      }
+      return merge(sort(left), sort(right));
+
+      function merge(left, right) {
+        var result = [];
+        while (left.length || right.length) {
+          if (left.length && right.length) {
+            if (left[0][1] > right[0][1]) {
+              result.push(left.shift());
+            } else {
+              result.push(right.shift());
+            }
+          } else if (left.length) {
+            result.push(left.shift());
+          } else {
+            result.push(right.shift());
           }
         }
+        return result;
       }
-      return arr;
     }
-
     function secondsToDhms(time) {
       var t = Number(time);
 
@@ -64,31 +72,49 @@ class TopTime extends Commando.Command {
       return d + "D " + h + "H " + m + "M " + s + "S ";
     }
 
-    function isEven(n) {
-      return n % 2 == 0;
-    }
+    // Requests the player data from server
+    request(requestOptions)
+      .then(function(body) {
+        let players = []
+        let playersCounter = 0
+        // Create array of [playername, playtime]
+        for (var i = 0; i < body.length; i++) {
+          // Filter out players with 0 playtime
+          if (!body[i].totalplaytime == 0) {
+            players[playersCounter] = new Array(body[i].name, body[i].totalplaytime);
+            playersCounter += 1;
+          }
+        }
+        try {
+          let embed = buildMsg(sort(players));
+          return msg.channel.send({
+            embed
+          });
+        } catch (e) {
+          client.logger.error("Error! toptime getPlayers: sorting/buildMsg : " + error);
+          return msg.channel.send("Error sorting the data. Verify the data is correct");
+        }
+      })
+      .catch(function(error) {
+        client.logger.error("Error! toptime getPlayers: " + error);
+        return msg.channel.send("Error! Request to server failed, did you set correct IP and/or port and permissions?");
+      })
+
 
     function buildMsg(arr) {
       var embed = client.makeBillEmbed()
-      var amountPlayersToShow = 10
+      embed.setTitle("Top players by playtime");
       if (arr.length < 10) {
         amountPlayersToShow = arr.length
       }
-      embed.setTitle("Top players by playtime");
-
-      for (var i = 0; i < amountPlayersToShow; i++) {
-        embed.addField(i + 1 + ". " + arr[i][0], secondsToDhms(arr[i][1]), true);
+      if (arr.length == 0) {
+        embed.addField("No players have joined the server", "No data recieved from server");
         return embed
       }
-
-      function callbackF(arr) {
-        var embed = buildMsg(bubbleSort(arr));
-        msg.channel.send({
-          embed
-        });
+      for (var i = 0; i < amountPlayersToShow; i++) {
+        embed.addField(i + 1 + ". " + arr[i][0], secondsToDhms(arr[i][1]), true);
       }
-
-      getPlayers(callbackF);
+      return embed
     }
   }
 }

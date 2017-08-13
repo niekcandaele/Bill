@@ -22,6 +22,7 @@
     "erlpack": "github:hammerandchisel/erlpack",
     "logger": "0.0.1",
     "request": "^2.81.0",
+    "request-promise": "^4.2.1",
     "uws": "^8.14.0",
     "validate-ip-node": "^1.0.6"
   }
