@@ -125,7 +125,7 @@ client.on("commandError", (command, err, message) => {
 client.logError = function(error) {
   client.logger.error("Logging error to dev server");
   const devGuild = client.guilds.get("336821518250147850");
-  const errorChannel = devGuild.channels.get("336823516383150080");
+  const errorChannel = devGuild.channels.get("342274412877447168");
   errorChannel.send("Error!\nError trace: " + error, {code: true});
 }
 
