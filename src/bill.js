@@ -189,12 +189,12 @@ client.getProperties = function(obj) {
 }
 
 String.prototype.toHHMMSS = function() {
-  var sec_num = parseInt(this, 10);
-  var days = Math.floor(sec_num / (3600 * 24));
-  var hours = Math.floor((sec_num - (days * (3600 * 24))) / 3600);
-  var minutes = Math.floor((sec_num - (hours * 3600)) / 60);
-  var seconds = sec_num - (hours * 3600) - (minutes * 60);
-
+  var seconds = parseInt(this, 10);
+  var days = Math.floor(seconds / 86400);
+  var hours = Math.floor((seconds % 86400) / 3600);
+  var minutes = Math.floor(((seconds % 86400) % 3600) / 60);
+  var seconds = ((seconds % 86400) % 3600) % 60;
+  
   if (hours < 10) {
     hours = "0" + hours;
   }

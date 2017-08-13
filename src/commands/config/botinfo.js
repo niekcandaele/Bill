@@ -75,7 +75,7 @@ class BotInfo extends Commando.Command {
     function buildMsg(website, githubLink, cmdsRan, amountGuilds, amountUsers, bootTime) {
       const currentDate = new Date();
       let time = process.uptime();
-      let uptime = (time + "").toHHMMSS();
+      let uptime = time.toString().toHHMMSS();
 
       if (typeof cmdsRan !== "number") {
         client.logger.debug("Type of cmdsRan: " + typeof cmdsRan);

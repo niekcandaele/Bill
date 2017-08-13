@@ -58,6 +58,7 @@ class TopTime extends Commando.Command {
         return result;
       }
     }
+
     function secondsToDhms(time) {
       var t = Number(time);
 
@@ -90,7 +91,7 @@ class TopTime extends Commando.Command {
           return msg.channel.send({
             embed
           });
-        } catch (e) {
+        } catch (error) {
           client.logger.error("Error! toptime getPlayers: sorting/buildMsg : " + error);
           return msg.channel.send("Error sorting the data. Verify the data is correct");
         }
@@ -112,7 +113,8 @@ class TopTime extends Commando.Command {
         return embed
       }
       for (var i = 0; i < amountPlayersToShow; i++) {
-        embed.addField(i + 1 + ". " + arr[i][0], secondsToDhms(arr[i][1]), true);
+        let time = arr[i][1].toString().toHHMMSS();
+        embed.addField(i + 1 + ". " + arr[i][0], time.days + "D " + time.hours + "H " + time.minutes + "M " + time.seconds + "S " , true);
       }
       return embed
     }
