@@ -13,36 +13,16 @@ const client = new Commando.Client({
   unknownCommandResponse: false
 });
 
-var loggerLevel;
+
 
 client.on('ready', () => {
-  client.logger = logger.createLogger('../logs/development.log');
-  client.logger.info('Bot has logged in');
-  client.logger.setLevel(loggerLevel);
-  client.logger.info("Loading guild Configs");
-  client.guildConf = new persistentCollection({
-    name: 'guildConf',
-    dataDir: '../data'
-  });
-  client.botStats = new persistentCollection({
-    name: 'botStats',
-    dataDir: '../data'
-  });
-  client.txtFiles = new persistentCollection({
-    name: 'txtFiles',
-    dataDir: '../data'
-  });
   client.defaultTxt = {
     default: 'Default message. See website for info on how to set up text messages!'
   };
-  // Wait for the collections to be loaded to start initializing data
-  client.txtFiles.event.on('ready', () => {
-    client.logger.info("Guild configs created");
-    initData();
-  })
   client.commandPrefix = client.guildConf.get("prefix");
   client.user.setGame(client.commandPrefix + "botinfo");
-  console.log('Bill\'s  ready!');
+  initData();
+  client.logger.info('Bill\'s  ready!');
 
 
   // Reset data on test server
@@ -96,19 +76,15 @@ client.on("message", message => {
     }
 
     const textFiles = client.txtFiles.get(message.guild.id);
-    // Check if textFiles for guild is defined. (Data is sometimes not initialized properly if bot gets added when offline)
-    if (!client.guildTextFilesExists(textFiles, message.guild)) {
-      return message.channel.send("Error! TextFiles undefined, setting defaults!")
-    }
     // Check if message exists in textfiles
     if (textFiles[args]) {
       const txtName = args
       const txtToSend = textFiles[args];
       // Sends the text
       let embed = client.makeBillEmbed();
-      client.logger.info("Short form of txt ran: --- " + message.guild.name + " " + message.content)
       embed.setDescription(txtToSend)
         .setTitle(txtName);
+      client.logger.info("Short form of txt ran: --- " + message.guild.name + " " + message.content)
       return message.channel.send({
         embed
       });
@@ -128,7 +104,9 @@ client.logError = function(error) {
   client.logger.error("Logging error to dev server");
   const devGuild = client.guilds.get("336821518250147850");
   const errorChannel = devGuild.channels.get("342274412877447168");
-  errorChannel.send("Error!\nError trace: " + error, {code: true});
+  errorChannel.send("Error!\nError trace: " + error, {
+    code: true
+  });
 }
 
 process.on('uncaughtException', function(err) {
@@ -193,16 +171,6 @@ client.makeBillEmbed = function() {
   return embed
 }
 
-// Check if textFiles exist for a guild -- If not, sets the default settings
-client.guildTextFilesExists = function(textFiles, guild) {
-  if (typeof textFiles == 'undefined') {
-    client.logger.error("Error textFiles = undefined for guild: " + guild.name + "--- Setting default settings");
-    client.txtFiles.set(guild.id, client.defaultTxt);
-    return false
-  }
-  return true
-}
-
 // Gets the properties of an object and returns an array with property names
 client.getProperties = function(obj) {
   var result = [];
@@ -241,14 +209,61 @@ String.prototype.toHHMMSS = function() {
   return time;
 }
 
-async function initData() {
+function initData() {
+  let guildConf = client.guildConf
+  let txtFiles = client.txtFiles
+  const Guilds = client.guilds
+
   client.logger.info("Initializing data");
+
+  function checkIfGuildConfigIsPopulated(value) {
+    const guild = value
+    if (!guildConf.get(guild.id)) {
+      client.logger.error("Guild config not found for " + guild.name + ". Setting defaults");
+      guildConf.set(guild.id, defaultSettings)
+    }
+  }
+
+  function checkIfTxtConfigIsPopulated(value) {
+    const guild = value
+    if (!txtFiles.has(guild.id)) {
+      client.logger.error("txtFiles not found for " + guild.name + ". Setting defaults");
+      client.txtFiles.set(guild.id, client.defaultTxt);
+    }
+  }
+
+  client.logger.info("Checking if all guild configs are initialized")
+  Guilds.forEach(checkIfGuildConfigIsPopulated)
+  client.logger.info("Checking if all txt configs are initialized")
+  Guilds.forEach(checkIfTxtConfigIsPopulated)
+
+
+
   //client.botStats.set('cmdsRan', 0);
   client.logger.info("Loading botStats info");
   client.botStats.set('githubLink', "https://github.com/niekcandaele/Bill");
   client.botStats.set('website', "https://niekcandaele.github.io/Bill/");
+
 }
 
+client.logger = logger.createLogger('../logs/development.log');
+client.logger.info('Bot has logged in');
+client.logger.setLevel(loggerLevel);
+client.logger.info("Loading persistent data");
+client.guildConf = new persistentCollection({
+  name: 'guildConf',
+  dataDir: '../data'
+});
+client.txtFiles = new persistentCollection({
+  name: 'txtFiles',
+  dataDir: '../data'
+});
+client.botStats = new persistentCollection({
+  name: 'botStats',
+  dataDir: '../data'
+});
+
+var loggerLevel;
 // Registers all built-in groups, commands, and argument types
 client.registry.registerDefaults();
 client.registry.registerGroup("7dtd");

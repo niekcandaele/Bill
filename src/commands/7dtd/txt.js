@@ -29,8 +29,6 @@ class Txt extends Commando.Command {
     var argsArr = args.split(" ");
     const maxTextFiles = 20
     const defaultTxt = client.defaultTxt
-    // Check if textFiles exist and fix if it is not the case
-    client.guildTextFilesExists(textFiles, msg.guild);
     // Check if empty command
     if (args == "") {
       return msg.channel.send("Error: Arguments cannot be empty!");
