@@ -7,7 +7,23 @@ class ExecConsole extends Commando.Command {
     super(client, {
       name: 'execconsole',
       aliases: ['telnet', 'ex'],
+      format: 'execconsole command arguments',
+      guildOnly: true,
       group: '7dtd',
+      args: [{
+          key: 'command',
+          label: 'Command to be executed',
+          prompt: 'Specify a command please',
+          type: 'string'
+        },
+        {
+          key: 'parameters',
+          label: 'Parameters to go with the command',
+          prompt: 'Specify parameters please',
+          default: ' ',
+          type: 'string'
+        }
+      ],
       memberName: 'execconsole',
       description: 'Executes a console command',
       details: "Only administrators can use this command",
@@ -26,26 +42,22 @@ class ExecConsole extends Commando.Command {
       return msg.channel.send("You need to have the administrator role to run console commands");
     }
 
-    if (args == "") {
-      return msg.channel.send("Error: arguments for execconsole cannot be empty")
-    }
 
-    let argsArr = args.split(" ");
-    const cmdToRun = argsArr[0]
-    const params = argsArr.splice(1, argsArr.length).join(' ')
+    const cmdToRun = args.command
+    const params = args.parameters
 
     let requestOptions = await client.getRequestOptions(msg.guild, '/executeconsolecommand')
     requestOptions.qs.command = cmdToRun + " " + params
     await request(requestOptions)
       .then(function(data) {
         if (data.result.length > 1750) {
-          data.result = data.result.slice(0,1750) + "\n\n***OUTPUT TEXT TOO LONG - OMITTING***"
+          data.result = data.result.slice(0, 1750) + "\n\n***OUTPUT TEXT TOO LONG - OMITTING***"
         }
         let input = ":inbox_tray: `" + data.command + " " + data.parameters + "`"
         let output = ":outbox_tray: \n```" + data.result + "\n```"
         let embed = client.makeBillEmbed()
-        .setTitle("Console command ran")
-        .setDescription(input + "\n\n" + output);
+          .setTitle("Console command ran")
+          .setDescription(input + "\n\n" + output);
         msg.channel.send({
           embed
         })

@@ -51,18 +51,43 @@ class Day7 extends Commando.Command {
         return msg.channel.send("Error! Request to api/getstats failed, did you set correct IP:port and authorization token?");
       })
 
+      // Requests the FPS data from server
+      requestOptions = await client.getRequestOptions(msg.guild, '/executeconsolecommand');
+      requestOptions.qs.command = 'mem'
+      await request(requestOptions)
+        .then(function(data) {
+          var tempData = data.result.split(" ");
+          var fpsIdx = tempData.findIndex(dataEntry => {
+            return dataEntry == 'FPS:'
+          });
+          messageData[2] = tempData[fpsIdx+1]
+        })
+        .catch(function(error) {
+          client.logger.error("Error! day7 getFPSData " + error);
+          return;
+        })
+
     async function sendMsg(dataArray) {
       try {
         const onlinePlayers = dataArray[0];
         const day7data = dataArray[1];
-        client.logger.debug("COMMAND DAY7: buildmsg data: onlinePlayers: " + onlinePlayers + "  day7data: " + JSON.stringify(day7data));
+        const fps = dataArray[2];
+        client.logger.debug("COMMAND DAY7: buildmsg data: onlinePlayers: " + onlinePlayers + "  day7data: " + JSON.stringify(day7data) + " FPS: " + fps);
 
-        var embed = client.makeBillEmbed();
-        embed.addField("Gametime", day7data.gametime.days + " days " + day7data.gametime.hours + " hours " + day7data.gametime.minutes + " minutes", true)
-          .addField("Players", day7data.players, true)
-          .addField("Online players", onlinePlayers)
-          .addField("Hostiles", day7data.hostiles, true)
-          .addField("Animals", day7data.animals, true);
+        var embed = client.makeBillEmbed()
+          .addField("FPS", fps, true )
+          .addField("Gametime", day7data.gametime.days + " days " + day7data.gametime.hours + " hours " + day7data.gametime.minutes + " minutes", true)
+          .addField("Online players: " + day7data.players, onlinePlayers)
+          .addField(day7data.hostiles + " Hostiles", day7data.animals + " Animals", true)
+        if (fps < 5) {
+          embed.setColor('ff0000')
+        }
+        if (5 < fps < 15) {
+          embed.setColor('#ffe500')
+        }
+        if (fps > 15) {
+          embed.setColor('#00ff2a')
+        }
         return msg.channel.send({
           embed
         })

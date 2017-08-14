@@ -17,6 +17,16 @@ client.on('ready', () => {
   client.defaultTxt = {
     default: 'Default message. See website for info on how to set up text messages!'
   };
+  client.defaultSettings = {
+    prefix: "$",
+    modRole: "Moderator",
+    adminRole: "Administrator",
+    guildOwner: "id",
+    serverip: "localhost",
+    webPort: "1234",
+    authName: "bill",
+    authToken: "secretToken",
+  };
   client.logger.setLevel(loggerLevel);
   client.commandPrefix = client.guildConf.get("prefix");
   client.user.setGame(client.commandPrefix + "botinfo");
@@ -99,16 +109,7 @@ process.on('uncaughtException', function(err) {
   //process.exit(1);
 });
 
-const defaultSettings = {
-  prefix: "$",
-  modRole: "Moderator",
-  adminRole: "Administrator",
-  guildOwner: "id",
-  serverip: "localhost",
-  webPort: "1234",
-  authName: "bill",
-  authToken: "secretToken",
-};
+
 
 // Sets default request options
 client.getRequestOptions = async function(guild, apiModule) {
@@ -200,16 +201,16 @@ function initData() {
 
   function checkIfGuildConfigIsPopulated(value) {
     const guild = value,
-      defaultProperties = client.getProperties(defaultSettings);
+      defaultProperties = client.getProperties(client.defaultSettings);
     if (!guildConf.get(guild.id)) {
       client.logger.error("Guild config not found for " + guild.name + ". Setting defaults");
-      guildConf.set(guild.id, defaultSettings)
+      guildConf.set(guild.id, client.defaultSettings)
     }
     for (var i = 0; i < defaultProperties.length; i++) {
       let thisConf = guildConf.get(guild.id);
       if (!thisConf[defaultProperties[i]]) {
         client.logger.error("Property " + defaultProperties[i] + " for " + guild.name + " was not defined, setting default value");
-        thisConf[defaultProperties[i]] = defaultSettings[defaultProperties[i]]
+        thisConf[defaultProperties[i]] = client.defaultSettings[defaultProperties[i]]
         guildConf.set(guild.id, thisConf)
       }
     }
