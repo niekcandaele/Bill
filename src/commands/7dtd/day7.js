@@ -18,7 +18,6 @@ class Day7 extends Commando.Command {
   async run(msg, args) {
     const client = msg.client;
     const thisConf = await client.guildConf.get(msg.guild.id);
-    var date = new Date();
     let messageData = []
 
     // Requests the player data from server
@@ -41,7 +40,6 @@ class Day7 extends Commando.Command {
         client.logger.error("Error! day7 getPlayerData " + error);
         return msg.channel.send("Error! Request to api/getplayerslocation failed, did you set correct IP:port and authorization token?");
       })
-
     // Requests the day7 data from server
     requestOptions = await client.getRequestOptions(msg.guild, '/getstats');
     await request(requestOptions)
