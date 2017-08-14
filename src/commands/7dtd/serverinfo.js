@@ -40,7 +40,6 @@ class ServerInfo extends Commando.Command {
     // Requests the player data from server
     request(requestOptions)
       .then(function(body) {
-
         // Changes booleans in the data to emoji checkmark or X
         function boolToEmoji(data) {
           const Props = client.getProperties(data)
@@ -55,7 +54,6 @@ class ServerInfo extends Commando.Command {
           }
         }
         boolToEmoji(body);
-
         var serverData = {
           gameHost: body.GameHost.value,
           serverDescription: body.ServerDescription.value,
@@ -93,7 +91,7 @@ class ServerInfo extends Commando.Command {
       })
       .catch(function(error) {
         client.logger.error("Error! serverinfo building embed: " + error);
-        return msg.channel.send("Error! Request to server failed, did you set correct IP and/or port and permissions?");
+        return msg.channel.send("Error! Request to server failed, did you set correct IP:port and authorization token?");
       })
 
 

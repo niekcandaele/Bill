@@ -19,6 +19,8 @@ class TopTime extends Commando.Command {
     const thisConf = await client.guildConf.get(msg.guild.id);
     const serverip = thisConf.serverip;
     const webPort = thisConf.webPort;
+    const authName = thisConf.authName;
+    const authToken = thisConf.authToken;
     const serverAdress = "http://" + serverip + ":" + webPort;
     var amountPlayersToShow = 10
     var players = new Array();
@@ -26,7 +28,12 @@ class TopTime extends Commando.Command {
     let requestOptions = {
       uri: serverAdress + '/api/getplayerslocation',
       json: true,
-      timeout: 2500
+      timeout: 2500,
+      qs: {
+        adminuser: authName,
+        admintoken: authToken
+      },
+      useQuerystring: true
     };
 
     // Adapted from https://gist.github.com/paullewis/1982121
@@ -59,20 +66,6 @@ class TopTime extends Commando.Command {
       }
     }
 
-    function secondsToDhms(time) {
-      var t = Number(time);
-
-      var d = Math.floor(t / 86400);
-      t -= (d * 86400);
-      var h = Math.floor(t / 3600);
-      t -= (h * 3600);
-      var m = Math.floor(t / 60);
-      t -= (m * 60);
-      var s = Math.floor(t);
-
-      return d + "D " + h + "H " + m + "M " + s + "S ";
-    }
-
     // Requests the player data from server
     request(requestOptions)
       .then(function(body) {
@@ -98,7 +91,7 @@ class TopTime extends Commando.Command {
       })
       .catch(function(error) {
         client.logger.error("Error! toptime getPlayers: " + error);
-        return msg.channel.send("Error! Request to server failed, did you set correct IP and/or port and permissions?");
+        return msg.channel.send("Error! Request to server failed, did you set correct IP:port and authorization token?");
       })
 
 
