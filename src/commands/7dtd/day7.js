@@ -57,6 +57,7 @@ class Day7 extends Commando.Command {
       await request(requestOptions)
         .then(function(data) {
           var tempData = data.result.split(" ");
+          console.log(tempData);
           var fpsIdx = tempData.findIndex(dataEntry => {
             return dataEntry == 'FPS:'
           });

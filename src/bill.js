@@ -50,9 +50,9 @@ client.on('commandRun', (command, promise, message) => {
 client.on("guildCreate", guild => {
   if (!client.guildConf.has(guild.id)) {
     client.logger.info("New guild added, default settings loaded. -- " + guild.name);
-    var thisConf = defaultSettings;
+    var thisConf = client.defaultSettings;
     thisConf.guildOwner = guild.ownerID;
-    client.guildConf.set(guild.id, defaultSettings);
+    client.guildConf.set(guild.id, client.defaultSettings);
     client.txtFiles.set(guild.id, client.defaultTxt);
   }
 });
