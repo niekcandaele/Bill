@@ -13,12 +13,11 @@ const client = new Commando.Client({
   unknownCommandResponse: false
 });
 
-
-
 client.on('ready', () => {
   client.defaultTxt = {
     default: 'Default message. See website for info on how to set up text messages!'
   };
+  client.logger.setLevel(loggerLevel);
   client.commandPrefix = client.guildConf.get("prefix");
   client.user.setGame(client.commandPrefix + "botinfo");
   initData();
@@ -70,7 +69,7 @@ client.on("message", message => {
       return
     }
     // Check if it is a command
-    client.logger.debug("Message sent -- Is " + args + " in Commands? : " + Commands.has(args));
+    client.logger.debug("Message received -- Is " + args + " in Commands? : " + Commands.has(args));
     if (Commands.has(args)) {
       return
     }
@@ -89,29 +88,14 @@ client.on("message", message => {
         embed
       });
     } else {
-
       return client.logger.info(message.guild.name + " --- Invalid command --- By: " + message.author.username + " --- " + message.content);
     }
-
   }
 });
 
-client.on("commandError", (command, err, message) => {
-  client.logError(err);
-});
-
-client.logError = function(error) {
-  client.logger.error("Logging error to dev server");
-  const devGuild = client.guilds.get("336821518250147850");
-  const errorChannel = devGuild.channels.get("342274412877447168");
-  errorChannel.send("Error!\nError trace: " + error, {
-    code: true
-  });
-}
-
 process.on('uncaughtException', function(err) {
-  //client.logger.error(err);
-  console.log(err); //Send some notification about the error
+  client.logger.error(err);
+  console.log(err);
   //process.exit(1);
 });
 
@@ -123,7 +107,7 @@ const defaultSettings = {
   serverip: "localhost",
   webPort: "1234",
   authName: "bill",
-  authToken: "secretToken"
+  authToken: "secretToken",
 };
 
 client.getRequestOptions = async function(guild, apiModule) {
@@ -150,8 +134,6 @@ client.getRequestOptions = async function(guild, apiModule) {
     return msg.channel.send("Error getting web request options. See the website for info on configuration");
   }
 }
-
-
 // Format for sending messages that look consistent
 client.makeBillEmbed = function() {
   const Colours = [
@@ -170,7 +152,6 @@ client.makeBillEmbed = function() {
     .setThumbnail("http://i.imgur.com/5bm3jzh.png")
   return embed
 }
-
 // Gets the properties of an object and returns an array with property names
 client.getProperties = function(obj) {
   var result = [];
@@ -181,7 +162,7 @@ client.getProperties = function(obj) {
   }
   return result;
 }
-
+// Takes a string of seconds and calculates a date object from that
 String.prototype.toHHMMSS = function() {
   var seconds = parseInt(this, 10);
   var days = Math.floor(seconds / 86400);
@@ -217,10 +198,19 @@ function initData() {
   client.logger.info("Initializing data");
 
   function checkIfGuildConfigIsPopulated(value) {
-    const guild = value
+    const guild = value,
+      defaultProperties = client.getProperties(defaultSettings);
     if (!guildConf.get(guild.id)) {
       client.logger.error("Guild config not found for " + guild.name + ". Setting defaults");
       guildConf.set(guild.id, defaultSettings)
+    }
+    for (var i = 0; i < defaultProperties.length; i++) {
+      let thisConf = guildConf.get(guild.id);
+      if (!thisConf[defaultProperties[i]]) {
+        client.logger.error("Property " + defaultProperties[i] + " for " + guild.name + " was not defined, setting default value");
+        thisConf[defaultProperties[i]] = defaultSettings[defaultProperties[i]]
+        guildConf.set(guild.id,thisConf)
+      }
     }
   }
 
@@ -248,7 +238,7 @@ function initData() {
 
 client.logger = logger.createLogger('../logs/development.log');
 client.logger.info('Bot has logged in');
-client.logger.setLevel(loggerLevel);
+
 client.logger.info("Loading persistent data");
 client.guildConf = new persistentCollection({
   name: 'guildConf',
