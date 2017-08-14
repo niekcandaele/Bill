@@ -89,10 +89,16 @@ client.on("message", message => {
     if (args.includes(" ")) {
       return
     }
+    // Check if it is a command
+    client.logger.debug("Message sent -- Is " + args + " in Commands? : " + Commands.has(args));
+    if (Commands.has(args)) {
+      return
+    }
+
     const textFiles = client.txtFiles.get(message.guild.id);
     // Check if textFiles for guild is defined. (Data is sometimes not initialized properly if bot gets added when offline)
     if (!client.guildTextFilesExists(textFiles, message.guild)) {
-      return message.channel.send("Error! TextFiles undefined, setting defaults! Try running your command again")
+      return message.channel.send("Error! TextFiles undefined, setting defaults!")
     }
     // Check if message exists in textfiles
     if (textFiles[args]) {
@@ -107,11 +113,7 @@ client.on("message", message => {
         embed
       });
     } else {
-      // Check if it is a command
-      client.logger.debug("Message sent -- Is " + args + " in Commands? : " + Commands.has(args));
-      if (Commands.has(args)) {
-        return
-      }
+
       return client.logger.info(message.guild.name + " --- Invalid command --- By: " + message.author.username + " --- " + message.content);
     }
 

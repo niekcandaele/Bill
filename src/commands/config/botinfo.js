@@ -24,8 +24,6 @@ class BotInfo extends Commando.Command {
         var bootTime = await client.botStats.get("bootTime");
         var amountGuilds = await client.guilds.size;
         var amountUsers = await client.users.size;
-        console.log(cmdsRan);
-        console.log(typeof cmdsRan);
       } catch (e) {
         client.logger.error("COMMAND BOTINFO \n" + e);
         return msg.channel.send("Error loading data!");
