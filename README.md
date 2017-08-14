@@ -7,7 +7,7 @@ Currently doing testing with the first public version of this bot. Let me know i
 - **$day7**
   - Shows information about the server.
 - **$toptime**
-  - Shows top 10 players by playtime on server
+  - Shows top players by playtime on server
 - **$seen**
   - When was a player last online?
 - **$txt**

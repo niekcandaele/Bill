@@ -8,20 +8,14 @@ class TopTime extends Commando.Command {
       name: 'toptime',
       group: '7dtd',
       memberName: 'toptime',
-      description: 'Lists top 10 players by playtime',
-      details: " ",
-      examples: ['toptime']
+      description: 'Lists top players by playtime',
+      details: "Optionally takes a number as argument to specify how many players to list",
+      examples: ['toptime', 'toptime 5']
     });
   }
 
   async run(msg, args) {
     const client = msg.client;
-    const thisConf = await client.guildConf.get(msg.guild.id);
-    const serverip = thisConf.serverip;
-    const webPort = thisConf.webPort;
-    const authName = thisConf.authName;
-    const authToken = thisConf.authToken;
-    const serverAdress = "http://" + serverip + ":" + webPort;
     var amountPlayersToShow = 10
     var players = new Array();
     var date = new Date();
@@ -96,6 +90,17 @@ class TopTime extends Commando.Command {
     }
 
     try {
+      if (args) {
+        if (isNaN(args)) {
+          client.logger.error("Toptime invalid argument! NaN " + args)
+          return msg.channel.send("Error: Argument must be a number.")
+        }
+        if (args > 25) {
+          client.logger.error("Toptime invalid argument! Too big " + args)
+          return msg.channel.send("Error: Argument can not be larger that 25!")
+        }
+        amountPlayersToShow = args
+      }
       let embed = buildMsg(sort(players));
       return msg.channel.send({
         embed
