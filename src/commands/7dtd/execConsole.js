@@ -20,7 +20,15 @@ class ExecConsole extends Commando.Command {
     const guildOwner = msg.guild.owner
     const ownerRole = msg.guild.ownerID
     const adminRole = guildOwner.highestRole
-    const Arguments = args
+    // Check if author of command is guild administrator or bot owner
+    if (!checkIfAdmin(msg.member)) {
+      client.logger.error(msg.author.username + " tried to run " + msg.content + " command but is not authorized!");
+      return msg.channel.send("You need to have the administrator role to run console commands");
+    }
+
+    if (args == "") {
+      return msg.channel.send("Error: arguments for execconsole cannot be empty")
+    }
 
     let argsArr = args.split(" ");
     const cmdToRun = argsArr[0]
@@ -28,26 +36,23 @@ class ExecConsole extends Commando.Command {
 
     let requestOptions = await client.getRequestOptions(msg.guild, '/executeconsolecommand')
     requestOptions.qs.command = cmdToRun + " " + params
-    // Check if author of command is guild administrator or bot owner
-    if (!checkIfAdmin(msg.member)) {
-      client.logger.error(msg.author.username + " tried to run " + msg.content + " command but is not authorized!");
-      return msg.channel.send("You need to have the administrator role to run console commands");
-    }
-
     await request(requestOptions)
       .then(function(data) {
-        const Input = ":inbox_tray: `" + data.command + " " + data.parameters + "`"
-        const Output = ":outbox_tray: \n```" + data.result + "\n```"
+        if (data.result.length > 1750) {
+          data.result = data.result.slice(0,1750) + "\n\n***OUTPUT TEXT TOO LONG - OMITTING***"
+        }
+        let input = ":inbox_tray: `" + data.command + " " + data.parameters + "`"
+        let output = ":outbox_tray: \n```" + data.result + "\n```"
         let embed = client.makeBillEmbed()
-          .setTitle("Console command ran")
-          .setDescription(Input + "\n\n" + Output);
+        .setTitle("Console command ran")
+        .setDescription(input + "\n\n" + output);
         msg.channel.send({
           embed
         })
       })
       .catch(function(error, response) {
         client.logger.error("Error! Exec Console request failed: " + error);
-        return msg.channel.send("Error! Request to api/executeconsolecommand failed, did you set correct IP:port, authorization token and permissions?");
+        return msg.channel.send("Error! Request to api/executeconsolecommand failed. \n" + error);
       })
 
     function checkIfAdmin(member) {

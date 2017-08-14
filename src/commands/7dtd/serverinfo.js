@@ -48,7 +48,7 @@ class ServerInfo extends Commando.Command {
           ip: body.IP.value,
           port: body.Port.value,
           maxPlayers: body.MaxPlayers.value,
-          gameDifficulty: body.GameDifficulty.value,
+          gameDifficulty: body.GameDifficulty.value +1,
           dayNightLength: body.DayNightLength.value,
           zombiesRun: body.ZombiesRun.value,
           playerKillingMode: body.PlayerKillingMode.value,
