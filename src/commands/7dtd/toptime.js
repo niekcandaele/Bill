@@ -25,16 +25,7 @@ class TopTime extends Commando.Command {
     var amountPlayersToShow = 10
     var players = new Array();
     var date = new Date();
-    let requestOptions = {
-      uri: serverAdress + '/api/getplayerslocation',
-      json: true,
-      timeout: 2500,
-      qs: {
-        adminuser: authName,
-        admintoken: authToken
-      },
-      useQuerystring: true
-    };
+    let requestOptions = await client.getRequestOptions(msg.guild, '/getplayerslocation');
 
     // Adapted from https://gist.github.com/paullewis/1982121
     function sort(array) {
@@ -67,9 +58,8 @@ class TopTime extends Commando.Command {
     }
 
     // Requests the player data from server
-    request(requestOptions)
+    await request(requestOptions)
       .then(function(body) {
-        let players = []
         let playersCounter = 0
         // Create array of [playername, playtime]
         for (var i = 0; i < body.length; i++) {
@@ -78,15 +68,6 @@ class TopTime extends Commando.Command {
             players[playersCounter] = new Array(body[i].name, body[i].totalplaytime);
             playersCounter += 1;
           }
-        }
-        try {
-          let embed = buildMsg(sort(players));
-          return msg.channel.send({
-            embed
-          });
-        } catch (error) {
-          client.logger.error("Error! toptime getPlayers: sorting/buildMsg : " + error);
-          return msg.channel.send("Error sorting the data. Verify the data is correct");
         }
       })
       .catch(function(error) {
@@ -97,7 +78,7 @@ class TopTime extends Commando.Command {
 
     function buildMsg(arr) {
       var embed = client.makeBillEmbed()
-      embed.setTitle("Top players by playtime");
+        .setTitle("Top players by playtime");
       if (arr.length < 10) {
         amountPlayersToShow = arr.length
       }
@@ -107,9 +88,21 @@ class TopTime extends Commando.Command {
       }
       for (var i = 0; i < amountPlayersToShow; i++) {
         let time = arr[i][1].toString().toHHMMSS();
-        embed.addField(i + 1 + ". " + arr[i][0], time.days + "D " + time.hours + "H " + time.minutes + "M " + time.seconds + "S " , true);
+        embed.addField(i + 1 + ". " + arr[i][0],
+          ":regional_indicator_d::regional_indicator_h::regional_indicator_m::regional_indicator_s:\n" +
+          " **" + time.days + "   " + time.hours + "   " + time.minutes + "   " + time.seconds + "**", true);
       }
       return embed
+    }
+
+    try {
+      let embed = buildMsg(sort(players));
+      return msg.channel.send({
+        embed
+      });
+    } catch (error) {
+      client.logger.error("Error! toptime getPlayers: sorting/buildMsg : " + error);
+      return msg.channel.send("Error sorting the data. Verify the data is correct");
     }
   }
 }

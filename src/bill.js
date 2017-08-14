@@ -130,7 +130,7 @@ client.logError = function(error) {
 }
 
 process.on('uncaughtException', function(err) {
-  client.logger.error(err);
+  //client.logger.error(err);
   console.log(err); //Send some notification about the error
   //process.exit(1);
 });
@@ -218,6 +218,9 @@ String.prototype.toHHMMSS = function() {
   var hours = Math.floor((seconds % 86400) / 3600);
   var minutes = Math.floor(((seconds % 86400) % 3600) / 60);
   var seconds = ((seconds % 86400) % 3600) % 60;
+  if (days < 10) {
+    days = "0" + days;
+  }
   if (hours < 10) {
     hours = "0" + hours;
   }
