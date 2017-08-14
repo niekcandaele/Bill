@@ -27,18 +27,13 @@ class ExecConsole extends Commando.Command {
     const params = argsArr.splice(1, argsArr.length).join(' ')
 
     let requestOptions = await client.getRequestOptions(msg.guild, '/executeconsolecommand')
-    console.log(params);
-    if (params.length > 0) {
-      requestOptions.qs.command = cmdToRun + " " + params
-    } else {
-      requestOptions.qs.command = cmdToRun
-    }
+    requestOptions.qs.command = cmdToRun + " " + params
     // Check if author of command is guild administrator or bot owner
     if (!checkIfAdmin(msg.member)) {
-      client.logger.info(msg.author.username + " tried to run " + msg.content + " command but is not authorized!");
+      client.logger.error(msg.author.username + " tried to run " + msg.content + " command but is not authorized!");
       return msg.channel.send("You need to have the administrator role to run console commands");
     }
-    console.log(requestOptions);
+
     await request(requestOptions)
       .then(function(data) {
         const Input = ":inbox_tray: `" + data.command + " " + data.parameters + "`"
@@ -49,11 +44,10 @@ class ExecConsole extends Commando.Command {
         msg.channel.send({
           embed
         })
-
       })
-      .catch(function(error) {
-        client.logger.error("Error! day7 getPlayerData " + error);
-        return msg.channel.send("Error! Request to api/getplayerslocation failed, did you set correct IP:port and authorization token?");
+      .catch(function(error, response) {
+        client.logger.error("Error! Exec Console request failed: " + error);
+        return msg.channel.send("Error! Request to api/executeconsolecommand failed, did you set correct IP:port, authorization token and permissions?");
       })
 
     function checkIfAdmin(member) {

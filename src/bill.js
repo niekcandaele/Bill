@@ -1,7 +1,7 @@
 const Commando = require('discord.js-commando');
 const Discord = require('discord.js');
 const fs = require('fs');
-const request = require('request');
+const request = require('request-promise');
 const path = require('path');
 const logger = require('logger');
 const persistentCollection = require('djs-collection-persistent');
@@ -110,6 +110,7 @@ const defaultSettings = {
   authToken: "secretToken",
 };
 
+// Sets default request options
 client.getRequestOptions = async function(guild, apiModule) {
   try {
     const thisConf = await client.guildConf.get(guild.id);
@@ -121,7 +122,7 @@ client.getRequestOptions = async function(guild, apiModule) {
     let requestOptions = {
       uri: baseUrl + apiModule,
       json: true,
-      timeout: 5000,
+      timeout: 10000,
       qs: {
         adminuser: authName,
         admintoken: authToken
@@ -209,7 +210,7 @@ function initData() {
       if (!thisConf[defaultProperties[i]]) {
         client.logger.error("Property " + defaultProperties[i] + " for " + guild.name + " was not defined, setting default value");
         thisConf[defaultProperties[i]] = defaultSettings[defaultProperties[i]]
-        guildConf.set(guild.id,thisConf)
+        guildConf.set(guild.id, thisConf)
       }
     }
   }
