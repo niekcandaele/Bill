@@ -1,5 +1,5 @@
 const Commando = require('discord.js-commando');
-const request = require('request');
+const request = require('request-promise');
 
 
 class Day7 extends Commando.Command {
@@ -18,57 +18,62 @@ class Day7 extends Commando.Command {
   async run(msg, args) {
     const client = msg.client;
     const thisConf = await client.guildConf.get(msg.guild.id);
-    const serverip = thisConf.serverip;
-    const webPort = thisConf.webPort;
-    const serverAdress = "http://" + serverip + ":" + webPort;
     var date = new Date();
+    let messageData = []
 
-    function getOnlinePlayers() {
-      var onlinePlayerList = "";
-      request(serverAdress + '/api/getplayerslocation', function(error, response, body) {
-        if (error) {
-          client.logger.error("Error! day7 getOnlinePlayers: " + error);
-          return msg.channel.send("Error! Request to server failed, did you set correct IP and/or port and permissions?");
-        }
-        var data = JSON.parse(body);
+    // Requests the player data from server
+    let requestOptions = await client.getRequestOptions(msg.guild, '/getplayerslocation');
+    await request(requestOptions)
+      .then(function(data) {
+        let onlinePlayerList = ""
         for (var i = 0; i < data.length; i++) {
           var player = data[i];
-          if (player.online == true ) {
+          if (player.online == true) {
             onlinePlayerList += player.name + ", ";
           }
         }
-        return getDay7Data(onlinePlayerList.substr(0,onlinePlayerList.length-2));
-      });
-    }
-    function getDay7Data(onlinePlayersList) {
-      request(serverAdress + '/api/getstats', function(error, response, body) {
-        if (error) {
-          client.logger.error("Error! day7 getDay7Data: " + error);
-          return msg.channel.send("Error! Request to server failed, did you set correct IP and/or port and permissions?");
+        if (onlinePlayerList == "") {
+          onlinePlayerList = "No players online!"
         }
-        return buildMsg([onlinePlayersList,JSON.parse(body)]);
-      });
-    }
+        messageData[0] = onlinePlayerList
+      })
+      .catch(function(error) {
+        client.logger.error("Error! day7 getPlayerData " + error);
+        return msg.channel.send("Error! Request to api/getplayerslocation failed, did you set correct IP:port and authorization token?");
+      })
 
-    async function buildMsg(dataArray) {
-      let onlinePlayers = dataArray[0];
-      const day7data = dataArray[1];
-      client.logger.debug("COMMAND DAY7: buildmsg data: onlinePlayers: " + onlinePlayers + " --- day7data: ---" + day7data);
+    // Requests the day7 data from server
+    requestOptions = await client.getRequestOptions(msg.guild, '/getstats');
+    await request(requestOptions)
+      .then(function(data) {
+        messageData[1] = data
+      })
+      .catch(function(error) {
+        client.logger.error("Error! day7 getPlayerData " + error);
+        return msg.channel.send("Error! Request to api/getstats failed, did you set correct IP:port and authorization token?");
+      })
 
-      if (onlinePlayers == "") {
-        onlinePlayers = "No players online!"
+    async function sendMsg(dataArray) {
+      try {
+        const onlinePlayers = dataArray[0];
+        const day7data = dataArray[1];
+        client.logger.debug("COMMAND DAY7: buildmsg data: onlinePlayers: " + onlinePlayers + "  day7data: " + JSON.stringify(day7data));
+
+        var embed = client.makeBillEmbed();
+        embed.addField("Gametime", day7data.gametime.days + " days " + day7data.gametime.hours + " hours " + day7data.gametime.minutes + " minutes", true)
+          .addField("Players", day7data.players, true)
+          .addField("Online players", onlinePlayers)
+          .addField("Hostiles", day7data.hostiles, true)
+          .addField("Animals", day7data.animals, true);
+        return msg.channel.send({
+          embed
+        })
+      } catch (error) {
+        client.logger.error("Error! day7 buildMsg " + error);
+        return msg.channel.send("Error building the message. Verify the data is correct");
       }
-
-      var embed = client.makeBillEmbed();
-      embed.addField("Gametime", day7data.gametime.days + " days " + day7data.gametime.hours + " hours " + day7data.gametime.minutes + " minutes", true)
-      .addField("Players", day7data.players, true)
-      .addField("Online players", onlinePlayers)
-      .addField("Hostiles", day7data.hostiles,true)
-      .addField("Animals", day7data.animals,true)
-      msg.channel.send({embed});
     }
-
-    getOnlinePlayers();
+    sendMsg(messageData)
 
   }
 }

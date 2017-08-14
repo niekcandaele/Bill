@@ -48,7 +48,7 @@ class Set extends Commando.Command {
     // Execute function, leaving out the first argument
     let newArgs = argsArr.splice(1, argsArr.length)
     try {
-      configTypes[configType(newArgs)];
+      configTypes[configType(newArgs[0])];
     } catch (e) {
       client.logger.error("Invalid configtype for set command");
       return msg.channel.send("Invalid argument for set command")

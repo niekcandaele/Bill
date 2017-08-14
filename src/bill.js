@@ -54,7 +54,7 @@ client.on('ready', () => {
 
 // Logs when a command is run (monitoring for beta stage)
 client.on('commandRun', (command, promise, message) => {
-  client.logger.info("COMMAND RAN: " + command.name + " run by " + message.author.username + " like this: " + message.cleanContent);
+  client.logger.info("COMMAND RAN: " + message.author.username + " ran " + command.name + " like this: " + message.cleanContent + " on " + message.guild.name);
   var cmdsRan = client.botStats.get('cmdsRan');
   client.botStats.set('cmdsRan', cmdsRan + 1);
 });
@@ -130,7 +130,6 @@ client.logError = function(error) {
 }
 
 process.on('uncaughtException', function(err) {
-  client.logError(err);
   client.logger.error(err);
   console.log(err); //Send some notification about the error
   //process.exit(1);
@@ -145,7 +144,32 @@ const defaultSettings = {
   webPort: "1234",
   authName: "bill",
   authToken: "secretToken"
-}; // authToken should be changed!
+};
+
+client.getRequestOptions = async function(guild, apiModule) {
+  try {
+    const thisConf = await client.guildConf.get(guild.id);
+    const serverip = thisConf.serverip;
+    const webPort = thisConf.webPort;
+    const authName = thisConf.authName;
+    const authToken = thisConf.authToken;
+    const baseUrl = "http://" + serverip + ":" + webPort + "/api";
+    let requestOptions = {
+      uri: baseUrl + apiModule,
+      json: true,
+      timeout: 5000,
+      qs: {
+        adminuser: authName,
+        admintoken: authToken
+      },
+      useQuerystring: true
+    };
+    return requestOptions
+  } catch (error) {
+    client.logger.error("Error! getRequestOptions for " + guild.name + error);
+    return msg.channel.send("Error getting web request options. See the website for info on configuration");
+  }
+}
 
 
 // Format for sending messages that look consistent
@@ -194,7 +218,6 @@ String.prototype.toHHMMSS = function() {
   var hours = Math.floor((seconds % 86400) / 3600);
   var minutes = Math.floor(((seconds % 86400) % 3600) / 60);
   var seconds = ((seconds % 86400) % 3600) % 60;
-  
   if (hours < 10) {
     hours = "0" + hours;
   }

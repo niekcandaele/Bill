@@ -18,24 +18,10 @@ class ServerInfo extends Commando.Command {
   async run(msg, args) {
     const client = msg.client;
     const thisConf = await client.guildConf.get(msg.guild.id);
-    const serverip = thisConf.serverip;
-    const webPort = thisConf.webPort;
-    const authName = thisConf.authName;
-    const authToken = thisConf.authToken;
-    const serverAdress = "http://" + serverip + ":" + webPort;
     var amountPlayersToShow = 10
     var players = new Array();
     var date = new Date();
-    let requestOptions = {
-      uri: serverAdress + '/api/getserverinfo',
-      json: true,
-      timeout: 2500,
-      qs: {
-        adminuser: authName,
-        admintoken: authToken
-      },
-      useQuerystring: true
-    };
+    let requestOptions = await client.getRequestOptions(msg.guild, '/getserverinfo');
 
     // Requests the player data from server
     request(requestOptions)
@@ -93,9 +79,6 @@ class ServerInfo extends Commando.Command {
         client.logger.error("Error! serverinfo building embed: " + error);
         return msg.channel.send("Error! Request to server failed, did you set correct IP:port and authorization token?");
       })
-
-
-
   }
 }
 
