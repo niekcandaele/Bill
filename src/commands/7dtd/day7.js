@@ -75,19 +75,21 @@ class Day7 extends Commando.Command {
         client.logger.debug("COMMAND DAY7: buildmsg data: onlinePlayers: " + onlinePlayers + "  day7data: " + JSON.stringify(day7data) + " FPS: " + fps);
 
         var embed = client.makeBillEmbed()
-          .addField("FPS", fps, true )
           .addField("Gametime", day7data.gametime.days + " days " + day7data.gametime.hours + " hours " + day7data.gametime.minutes + " minutes", true)
           .addField("Online players: " + day7data.players, onlinePlayers)
           .addField(day7data.hostiles + " Hostiles", day7data.animals + " Animals", true)
-        if (fps < 5) {
-          embed.setColor('ff0000')
-        }
-        if (5 < fps < 15) {
-          embed.setColor('#ffe500')
-        }
-        if (fps > 15) {
-          embed.setColor('#00ff2a')
-        }
+          function handleFPS() {
+              if (fps < 5) {
+                embed.setColor('ff0000')
+              }
+              if (5 < fps < 15) {
+                embed.setColor('#ffe500')
+              }
+              if (fps > 15) {
+                embed.setColor('#00ff2a')
+              }
+              embed.addField("FPS", fps, true )
+          }
         return msg.channel.send({
           embed
         })
