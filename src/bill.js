@@ -26,6 +26,7 @@ client.on('ready', () => {
     webPort: "1234",
     authName: "bill",
     authToken: "secretToken",
+    chatChannel: false,
   };
   client.logger.setLevel(loggerLevel);
   client.commandPrefix = client.guildConf.get("prefix");
@@ -98,7 +99,7 @@ client.on("message", message => {
         embed
       });
     } else {
-      return client.logger.info(message.guild.name + " --- Invalid command --- By: " + message.author.username + " --- " + message.content);
+      return client.logger.info("Invalid command by: " + message.author.username + " on " + message.guild.name + "\n" + message.content);
     }
   }
 });
@@ -109,8 +110,19 @@ process.on('uncaughtException', function(err) {
   //process.exit(1);
 });
 
-
-
+// Check if a user is administrator of his guild
+client.checkIfAdmin = function(member, guild) {
+  const guildOwner = guild.owner
+  const ownerRole = guild.ownerID
+  const adminRole = guildOwner.highestRole
+  var isAdmin = member.roles.has(adminRole.id);
+  client.logger.debug("Checking if " + member.user.username + " is admin. " + isAdmin);
+  if (isAdmin || client.isOwner(member.user)) {
+    return true
+  } else {
+    return false
+  }
+}
 // Sets default request options
 client.getRequestOptions = async function(guild, apiModule) {
   try {
@@ -202,13 +214,13 @@ function initData() {
   function checkIfGuildConfigIsPopulated(value) {
     const guild = value,
       defaultProperties = client.getProperties(client.defaultSettings);
-    if (!guildConf.get(guild.id)) {
+    if (!guildConf.has(guild.id)) {
       client.logger.error("Guild config not found for " + guild.name + ". Setting defaults");
       guildConf.set(guild.id, client.defaultSettings)
     }
     for (var i = 0; i < defaultProperties.length; i++) {
       let thisConf = guildConf.get(guild.id);
-      if (!thisConf[defaultProperties[i]]) {
+      if (!thisConf.hasOwnProperty(defaultProperties[i])) {
         client.logger.error("Property " + defaultProperties[i] + " for " + guild.name + " was not defined, setting default value");
         thisConf[defaultProperties[i]] = client.defaultSettings[defaultProperties[i]]
         guildConf.set(guild.id, thisConf)
@@ -260,6 +272,7 @@ var loggerLevel;
 client.registry.registerDefaults();
 client.registry.registerGroup("7dtd");
 client.registry.registerGroup("config");
+client.registry.registerGroup("admin");
 // Registers all commands in the ./commands/ directory
 client.registry.registerCommandsIn(path.join(__dirname, '/commands'));
 

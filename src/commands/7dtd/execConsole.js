@@ -1,5 +1,7 @@
 const Commando = require('discord.js-commando');
 const request = require('request-promise');
+const fs = require('fs');
+const path = require('path');
 
 
 class ExecConsole extends Commando.Command {
@@ -33,50 +35,54 @@ class ExecConsole extends Commando.Command {
 
   async run(msg, args) {
     const client = this.client
-    const guildOwner = msg.guild.owner
-    const ownerRole = msg.guild.ownerID
-    const adminRole = guildOwner.highestRole
     // Check if author of command is guild administrator or bot owner
-    if (!checkIfAdmin(msg.member)) {
+    if (!client.checkIfAdmin(msg.member, msg.guild)) {
       client.logger.error(msg.author.username + " tried to run " + msg.content + " command but is not authorized!");
       return msg.channel.send("You need to have the administrator role to run console commands");
     }
-
 
     const cmdToRun = args.command
     const params = args.parameters
 
     let requestOptions = await client.getRequestOptions(msg.guild, '/executeconsolecommand')
     requestOptions.qs.command = cmdToRun + " " + params
+
     await request(requestOptions)
       .then(function(data) {
-        if (data.result.length > 1750) {
-          data.result = data.result.slice(0, 1750) + "\n\n***OUTPUT TEXT TOO LONG - OMITTING***"
-        }
         let input = ":inbox_tray: `" + data.command + " " + data.parameters + "`"
         let output = ":outbox_tray: \n```" + data.result + "\n```"
-        let embed = client.makeBillEmbed()
-          .setTitle("Console command ran")
-          .setDescription(input + "\n\n" + output);
-        msg.channel.send({
-          embed
-        })
+        let filePath = path.dirname(process.cwd()) + "/data/output/"
+        let fileName = msg.guild.name + ".output"
+        let embed = client.makeBillEmbed().setTitle("Console command ran");
+
+        if (data.result.length > 1750) {
+          fs.writeFile(filePath + fileName, data.result, function(err) {
+            if (err) {
+              throw err
+            }
+            embed.setDescription(input + "\n\n" + ":outbox_tray: \n```\n Output too long! Logging to file. \n```");
+            msg.channel.send({
+              embed: embed,
+              files: [filePath + fileName]
+            })
+          })
+        } else {
+          embed.setDescription(input + "\n\n" + output);
+          msg.channel.send({
+            embed: embed
+          })
+
+        }
+
       })
       .catch(function(error, response) {
         client.logger.error("Error! Exec Console request failed: " + error);
         return msg.channel.send("Error! Request to api/executeconsolecommand failed. \n" + error);
       })
 
-    function checkIfAdmin(member) {
-      var isAdmin = member.roles.has(adminRole.id);
-      client.logger.debug("Checking if " + member.user.username + " is admin. " + isAdmin);
-      if (isAdmin || client.isOwner(member.user)) {
-        return true
-      } else {
-        return false
-      }
-    }
   }
 }
+
+
 
 module.exports = ExecConsole;
