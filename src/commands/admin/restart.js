@@ -20,6 +20,7 @@ class Restart extends Commando.Command {
     const client = this.client
     const timeout = 300000 // 5 minutes
     let minutes = timeout / 60000
+    let amountOfTimesToCheckIfBackOnline = 10
     // Check if author of command is guild administrator or bot owner
     if (!client.checkIfAdmin(msg.member, msg.guild)) {
       client.logger.error(msg.author.username + " tried to run " + msg.content + " command but is not authorized!");
@@ -37,11 +38,11 @@ class Restart extends Commando.Command {
         let requestOptions = await client.getRequestOptions(msg.guild, '/executeconsolecommand')
         requestOptions.qs.command = "say [ff00ff]Restarting_server_in_" + minutes + "_minutes."
         await request(requestOptions)
-        .then(function() {})
-        .catch(function(error, response) {
-          client.logger.error("Error! Restart, console request failed: " + error);
-          return msg.channel.send("Error executing a console command: " + error)
-        })
+          .then(function() {})
+          .catch(function(error, response) {
+            client.logger.error("Error! Restart, console request failed: " + error);
+            return msg.channel.send("Error executing a console command: " + error)
+          })
       }
       minutes -= 1;
     }, 60000)
@@ -66,6 +67,27 @@ class Restart extends Commando.Command {
                 .then(function() {
                   client.logger.debug(msg.guild.name + " Succesfully shut down the server")
                   msg.channel.send("Shutting down the server.")
+                  // Check every 10 seconds until the server comes back online.
+                  let CheckIfServerBackOnline = setInterval(async function() {
+                    if (amountOfTimesToCheckIfBackOnline != 0) {
+                      requestOptions = await client.getRequestOptions(msg.guild, '/executeconsolecommand');
+                      requestOptions.qs.command = "help"
+                      await request(requestOptions)
+                        .then(function(data) {
+                          clearInterval(CheckIfServerBackOnline)
+                          client.logger.debug(msg.guild.name + " Server is back online!");
+                          msg.channel.send("Server is back online!")
+                        })
+                        .catch(function(error) {
+                          client.logger.debug(msg.guild.name + " Server is not online yet! Checking " + amountOfTimesToCheckIfBackOnline + " more times!");
+                        })
+                      amountOfTimesToCheckIfBackOnline -= 1;
+                    } else {
+                      clearInterval(CheckIfServerBackOnline)
+                      client.logger.debug(msg.guild.name + " Server did not come back online in time!");
+                      msg.channel.send("Server did not come back online in time!")
+                    }
+                  }, 10000);
                 })
                 .catch(function(error, response) {
                   client.logger.error("Error! Restart, console request failed: " + error);
@@ -79,7 +101,7 @@ class Restart extends Commando.Command {
         })
         .catch(function(error, response) {
           client.logger.error("Error! Restart, console request failed: " + error);
-          throw error
+          return msg.channel.send("Error restarting the server: " + error)
         })
     }
 
