@@ -11,7 +11,7 @@ class ExecConsole extends Commando.Command {
       aliases: ['telnet', 'ex'],
       format: 'execconsole command arguments',
       guildOnly: true,
-      group: '7dtd',
+      group: 'admin',
       args: [{
           key: 'command',
           label: 'Command to be executed',
@@ -55,7 +55,7 @@ class ExecConsole extends Commando.Command {
         let fileName = msg.guild.name + "_output" + ".txt"
         let embed = client.makeBillEmbed().setTitle("Console command ran");
 
-        if (data.result.length > 1750) {
+        if (output.length > 1750) {
           fs.writeFile(filePath + fileName, data.result, function(err) {
             if (err) {
               throw err
