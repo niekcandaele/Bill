@@ -18,7 +18,7 @@ class Restart extends Commando.Command {
 
   async run(msg) {
     const client = this.client
-    const timeout = 120000 // 5 minutes
+    const timeout = 300000 // 5 minutes
     let minutes = timeout / 60000
     // Check if author of command is guild administrator or bot owner
     if (!client.checkIfAdmin(msg.member, msg.guild)) {
@@ -26,7 +26,7 @@ class Restart extends Commando.Command {
       return msg.channel.send("You need to have the administrator role to restart the server!");
     }
 
-    msg.channel.send("Server will restart in " + minutes + "minutes");
+    msg.channel.send("Server will restart in 5 minutes");
     let interval = setInterval(async function() {
       if (minutes == 0) {
         msg.channel.send("Restarting the server now!");
@@ -35,7 +35,7 @@ class Restart extends Commando.Command {
       } else {
         msg.channel.send('Restarting the server in ' + minutes + ' minutes!');
         let requestOptions = await client.getRequestOptions(msg.guild, '/executeconsolecommand')
-        requestOptions.qs.command = "say Restarting_server_in_" + minutes + "_minutes."
+        requestOptions.qs.command = "say [ff00ff]Restarting_server_in_" + minutes + "_minutes."
         await request(requestOptions)
         .then(function() {})
         .catch(function(error, response) {
