@@ -52,7 +52,7 @@ class ExecConsole extends Commando.Command {
         let input = ":inbox_tray: `" + data.command + " " + data.parameters + "`"
         let output = ":outbox_tray: \n```" + data.result + "\n```"
         let filePath = path.dirname(process.cwd()) + "/data/output/"
-        let fileName = msg.guild.name + ".output"
+        let fileName = msg.guild.name + "_output" + ".txt"
         let embed = client.makeBillEmbed().setTitle("Console command ran");
 
         if (data.result.length > 1750) {
