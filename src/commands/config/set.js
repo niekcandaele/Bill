@@ -93,11 +93,6 @@ class Set extends Commando.Command {
 
 
     function setAuthName(args) {
-      if (!msg.deletable) {
-        client.logger.debug("set.js:setAuthName ::" + msg.guild.name  + " bot does not have permission to delete messages");
-        return msg.reply("You need to give the bot permission to delete messages to use this command.")
-      }
-
       let oldVal = thisConf.authName;
       try {
         client.logger.debug("Trying to set authName for " + msg.guild.name);
@@ -108,16 +103,14 @@ class Set extends Commando.Command {
       }
       let message = "authName for " + msg.guild.name + " was changed"; // \nFrom: " + oldVal + " \nTo:   " + thisConf.authName
       client.logger.debug(message);
-      deleteMsg();
+      if (msg.deletable) {
+        deleteMsg();
+      }
       return msg.channel.send(message, {code: true})
     }
 
     function setAuthToken(args) {
-      if (!msg.deletable) {
-        client.logger.debug(msg, "set.js:setAuthToken :: bot does not have permission to delete messages");
-        client.logError(msg, "set.js:setAuthToken :: bot does not have permission to delete messages");
-        return msg.channel.send("You need to give the bot permission to delete messages to use this command.")
-      }
+
 
       let oldVal = thisConf.authToken;
       try {
@@ -129,7 +122,10 @@ class Set extends Commando.Command {
       }
       let message = "authToken for " + msg.guild.name + " was changed"; // \nFrom: " + oldVal + " \nTo:   " + thisConf.authToken
       client.logger.debug(message);
-      deleteMsg();
+      client.logger.debug(message);
+      if (msg.deletable) {
+        deleteMsg();
+      }
       return msg.channel.send(message, {code: true})
     }
 
