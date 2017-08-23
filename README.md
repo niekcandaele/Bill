@@ -2,6 +2,8 @@ Currently doing testing with the first public version of this bot. Let me know i
 
 # Features
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/niekcandaele/Bill.svg)](https://greenkeeper.io/)
+
 ![feature_img](http://i.imgur.com/cq4ecd5.png "Feature image")
 
 - **Day7**
