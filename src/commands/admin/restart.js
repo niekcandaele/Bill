@@ -34,6 +34,18 @@ class Restart extends Commando.Command {
       return msg.channel.send("You need to have the administrator role to restart the server!");
     }
 
+    if (minutes == "stop") {
+      msg.channel.send("Canceling currently scheduled restart (if there is one)");
+      if (msg.guild.hasOwnProperty("interval")) {
+            client.logger.debug("Cancelling server restart");
+            return clearInterval(msg.guild.interval);
+      }
+      return
+    }
+
+    if (isNaN(minutes)) {
+      return msg.channel.send("Argument has to be either a number or 'stop'!");
+    }
 
     msg.channel.send('Restarting the server in ' + minutes + ' minutes!');
     msg.guild.interval = setInterval(async function() {
@@ -41,8 +53,7 @@ class Restart extends Commando.Command {
       msg.channel.send('Restarting the server in ' + minutes + ' minutes!');
       if (minutes == 0) {
         clearInterval(msg.guild.interval);
-        msg.channel.send("Restarting");
-        //restartServer();
+        restartServer();
       } else {
         let requestOptions = await client.getRequestOptions(msg.guild, '/executeconsolecommand')
         requestOptions.qs.command = "say [ff00ff]Restarting_server_in_" + minutes + "_minutes."
