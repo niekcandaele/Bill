@@ -48,7 +48,7 @@ class ServerInfo extends Commando.Command {
           ip: body.IP.value,
           port: body.Port.value,
           maxPlayers: body.MaxPlayers.value,
-          gameDifficulty: body.GameDifficulty.value +1,
+          gameDifficulty: body.GameDifficulty.value + 1,
           dayNightLength: body.DayNightLength.value,
           zombiesRun: body.ZombiesRun.value,
           playerKillingMode: body.PlayerKillingMode.value,
@@ -57,6 +57,20 @@ class ServerInfo extends Commando.Command {
           isPasswordProtected: body.IsPasswordProtected.value,
           EACEnabled: body.EACEnabled.value
         }
+
+        switch (serverData.playerKillingMode) {
+          case 0:
+            serverData.playerKillingMode = "PvP";
+            break;
+          case 1:
+            serverData.playerKillingMode = "Team PvP";
+            break;
+          case 2:
+            serverData.playerKillingMode = "PvP Ally";
+            break;
+
+        }
+
         var embed = client.makeBillEmbed().setTitle(serverData.gameHost)
           .addField("Description", serverData.serverDescription)
           .addField("IP address", serverData.ip + ":" + serverData.port, true)
@@ -68,7 +82,7 @@ class ServerInfo extends Commando.Command {
             ":small_orange_diamond:  Game difficulty: " + serverData.gameDifficulty +
             "\n:small_orange_diamond:  Day and night cycle: " + serverData.dayNightLength +
             "\n:small_orange_diamond:  Player killing mode: " + serverData.playerKillingMode +
-            "\n:small_orange_diamond:  Air drop frequency: " + serverData.airDropFrequency +
+            "\n:small_orange_diamond:  Air drop frequency: " + serverData.airDropFrequency + " hours" +
             "\n:small_orange_diamond:  Loot respawns in " + serverData.lootRespawnDays + " days"
           );
         return msg.channel.send({
