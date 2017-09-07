@@ -11,15 +11,22 @@ class Restart extends Commando.Command {
       guildOnly: true,
       group: 'admin',
       memberName: 'restart',
-      description: 'Shuts down the server after 5 minutes. Assumes the server host will restart the server automatically.',
-      examples: ['restart']
+      description: 'Shuts down the server after x minutes. Assumes the server host will restart the server automatically.',
+      examples: ['restart'],
+      args: [{
+        key: 'minutes',
+        label: 'Minutes to wait for restart',
+        prompt: 'Specify minutes to restart please.',
+        type: 'string',
+        default: '5'
+      }],
     });
   }
 
-  async run(msg) {
+  async run(msg, args) {
     const client = this.client
-    const timeout = 300000 // 5 minutes
-    let minutes = timeout / 60000
+    let minutes = args.minutes;
+    const timeout = minutes * 60000;
     let amountOfTimesToCheckIfBackOnline = 10
     // Check if author of command is guild administrator or bot owner
     if (!client.checkIfAdmin(msg.member, msg.guild)) {
@@ -27,24 +34,25 @@ class Restart extends Commando.Command {
       return msg.channel.send("You need to have the administrator role to restart the server!");
     }
 
-    msg.channel.send("Server will restart in 5 minutes");
-    let interval = setInterval(async function() {
+
+    msg.channel.send('Restarting the server in ' + minutes + ' minutes!');
+    msg.guild.interval = setInterval(async function() {
+      minutes -= 1;
+      msg.channel.send('Restarting the server in ' + minutes + ' minutes!');
       if (minutes == 0) {
-        msg.channel.send("Restarting the server now!");
-        clearInterval(interval);
-        restartServer();
+        clearInterval(msg.guild.interval);
+        msg.channel.send("Restarting");
+        //restartServer();
       } else {
-        msg.channel.send('Restarting the server in ' + minutes + ' minutes!');
         let requestOptions = await client.getRequestOptions(msg.guild, '/executeconsolecommand')
         requestOptions.qs.command = "say [ff00ff]Restarting_server_in_" + minutes + "_minutes."
         await request(requestOptions)
           .then(function() {})
           .catch(function(error, response) {
             client.logger.error("Error! Restart, console request failed: " + error);
-            return msg.channel.send("Error executing a console command: " + error)
+            return msg.channel.send("Error executing a console command: " + requestOptions.qs.command + "error: " + error)
           })
       }
-      minutes -= 1;
     }, 60000)
 
     async function restartServer() {
