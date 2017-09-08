@@ -47,7 +47,7 @@ class Restart extends Commando.Command {
       return msg.channel.send("Argument has to be either a number or 'stop'!");
     }
 
-    msg.channel.send('Restarting the server in ' + minutes + ' minutes!');
+    msg.channel.send('Server restart has been scheduled. Restart will happen in ' + minutes +" minutes");
     msg.guild.interval = setInterval(async function() {
       minutes -= 1;
       msg.channel.send('Restarting the server in ' + minutes + ' minutes!');
