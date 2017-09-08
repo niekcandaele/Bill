@@ -72,11 +72,13 @@ class Day7 extends Commando.Command {
         const onlinePlayers = dataArray[0];
         const day7data = dataArray[1];
         const fps = dataArray[2];
+        let nextHorde = (Math.trunc(day7data.gametime.days/7) + 1) * 7
+        const daysUntilHorde = nextHorde - day7data.gametime.days;
         client.logger.debug("COMMAND DAY7: buildmsg data: onlinePlayers: " + onlinePlayers + "  day7data: " + JSON.stringify(day7data) + " FPS: " + fps);
 
         var embed = client.makeBillEmbed();
         handleFPS()
-        embed.addField("Gametime", day7data.gametime.days + " days " + day7data.gametime.hours + " hours " + day7data.gametime.minutes + " minutes", true)
+        embed.addField("Gametime", day7data.gametime.days + " days " + day7data.gametime.hours + " hours " + day7data.gametime.minutes + " minutes\nNext horde in " + daysUntilHorde + " days", true)
           .addField("Online players: " + day7data.players, onlinePlayers)
           .addField(day7data.hostiles + " Hostiles", day7data.animals + " Animals", true)
 
