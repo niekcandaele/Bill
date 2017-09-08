@@ -60,13 +60,16 @@ class ServerInfo extends Commando.Command {
 
         switch (serverData.playerKillingMode) {
           case 0:
-            serverData.playerKillingMode = "PvP";
+            serverData.playerKillingMode = "PvE";
             break;
           case 1:
-            serverData.playerKillingMode = "Team PvP";
+            serverData.playerKillingMode = "Kill allies only";
             break;
           case 2:
-            serverData.playerKillingMode = "PvP Ally";
+            serverData.playerKillingMode = "Kill strangers only";
+            break;
+          case 3:
+            serverData.playerKillingMode = "PvP";
             break;
 
         }
