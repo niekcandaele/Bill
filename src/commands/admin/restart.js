@@ -49,12 +49,12 @@ class Restart extends Commando.Command {
 
     msg.channel.send('Server restart has been scheduled. Restart will happen in ' + minutes +" minutes");
     msg.guild.interval = setInterval(async function() {
-      minutes -= 1;
-      msg.channel.send('Restarting the server in ' + minutes + ' minutes!');
       if (minutes == 0) {
         clearInterval(msg.guild.interval);
         restartServer();
       } else {
+        minutes -= 1;
+        msg.channel.send('Restarting the server in ' + minutes + ' minutes!');
         let requestOptions = await client.getRequestOptions(msg.guild, '/executeconsolecommand')
         requestOptions.qs.command = "say [ff00ff]Restarting_server_in_" + minutes + "_minutes."
         await request(requestOptions)
