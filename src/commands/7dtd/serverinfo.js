@@ -107,7 +107,7 @@ class ServerInfo extends Commando.Command {
             "\n:small_orange_diamond:  Day and night cycle: " + serverData.dayNightLength +
             "\n:small_orange_diamond:  Drop on death: " + serverData.dropOnDeath +
             "\n:small_orange_diamond:  Player killing mode: " + serverData.playerKillingMode +
-            "\n:small_orange_diamond:  Day light lenght: " + serverData.dayLightLength +
+            "\n:small_orange_diamond:  Day light length: " + serverData.dayLightLength +
             "\n:small_orange_diamond:  Land claim size: " + serverData.landClaimSize + " Dead zone: " + serverData.landClaimDeadZone + " Expiry date: " + serverData.landClaimExpiryTime +
             "\n:small_orange_diamond:  Air drop frequency: " + serverData.airDropFrequency + " hours" +
             "\n:small_orange_diamond:  Loot respawns in " + serverData.lootRespawnDays + " days"
