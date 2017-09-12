@@ -55,7 +55,12 @@ class ServerInfo extends Commando.Command {
           airDropFrequency: body.AirDropFrequency.value,
           lootRespawnDays: body.LootRespawnDays.value,
           isPasswordProtected: body.IsPasswordProtected.value,
-          EACEnabled: body.EACEnabled.value
+          EACEnabled: body.EACEnabled.value,
+          dropOnDeath: body.DropOnDeath.value,
+          dayLightLength: body.DayLightLength.value,
+          landClaimSize: body.LandClaimSize.value,
+          landClaimDeadZone: body.LandClaimDeadZone.value,
+          landClaimExpiryTime: body.LandClaimExpiryTime.value,
         }
 
         switch (serverData.playerKillingMode) {
@@ -74,17 +79,36 @@ class ServerInfo extends Commando.Command {
 
         }
 
+        switch (serverData.dropOnDeath) {
+          case 0:
+            serverData.dropOnDeath = "Nothing";
+            break;
+          case 1:
+            serverData.dropOnDeath = "Belt";
+            break;
+          case 2:
+            serverData.dropOnDeath = "Backpack";
+            break;
+          case 3:
+            serverData.dropOnDeath = "Delete all";
+            break;
+        }
+
         var embed = client.makeBillEmbed().setTitle(serverData.gameHost)
           .addField("Description", serverData.serverDescription)
           .addField("IP address", serverData.ip + ":" + serverData.port, true)
           .addField("Version", serverData.version, true)
           .addField("Max players", serverData.maxPlayers, true)
+          .addField("World", serverData.levelName, true)
           .addField("Settings",
             serverData.isPasswordProtected + " Password protected\n" +
             serverData.EACEnabled + " EAC Enabled\n" +
             ":small_orange_diamond:  Game difficulty: " + serverData.gameDifficulty +
             "\n:small_orange_diamond:  Day and night cycle: " + serverData.dayNightLength +
+            "\n:small_orange_diamond:  Drop on death: " + serverData.dropOnDeath +
             "\n:small_orange_diamond:  Player killing mode: " + serverData.playerKillingMode +
+            "\n:small_orange_diamond:  Day light lenght: " + serverData.dayLightLength +
+            "\n:small_orange_diamond:  Land claim size: " + serverData.landClaimSize + " Dead zone: " + serverData.landClaimDeadZone + " Expiry date: " + serverData.landClaimExpiryTime +
             "\n:small_orange_diamond:  Air drop frequency: " + serverData.airDropFrequency + " hours" +
             "\n:small_orange_diamond:  Loot respawns in " + serverData.lootRespawnDays + " days"
           );
