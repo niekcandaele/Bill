@@ -26,7 +26,8 @@ class Set extends Commando.Command {
       ["ip", setIP],
       ["port", setPort],
       ["authname", setAuthName],
-      ["authtoken", setAuthToken]
+      ["authtoken", setAuthToken],
+      ["prefix", setPrefix]
     ]);
 
 
@@ -128,6 +129,22 @@ class Set extends Commando.Command {
       }
       return msg.channel.send(message, {code: true})
     }
+
+    function setPrefix(args) {
+      let oldVal = thisConf.prefix;
+      try {
+        client.logger.debug("Trying to set prefix for " + msg.guild.id + " to: " + args);
+        thisConf.prefix = args;
+        client.guildConf.set(msg.guild.id, thisConf);
+        msg.guild.commandPrefix = args;
+      } catch (e) {
+        client.logger.error(e);
+        client.logError(msg, e);
+      }
+      let message = "Prefix for " + msg.guild.name + " was changed \nFrom: " + oldVal + " \nTo:   " + thisConf.prefix
+      client.logger.debug(message);
+      return msg.channel.send(message, {code: true})
+    };
 
 
     function deleteMsg() {

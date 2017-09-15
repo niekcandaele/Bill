@@ -236,10 +236,18 @@ function initData() {
     }
   }
 
+  function setGuildPrefixes(value) {
+    const guild = value;
+    let thisConf = guildConf.get(guild.id);
+    guild.commandPrefix = thisConf.prefix;
+  }
+
   client.logger.info("Checking if all guild configs are initialized")
   Guilds.forEach(checkIfGuildConfigIsPopulated)
   client.logger.info("Checking if all txt configs are initialized")
   Guilds.forEach(checkIfTxtConfigIsPopulated)
+  client.logger.info("Loading and setting individual guild prefixes")
+  Guilds.forEach(setGuildPrefixes)
 
 
 
