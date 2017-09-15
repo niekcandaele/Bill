@@ -8,6 +8,7 @@ class Txt extends Commando.Command {
       name: 'txt',
       group: '7dtd',
       memberName: 'txt',
+      guildOnly: true,
       description: 'Custom text command.',
       details: "Set text specific to your guild, useful for serverip, rules, help, ...",
       examples: [

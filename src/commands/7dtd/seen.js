@@ -6,6 +6,7 @@ class Seen extends Commando.Command {
     super(client, {
       name: 'seen',
       group: '7dtd',
+      guildOnly: true,
       memberName: 'seen',
       description: 'Tells you when a player was last online',
       details: "Shows dateTime",

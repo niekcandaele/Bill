@@ -8,6 +8,7 @@ class TopTime extends Commando.Command {
       name: 'toptime',
       group: '7dtd',
       memberName: 'toptime',
+      guildOnly: true,
       description: 'Lists top players by playtime',
       details: "Optionally takes a number as argument to specify how many players to list",
       examples: ['toptime', 'toptime 5']

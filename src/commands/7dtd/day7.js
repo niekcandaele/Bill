@@ -8,6 +8,7 @@ class Day7 extends Commando.Command {
       name: 'day7',
       aliases: ['d7', '7day', '7d'],
       group: '7dtd',
+      guildOnly: true,
       memberName: 'day7',
       description: 'Displays !day7 info about a server',
       details: "Shows online players, #animals, #hostiles",
