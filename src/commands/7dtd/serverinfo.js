@@ -102,12 +102,12 @@ class ServerInfo extends Commando.Command {
           .addField("Version", serverData.version, true)
           .addField("Max players", serverData.maxPlayers, true)
           .addField("World", serverData.levelName, true)
-          .addField("Max zombies: " + serverData.maxSpawnedZombies, "Bloodmoon enemy count: " + serverData.bloodMoonEnemyCount, true)
           .addField("Settings",
             serverData.isPasswordProtected + " Password protected\n" +
             serverData.EACEnabled + " EAC Enabled\n" +
             ":small_orange_diamond:  Game difficulty: " + serverData.gameDifficulty +
             "\n:small_orange_diamond:  Day and night cycle: " + serverData.dayNightLength +
+            "\n:small_orange_diamond:  Max zombies: " + serverData.maxSpawnedZombies + " Bloodmoon enemy count: " + serverData.bloodMoonEnemyCount + 
             "\n:small_orange_diamond:  Drop on death: " + serverData.dropOnDeath +
             "\n:small_orange_diamond:  Player killing mode: " + serverData.playerKillingMode +
             "\n:small_orange_diamond:  Day light length: " + serverData.dayLightLength +
