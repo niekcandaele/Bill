@@ -61,6 +61,8 @@ class ServerInfo extends Commando.Command {
           landClaimSize: body.LandClaimSize.value,
           landClaimDeadZone: body.LandClaimDeadZone.value,
           landClaimExpiryTime: body.LandClaimExpiryTime.value,
+          bloodMoonEnemyCount: body.BloodMoonEnemyCount.value,
+          maxSpawnedZombies: body.MaxSpawnedZombies.value,
         }
 
         switch (serverData.playerKillingMode) {
@@ -100,6 +102,7 @@ class ServerInfo extends Commando.Command {
           .addField("Version", serverData.version, true)
           .addField("Max players", serverData.maxPlayers, true)
           .addField("World", serverData.levelName, true)
+          .addField("Max zombies: " + serverData.maxSpawnedZombies, "Bloodmoon enemy count: " + serverData.bloodMoonEnemyCount, true)
           .addField("Settings",
             serverData.isPasswordProtected + " Password protected\n" +
             serverData.EACEnabled + " EAC Enabled\n" +
