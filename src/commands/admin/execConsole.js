@@ -24,6 +24,13 @@ class ExecConsole extends Commando.Command {
           prompt: 'Specify parameters please',
           default: ' ',
           type: 'string'
+        },
+        {
+          key: 'file',
+          label: 'Return output as file or regular',
+          prompt: 'Specify wheter you want a file or note please',
+          default: '0',
+          type: 'boolean'
         }
       ],
       memberName: 'execconsole',
@@ -55,12 +62,12 @@ class ExecConsole extends Commando.Command {
         let fileName = msg.guild.name + "_" + data.command + ".txt"
         let embed = client.makeBillEmbed().setTitle("Console command ran");
 
-        if (output.length > 1750) {
+        if (output.length > 1750 || args.file == 1) {
           fs.writeFile(filePath + fileName, data.result, function(err) {
             if (err) {
               throw err
             }
-            embed.setDescription(input + "\n\n" + ":outbox_tray: \n```\n Output too long! Logging to file. \n```");
+            embed.setDescription(input + "\n\n" + ":outbox_tray: \n```\n Logging to file. \n```");
             msg.channel.send({
               embed: embed,
               files: [filePath + fileName]
