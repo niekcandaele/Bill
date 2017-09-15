@@ -25,13 +25,6 @@ class ExecConsole extends Commando.Command {
           default: ' ',
           type: 'string'
         },
-        {
-          key: 'file',
-          label: 'Return output as file or regular',
-          prompt: 'Specify wheter you want a file or note please',
-          default: '0',
-          type: 'boolean'
-        }
       ],
       memberName: 'execconsole',
       description: 'Executes a console command',
@@ -62,7 +55,7 @@ class ExecConsole extends Commando.Command {
         let fileName = msg.guild.name + "_" + data.command + ".txt"
         let embed = client.makeBillEmbed().setTitle("Console command ran");
 
-        if (output.length > 1750 || args.file == 1) {
+        if (output.length > 1000) {
           fs.writeFile(filePath + fileName, data.result, function(err) {
             if (err) {
               throw err
