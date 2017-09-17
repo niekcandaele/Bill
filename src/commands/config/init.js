@@ -48,6 +48,9 @@ class Init extends Commando.Command {
     const port = args.port
     const name = args.name
     const token = args.token
+    let colorRed = "FF0033"
+    let colorOrange = "ffbb00"
+    let colorGreen = "4cff00"
     let embed = makeStatusEmbed(client.makeBillEmbed());
     let errorReceived
 
@@ -57,7 +60,7 @@ class Init extends Commando.Command {
       embed
     }).then(async function(message) {
       let statusMesssage = message
-      embed.description = "Checking for access to necessary api endpoints\n";
+      embed.description = ":loudspeaker: Checking for access to necessary api endpoints\n";
       client.logger.info("Checking for access to necessary api endpoints")
       updateStatus(embed, statusMesssage);
 
@@ -74,11 +77,13 @@ class Init extends Commando.Command {
       await request(requestOptions)
         .then(function(response) {
           addLineToDescription(embed, ":white_check_mark: Day 7 data loaded succesfully.");
+          embed.setColor(colorOrange);
           client.logger.debug("Day 7 data loaded succesfully");
           updateStatus(embed, statusMesssage);
         })
         .catch(function(error) {
           embed.title = ":x: Server not initialized";
+          embed.setColor(colorRed);
           addLineToDescription(embed, ":x: Check if day7 data can be read has failed");
           client.logger.error("Check if day7data can be read has failed. error: " + error);
           updateStatus(embed, statusMesssage);
@@ -97,13 +102,15 @@ class Init extends Commando.Command {
           await request(requestOptions)
             .then(function(response) {
               embed.title = ":white_check_mark: Server initialized";
+              embed.setColor(colorGreen);
               addLineToDescription(embed, ":white_check_mark: Test command executed succesfully.");
               client.logger.debug("Test command executed succesfully.");
               updateStatus(embed, statusMesssage);
             })
             .catch(function(error) {
-              embed.title = ":warning: Initialization failed, see below for errors."
+              embed.title = ":warning: Initialization failed, see below for errors.";
               addLineToDescription(embed, ":warning: Console commands cannot be executed, some functions may not work.");
+              addLineToDescription(embed, ":bulb: Did you set a correct authorization name and/or token?");
               client.logger.error("Check if console commands can be executed has failed. error: " + error);
               updateStatus(embed, statusMesssage);
             })
@@ -119,6 +126,7 @@ class Init extends Commando.Command {
       embed.description += line + "\n";
       return embed
     }
+
     function updateStatus(embed, statusMesssage) {
       return statusMesssage.edit({
         embed
