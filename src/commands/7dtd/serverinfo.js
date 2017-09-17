@@ -7,7 +7,7 @@ class ServerInfo extends Commando.Command {
   constructor(client) {
     super(client, {
       name: 'serverinfo',
-      aliases: ['serverinfo', 'server', 'sinfo', 'si'],
+      aliases: ['serverinfo', 'server', 'sinfo', 'si', 'info'],
       group: '7dtd',
       memberName: 'serverinfo',
       description: 'Shows serverinfo',
