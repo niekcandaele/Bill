@@ -44,7 +44,7 @@ client.on('ready', () => {
 
 // Logs when a command is run (monitoring for beta stage)
 client.on('commandRun', (command, promise, message) => {
-  client.logger.info("COMMAND RAN: " + message.author.username + " ran " + command.name + " like this: " + message.cleanContent + " on " + message.guild.name);
+  client.logger.info("COMMAND RAN: " + message.author.username + " ran " + command.name + " on " + message.guild.name);
   var cmdsRan = client.botStats.get('cmdsRan');
   client.botStats.set('cmdsRan', cmdsRan + 1);
 });

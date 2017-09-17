@@ -8,6 +8,7 @@ class Restart extends Commando.Command {
   constructor(client) {
     super(client, {
       name: 'restart',
+      aliases: ['restart', 'r'],
       guildOnly: true,
       group: 'admin',
       memberName: 'restart',
