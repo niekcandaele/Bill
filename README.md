@@ -12,9 +12,9 @@ The entire setup is done via a single command.
 `$init *serverip* *port* *name* *token* `
 
 So we need 4 values:
-   - [IP adress](#-2.1-IP)
-   - [Webserver port](#-2.2-Port)
-   - [Authorization name and token](#-2.3-Name-and-token)
+   - [IP adress](#2.1-IP)
+   - [Webserver port](#2.2-Port)
+   - [Authorization name and token](#2.3-Name-and-token)
 
 ### 2.1 IP
 The IP is the same as the IP used by your players to join the game. Easy enough.
