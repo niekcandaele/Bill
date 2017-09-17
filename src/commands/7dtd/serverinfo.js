@@ -7,6 +7,7 @@ class ServerInfo extends Commando.Command {
   constructor(client) {
     super(client, {
       name: 'serverinfo',
+      aliases: ['serverinfo', 'server', 'sinfo', 'si'],
       group: '7dtd',
       memberName: 'serverinfo',
       description: 'Shows serverinfo',
@@ -107,8 +108,8 @@ class ServerInfo extends Commando.Command {
             serverData.EACEnabled + " EAC Enabled\n" +
             ":small_orange_diamond:  Game difficulty: " + serverData.gameDifficulty +
             "\n:small_orange_diamond:  Day and night cycle: " + serverData.dayNightLength +
-            "\n:small_orange_diamond:  Max zombies: " + serverData.maxSpawnedZombies + 
-            "\n:small_orange_diamond:  Bloodmoon enemy count: " + serverData.bloodMoonEnemyCount + 
+            "\n:small_orange_diamond:  Max zombies: " + serverData.maxSpawnedZombies +
+            "\n:small_orange_diamond:  Bloodmoon enemy count: " + serverData.bloodMoonEnemyCount +
             "\n:small_orange_diamond:  Drop on death: " + serverData.dropOnDeath +
             "\n:small_orange_diamond:  Player killing mode: " + serverData.playerKillingMode +
             "\n:small_orange_diamond:  Day light length: " + serverData.dayLightLength +

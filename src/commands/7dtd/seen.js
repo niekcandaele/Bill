@@ -5,6 +5,7 @@ class Seen extends Commando.Command {
   constructor(client) {
     super(client, {
       name: 'seen',
+      aliases: ['seen', 'lastplayed', 'played'],
       group: '7dtd',
       guildOnly: true,
       memberName: 'seen',
