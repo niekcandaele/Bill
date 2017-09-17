@@ -61,7 +61,7 @@ class Init extends Commando.Command {
     }).then(async function(message) {
       let statusMesssage = message
       embed.description = ":loudspeaker: Checking for access to necessary api endpoints\n";
-      client.logger.info("Checking for access to necessary api endpoints")
+      client.logger.debug("Checking for access to necessary api endpoints")
       updateStatus(embed, statusMesssage);
 
       let requestOptions = {
@@ -84,7 +84,8 @@ class Init extends Commando.Command {
         .catch(function(error) {
           embed.title = ":x: Server not initialized";
           embed.setColor(colorRed);
-          addLineToDescription(embed, ":x: Check if day7 data can be read has failed");
+          addLineToDescription(embed, ":x: Check if day7 data can be read has failed\n:x: Error: " + error);
+          addLineToDescription(embed, ":bulb: Did you set a correct IP and/or port?");
           client.logger.error("Check if day7data can be read has failed. error: " + error);
           updateStatus(embed, statusMesssage);
         }).then(async function() {
@@ -109,12 +110,14 @@ class Init extends Commando.Command {
             })
             .catch(function(error) {
               embed.title = ":warning: Initialization failed, see below for errors.";
-              addLineToDescription(embed, ":warning: Console commands cannot be executed, some functions may not work.");
+              addLineToDescription(embed, ":warning: Console commands cannot be executed, some functions may not work.\n:x: Error: " + error);
               addLineToDescription(embed, ":bulb: Did you set a correct authorization name and/or token?");
               client.logger.error("Check if console commands can be executed has failed. error: " + error);
               updateStatus(embed, statusMesssage);
             })
             .finally(function() {
+              addLineToDescription(embed, ":information_source: Saving config")
+              saveToConfig(client.guildConf, msg.guild);
               updateStatus(embed, statusMesssage);
             })
         })
@@ -139,6 +142,16 @@ class Init extends Commando.Command {
       return embed
     }
 
+    function saveToConfig(guildsConfig, guild) {
+      let thisConf = guildsConfig.get(guild.id);
+      thisConf.serverip = ip;
+      thisConf.webPort = port;
+      thisConf.authName = name;
+      thisConf.authToken = token;
+      client.logger.debug("Saving config for " + guild.name);
+      return guildsConfig.set(guild.id, thisConf);
+    }
+
     function resolveErrorCode(error) {
       switch (error.error.code) {
         case "ETIMEDOUT":
@@ -153,27 +166,6 @@ class Init extends Commando.Command {
       return error
     }
 
-    async function checkDay7Data() {
-      let requestOptions = {
-        uri: "http://" + ip + ":" + port + "/api'/getplayerslocation",
-        json: true,
-        timeout: 10000,
-        qs: {
-          adminuser: name,
-          admintoken: token
-        },
-        useQuerystring: true
-      };
-      await request(requestOptions)
-        .then(function(response) {
-          return true
-        })
-        .catch(function(error) {
-          client.logger.error("Check if getstats can be accessed has failed. error: " + error.error.code);
-          errorReceived = error;
-          return false
-        })
-    }
   }
 }
 module.exports = Init;
