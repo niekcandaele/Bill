@@ -63,7 +63,7 @@ class Txt extends Commando.Command {
 
     // Lists all current txt files set
     if (argsArr[0] == 'list') {
-      client.logger.info("Listing textFiles for " + msg.guild.name);
+      client.logger.debug("Listing textFiles for " + msg.guild.name);
       listTxt();
       return;
     }
