@@ -55,6 +55,7 @@ class Init extends Commando.Command {
     let errorReceived
 
     client.logger.info("Initializing a server. Discord name: " + msg.guild.name + " args: " + ip + " " + port);
+    msg.delete();
     embed.title = ":gear: Verifying your server.";
     msg.channel.send({
       embed
