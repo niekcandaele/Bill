@@ -8,7 +8,7 @@
 
   - When was a player last online?
 
-- ![example_d7_seen](https://imgur.com/sFpWZcA)
+ ![example_d7_seen](https://imgur.com/sFpWZcA.png)
 
 - **toptime**
 
@@ -18,12 +18,12 @@
 
   - Shows detailed information about the server.
 
-- ![example_toptime_serverinfo](https://imgur.com/I1Q9l47)
+ ![example_toptime_serverinfo](https://imgur.com/I1Q9l47.png)
 
 - **exec Console**
 
   - Allows admins to execute console commands from discord.
-- ![example_ex](https://imgur.com/A5HCHgT)
+ ![example_ex](https://imgur.com/A5HCHgT.png)
 
 - **restart**
 
