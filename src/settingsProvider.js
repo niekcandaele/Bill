@@ -29,7 +29,9 @@ class billSettingProvider extends Commando.SettingProvider {
     this.setGuildConf = function(newGuildConfig) {
       guildConf = newGuildConfig;
     }
-    this.getDefaultSettings = function(){return defaultSettings}
+    this.getDefaultSettings = function() {
+      return defaultSettings
+    }
 
   }
 
@@ -65,10 +67,8 @@ class billSettingProvider extends Commando.SettingProvider {
 
 
     client.logger.info("Initializing data");
+
     client.logger.info("Checking if all guild configs are initialized properly")
-    //Guilds.forEach(this.checkIfGuildConfigIsPopulated)
-
-
     for (var guild of Guilds.values()) {
       client.logger.debug("Checking config for " + guild.name);
       let thisConf = guildConf.get(guild.id);
@@ -76,74 +76,21 @@ class billSettingProvider extends Commando.SettingProvider {
         client.logger.error("Guild config not found for " + guild.name + ". Setting defaults");
         guildConf.set(guild.id, defaultSettings)
       }
-
+      client.logger.debug("Checking if all config properties are defined for " + guild.name);
       for (var property in defaultSettings) {
         if (!thisConf.hasOwnProperty(property)) {
-          client.logger.error("Property " + property + " for " + guild.name + " was not defined");
-          //thisConf[property] = defaultSettings[property];
+          client.logger.error("Property " + property + " for " + guild.name + " was not defined, setting default");
+          thisConf[property] = defaultSettings[property];
+          guildConf.set(guild.id, thisConf)
         }
       }
-
-
       if (thisConf.prefix != guild.commandPrefix) {
         client.logger.info("Setting prefix for " + guild.name + " " + thisConf.prefix + " " + guild.commandPrefix);
         guild.commandPrefix = thisConf.prefix
       }
-
-
     }
-
-
-
   }
 
 }
 
 module.exports = billSettingProvider
-
-/*
-    this.init = function(client) {
-      let guildConf = client.guildConf
-      let txtFiles = client.txtFiles
-      const Guilds = client.guilds
-
-      client.logger.info("Initializing data");
-
-      function checkIfGuildConfigIsPopulated(value) {
-        const guild = value,
-          defaultProperties = Object.getOwnPropertyNames(defaultSettings);
-        if (!guildConf.has(guild.id)) {
-          client.logger.error("Guild config not found for " + guild.name + ". Setting defaults");
-          this.set(guild.id, client.defaultSettings)
-        }
-        for (var i = 0; i < defaultProperties.length; i++) {
-          let thisConf = guildConf.get(guild.id);
-          if (!thisConf.hasOwnProperty(defaultProperties[i])) {
-            client.logger.error("Property " + defaultProperties[i] + " for " + guild.name + " was not defined, setting default value");
-            thisConf[defaultProperties[i]] = client.defaultSettings[defaultProperties[i]]
-            set(guild.id, thisConf)
-          }
-        }
-      }
-
-
-      function setGuildPrefixes(value) {
-        const guild = value;
-        let thisConf = guildConf.get(guild.id);
-        guild.commandPrefix = thisConf.prefix;
-      }
-
-      client.logger.info("Checking if all guild configs are initialized properly")
-      Guilds.forEach(checkIfGuildConfigIsPopulated)
-      client.logger.info("Loading and setting individual guild prefixes")
-      Guilds.forEach(setGuildPrefixes)
-
-
-
-          //client.botStats.set('cmdsRan', 0);
-          client.logger.info("Loading botStats info");
-          client.botStats.set('githubLink', "https://github.com/niekcandaele/Bill");
-          client.botStats.set('website', "https://niekcandaele.github.io/Bill/");
-
-
-    }*/
