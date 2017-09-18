@@ -15,7 +15,7 @@
 - **prefix**
   - Change the bot prefix
 - **help**
-  - :eyes: help *command* for detailed info
+  - help *command* for detailed info
 
 # Installation instructions
 
@@ -23,7 +23,7 @@ Make sure you have [Allocs Server Fixes](https://7dtd.illy.bz/wiki) installed on
 
 Note: replace all values encased in `* *` in the examples with the values for your server.
 
-## 1. [Add the bot to your server](https://discordapp.com/oauth2/authorize?client_id=340416036610244609&scope=bot&permissions=117760)
+## 1. [Add the bot to your server](https://discordapp.com/oauth2/authorize?client_id=340416036610244609&scope=bot&permissions=27648)
 
 ## 2. Init command
 
