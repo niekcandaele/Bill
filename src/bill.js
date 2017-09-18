@@ -43,10 +43,17 @@ client.on('ready', () => {
 });
 
 // Logs when a command is run (monitoring for beta stage)
-client.on('commandRun', (command, promise, message) => {
+client.on('commandRun', (command, promise, message, args) => {
   client.logger.info("COMMAND RAN: " + message.author.username + " ran " + command.name + " on " + message.guild.name);
   var cmdsRan = client.botStats.get('cmdsRan');
   client.botStats.set('cmdsRan', cmdsRan + 1);
+  // If prefix was changed, save it to the database
+  if (command == prefixCommand && args.prefix.length > 0) {
+    client.logger.debug("Saving a prefix for " + message.guild.name);
+    let thisConf = client.guildConf.get(message.guild.id);
+    thisConf.prefix = args.prefix
+    client.guildConf.set(message.guild.id, thisConf);
+  }
 });
 client.on("guildCreate", guild => {
   if (!client.guildConf.has(guild.id)) {
@@ -283,6 +290,9 @@ client.registry.registerGroup("config");
 client.registry.registerGroup("admin");
 // Registers all commands in the ./commands/ directory
 client.registry.registerCommandsIn(path.join(__dirname, '/commands'));
+
+// To handle persistent prefixes
+const prefixCommand = client.registry.commands.get('prefix');
 
 // read config file
 fs.readFile('../config.json', 'utf8', function(err, data) {
