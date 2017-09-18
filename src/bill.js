@@ -106,7 +106,7 @@ client.on("message", message => {
         embed
       });
     } else {
-      return client.logger.info("Invalid command by: " + message.author.username + " on " + message.guild.name + " " + message.content);
+      return client.logger.info("Invalid command by: " + message.author.username + " on " + message.guild.name);
     }
   }
 });
