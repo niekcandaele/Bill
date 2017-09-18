@@ -31,8 +31,9 @@ client.on('ready', () => {
   // *-*--*-*-*-*-*-* Reset data on test server
   let devGuild = client.guilds.get("336821518250147850");
   //devGuild.settings.set("testProperty", "testData");
-  client.logger.debug("Resetting data on test server");
+  //client.logger.debug("Resetting data on test server");
   //devGuild.settings.clear();
+  //devGuild.settings.remove("guildOwner")
 
 });
 

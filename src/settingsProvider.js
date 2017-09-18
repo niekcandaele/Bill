@@ -29,18 +29,7 @@ class billSettingProvider extends Commando.SettingProvider {
     this.setGuildConf = function(newGuildConfig) {
       guildConf = newGuildConfig;
     }
-    this.getAdjustedGuildConfig = function(guild) {
-      const defaultProperties = Object.getOwnPropertyNames(defaultSettings);
-      let thisConf = guildConf.get(guild.id);
-
-      for (var i = 0; i < defaultProperties.length; i++) {
-        if (!thisConf.hasOwnProperty(defaultProperties[i])) {
-          client.logger.error("Property " + defaultProperties[i] + " for " + guild.name + " was not defined");
-          thisConf[defaultProperties[i]] = defaultSettings[defaultProperties[i]]
-        }
-      }
-      return thisConf
-    }
+    this.getDefaultSettings = function(){return defaultSettings}
 
   }
 
@@ -70,10 +59,10 @@ class billSettingProvider extends Commando.SettingProvider {
 
 
   init(client) {
-    let txtFiles = client.txtFiles
     const Guilds = new Discord.Collection(client.guilds);
-    let defaultSettings = this.defaultSettings;
+    const defaultSettings = this.getDefaultSettings();
     let guildConf = this.getGuildConf();
+
 
     client.logger.info("Initializing data");
     client.logger.info("Checking if all guild configs are initialized properly")
@@ -82,24 +71,26 @@ class billSettingProvider extends Commando.SettingProvider {
 
     for (var guild of Guilds.values()) {
       client.logger.debug("Checking config for " + guild.name);
-      const thisConf = guildConf.get(guild.id);
-
-      if (!guildConf.has(guild.id)) {
+      let thisConf = guildConf.get(guild.id);
+      if (!guildConf.has(guild.id) || thisConf == "") {
         client.logger.error("Guild config not found for " + guild.name + ". Setting defaults");
-        guildConf.set(guild.id, client.defaultSettings)
-      } else {
-        let adjustedConfig = this.getAdjustedGuildConfig(guild);
-
-        if (!Object.is(JSON.stringify(thisConf), JSON.stringify(adjustedConfig))) {
-          client.logger.info("Guild config for " + guild.name + " was corrected!");
-          guildConf.set(guild.id, adjustedConfig);
-        }
-        if (thisConf.prefix != guild.commandPrefix) {
-          client.logger.info("Setting prefix for " + guild.name + " " + thisConf.prefix + " " + guild.commandPrefix);
-          guild.commandPrefix = thisConf.prefix
-        }
-
+        guildConf.set(guild.id, defaultSettings)
       }
+
+      for (var property in defaultSettings) {
+        if (!thisConf.hasOwnProperty(property)) {
+          client.logger.error("Property " + property + " for " + guild.name + " was not defined");
+          //thisConf[property] = defaultSettings[property];
+        }
+      }
+
+
+      if (thisConf.prefix != guild.commandPrefix) {
+        client.logger.info("Setting prefix for " + guild.name + " " + thisConf.prefix + " " + guild.commandPrefix);
+        guild.commandPrefix = thisConf.prefix
+      }
+
+
     }
 
 
