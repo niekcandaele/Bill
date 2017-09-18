@@ -1,3 +1,22 @@
+# Features
+
+- **day7**
+  - Shows game information about the server.
+- **toptime**
+  - Shows top players by playtime on server.
+- **seen**
+  - When was a player last online?
+- **serverinfo**
+  - Shows detailed information about the server.
+- **exec Console**
+  - Allows admins to execute console commands from discord.
+- **restart**
+  - Admins can schedule a server restart.
+- **prefix**
+  - Change the bot prefix
+- **help**
+  - :eyes: help *command* for detailed info
+
 # Installation instructions
 
 Make sure you have [Allocs Server Fixes](https://7dtd.illy.bz/wiki) installed on your server.
