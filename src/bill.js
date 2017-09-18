@@ -5,40 +5,34 @@ const request = require('request-promise');
 const path = require('path');
 const logger = require('logger');
 const persistentCollection = require('djs-collection-persistent');
+const billSettingProvider = require("./settingsProvider.js");
+const appConfig = require('../config.json');
 
 const client = new Commando.Client({
   owner: '220554523561820160',
   commandPrefix: '$',
   invite: "https://discordapp.com/invite/kuDJG6e",
-  unknownCommandResponse: false
+  unknownCommandResponse: false,
 });
+client.config = appConfig
+var loggerLevel;
+client.logger = logger.createLogger('../logs/development.log');
+client.logger.setLevel(client.config.loggerLevel);
+client.login(client.config.token);
+const settingProvider = new billSettingProvider(client);
+client.setProvider(settingProvider);
+
 
 client.on('ready', () => {
-  client.defaultTxt = {
-    default: 'Default message. See website for info on how to set up text messages!'
-  };
-  client.defaultSettings = {
-    prefix: "$",
-    modRole: "Moderator",
-    adminRole: "Administrator",
-    guildOwner: "id",
-    serverip: "localhost",
-    webPort: "1234",
-    authName: "bill",
-    authToken: "secretToken",
-    chatChannel: false,
-  };
-  client.logger.setLevel(loggerLevel);
-  client.commandPrefix = client.guildConf.get("prefix");
+  client.logger.info('Bot has logged in');
   client.user.setGame(client.commandPrefix + "botinfo");
-  initData();
   client.logger.info('Bill\'s  ready!');
 
-
-  // Reset data on test server
-  //client.guildConf.set("336821518250147850", defaultSettings);
-  // Set test data for txt files on test server
-  //client.txtFiles.delete("336821518250147850"); //, {default: 'test',default2: 'test2'});
+  // *-*--*-*-*-*-*-* Reset data on test server
+  let devGuild = client.guilds.get("336821518250147850");
+  //devGuild.settings.set("testProperty", "testData");
+  client.logger.debug("Resetting data on test server");
+  //devGuild.settings.clear();
 
 });
 
@@ -50,9 +44,7 @@ client.on('commandRun', (command, promise, message, args) => {
   // If prefix was changed, save it to the database
   if (command == prefixCommand && args.prefix.length > 0) {
     client.logger.debug("Saving a prefix for " + message.guild.name);
-    let thisConf = client.guildConf.get(message.guild.id);
-    thisConf.prefix = args.prefix
-    client.guildConf.set(message.guild.id, thisConf);
+    message.guild.settings.set("prefix", args.prefix);
   }
 });
 client.on("guildCreate", guild => {
@@ -173,16 +165,6 @@ client.makeBillEmbed = function() {
     .setThumbnail("http://i.imgur.com/5bm3jzh.png")
   return embed
 }
-// Gets the properties of an object and returns an array with property names
-client.getProperties = function(obj) {
-  var result = [];
-  for (var i in obj) {
-    if (obj.hasOwnProperty(i)) {
-      result.push(i);
-    }
-  }
-  return result;
-}
 // Takes a string of seconds and calculates a date object from that
 String.prototype.toHHMMSS = function() {
   var seconds = parseInt(this, 10);
@@ -218,46 +200,6 @@ function initData() {
 
   client.logger.info("Initializing data");
 
-  function checkIfGuildConfigIsPopulated(value) {
-    const guild = value,
-      defaultProperties = client.getProperties(client.defaultSettings);
-    if (!guildConf.has(guild.id)) {
-      client.logger.error("Guild config not found for " + guild.name + ". Setting defaults");
-      guildConf.set(guild.id, client.defaultSettings)
-    }
-    for (var i = 0; i < defaultProperties.length; i++) {
-      let thisConf = guildConf.get(guild.id);
-      if (!thisConf.hasOwnProperty(defaultProperties[i])) {
-        client.logger.error("Property " + defaultProperties[i] + " for " + guild.name + " was not defined, setting default value");
-        thisConf[defaultProperties[i]] = client.defaultSettings[defaultProperties[i]]
-        guildConf.set(guild.id, thisConf)
-      }
-    }
-  }
-
-  function checkIfTxtConfigIsPopulated(value) {
-    const guild = value
-    if (!txtFiles.has(guild.id)) {
-      client.logger.error("txtFiles not found for " + guild.name + ". Setting defaults");
-      client.txtFiles.set(guild.id, client.defaultTxt);
-    }
-  }
-
-  function setGuildPrefixes(value) {
-    const guild = value;
-    let thisConf = guildConf.get(guild.id);
-    guild.commandPrefix = thisConf.prefix;
-  }
-
-  client.logger.info("Checking if all guild configs are initialized")
-  Guilds.forEach(checkIfGuildConfigIsPopulated)
-  client.logger.info("Checking if all txt configs are initialized")
-  Guilds.forEach(checkIfTxtConfigIsPopulated)
-  client.logger.info("Loading and setting individual guild prefixes")
-  Guilds.forEach(setGuildPrefixes)
-
-
-
   //client.botStats.set('cmdsRan', 0);
   client.logger.info("Loading botStats info");
   client.botStats.set('githubLink', "https://github.com/niekcandaele/Bill");
@@ -265,14 +207,9 @@ function initData() {
 
 }
 
-client.logger = logger.createLogger('../logs/development.log');
-client.logger.info('Bot has logged in');
 
-client.logger.info("Loading persistent data");
-client.guildConf = new persistentCollection({
-  name: 'guildConf',
-  dataDir: '../data'
-});
+
+
 client.txtFiles = new persistentCollection({
   name: 'txtFiles',
   dataDir: '../data'
@@ -282,7 +219,8 @@ client.botStats = new persistentCollection({
   dataDir: '../data'
 });
 
-var loggerLevel;
+
+
 // Registers all built-in groups, commands, and argument types
 client.registry.registerDefaults();
 client.registry.registerGroup("7dtd");
@@ -293,15 +231,3 @@ client.registry.registerCommandsIn(path.join(__dirname, '/commands'));
 
 // To handle persistent prefixes
 const prefixCommand = client.registry.commands.get('prefix');
-
-// read config file
-fs.readFile('../config.json', 'utf8', function(err, data) {
-  if (err) {
-    return console.log(err);
-  }
-  data = JSON.parse(data);
-  //owner = data.owner;
-  var token = data.token;
-  loggerLevel = data.loggerLevel; // TODO: add this as option during startup
-  client.login(token);
-});
