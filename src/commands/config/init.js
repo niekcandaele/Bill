@@ -55,13 +55,17 @@ class Init extends Commando.Command {
     let errorReceived
 
     client.logger.info("Initializing a server. Discord name: " + msg.guild.name + " args: " + ip + " " + port);
-    msg.delete();
+    if (msg.deletable) {
+      msg.delete()
+    } else {
+      addLineToDescription(embed, ":warning: Could not delete the original message, make sure your authname and token are secure");
+    }
     embed.title = ":gear: Verifying your server.";
     msg.channel.send({
       embed
     }).then(async function(message) {
       let statusMesssage = message
-      embed.description = ":loudspeaker: Checking for access to necessary api endpoints\n";
+      addLineToDescription(embed, ":loudspeaker: Checking for access to necessary api endpoints");
       client.logger.debug("Checking for access to necessary api endpoints")
       updateStatus(embed, statusMesssage);
 
@@ -119,6 +123,7 @@ class Init extends Commando.Command {
             .finally(function() {
               addLineToDescription(embed, ":information_source: Saving config")
               saveToConfig(client.guildConf, msg.guild);
+              embed.addField("Bill discord for support and updates", "https://discordapp.com/invite/kuDJG6e")
               updateStatus(embed, statusMesssage);
             })
         })
@@ -140,6 +145,7 @@ class Init extends Commando.Command {
     function makeStatusEmbed(embed) {
       embed.addField("IP", ip, true)
         .addField("Port", port, true);
+        embed.description = "";
       return embed
     }
 
