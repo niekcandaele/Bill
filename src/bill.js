@@ -1,220 +1,74 @@
+"use strict";
 const Commando = require('discord.js-commando');
 const Discord = require('discord.js');
-const fs = require('fs');
 const request = require('request-promise');
 const path = require('path');
-const logger = require('logger');
 const persistentCollection = require('djs-collection-persistent');
-const billSettingProvider = require("./settingsProvider.js");
+const sqlite = require('sqlite');
+
+const makeBillEmbed = require("./util/billEmbed.js")
+const sevendtdRequest = require("./util/7dtdRequest.js")
+const billLogger = require("./service/billLogging.js")
 const appConfig = require('../config.json');
 
 const client = new Commando.Client({
-  owner: '220554523561820160',
-  commandPrefix: '$',
-  invite: "https://discordapp.com/invite/kuDJG6e",
+  owner: appConfig.owner,
+  commandPrefix: appConfig.prefix,
+  invite: appConfig.developerServer,
   unknownCommandResponse: false,
 });
+
 client.config = appConfig
-var loggerLevel;
-client.logger = logger.createLogger('../logs/development.log');
-client.logger.setLevel(client.config.loggerLevel);
+
+client.logger = billLogger(client);
+client.sevendtdRequest = new sevendtdRequest(client)
+client.setProvider(
+    sqlite.open(path.join(client.config.dataDir, 'settings.sqlite3')).then(db => new Commando.SQLiteProvider(db))
+).catch(client.logger.error);
+client.logger.info('Bill signing in.');
 client.login(client.config.token);
-const settingProvider = new billSettingProvider(client);
-client.setProvider(settingProvider);
+
 
 
 client.on('ready', () => {
-  client.logger.info('Bot has logged in');
   client.user.setGame(client.commandPrefix + "botinfo");
+
+  client.makeBillEmbed = function() {
+    const Colours = [
+      'D2FF28',
+      'D6F599',
+      '436436',
+      'C84C09'
+    ]
+    var randomColour = Colours[Math.floor(Math.random() * Colours.length)]
+    var embed = new Discord.RichEmbed()
+      //    .setTitle("Bill - A discord bot for 7 days to die")
+      .setColor(randomColour)
+      .setTimestamp()
+      .setURL("https://niekcandaele.github.io/Bill/")
+      .setFooter("-", "http://i.imgur.com/5bm3jzh.png")
+      .setThumbnail("http://i.imgur.com/5bm3jzh.png")
+    return embed
+  }
+
+
+
+  // -!-!-!--!-!-!--!-!--!-!-!--!-!-!--!-!--!-!-!
+  // DEV DATA CONTROL
+  // -!-!-!--!-!-!--!-!--!-!-!--!-!-!--!-!--!-!-!
+  const devGuild = client.guilds.get(client.config.devGuildID);
+  /*
+  guildSettingProvider.set(devGuild, "test" , "supertest")
+  console.log(guildSettingProvider.get(devGuild, "test"));
+  guildSettingProvider.remove(devGuild, "test");
+  console.log(guildSettingProvider.get(devGuild, "test"));
+  */
+  //guildSettingProvider.clear(devGuild)
   client.logger.info('Bill\'s  ready!');
-
-  // *-*--*-*-*-*-*-* Reset data on test server
-  let devGuild = client.guilds.get("336821518250147850");
-  //devGuild.settings.set("testProperty", "testData");
-  //client.logger.debug("Resetting data on test server");
-  //devGuild.settings.clear();
-  //devGuild.settings.remove("guildOwner")
-
-});
-
-// Logs when a command is run (monitoring for beta stage)
-client.on('commandRun', (command, promise, message, args) => {
-  client.logger.info("COMMAND RAN: " + message.author.username + " ran " + command.name + " on " + message.guild.name);
-  var cmdsRan = client.botStats.get('cmdsRan');
-  client.botStats.set('cmdsRan', cmdsRan + 1);
-  // If prefix was changed, save it to the database
-  if (command == prefixCommand && args.prefix.length > 0) {
-    client.logger.debug("Saving a prefix for " + message.guild.name);
-    message.guild.settings.set("prefix", args.prefix);
-  }
-});
-client.on("guildCreate", guild => {
-  if (!client.guildConf.has(guild.id)) {
-    client.logger.info("New guild added, default settings loaded. -- " + guild.name);
-    var thisConf = client.defaultSettings;
-    thisConf.guildOwner = guild.ownerID;
-    client.guildConf.set(guild.id, client.defaultSettings);
-    client.txtFiles.set(guild.id, client.defaultTxt);
-  }
-});
-client.on("guildDelete", guild => {
-  try {
-    client.logger.info("Deleting guild -- " + guild.name);
-    client.guildConf.delete(guild.id);
-    client.txtFiles.delete(guild.id);
-    client.logger.info("Guild deleted -- " + guild.name);
-  } catch (e) {
-    client.logger.error("Guild Delete " + e)
-  }
-});
-// Custom messages with txt command. This is where we check for shortform txt commands
-client.on("message", message => {
-  const Registry = client.registry;
-  const Commands = Registry.commands;
-  let args = message.content.slice(1, message.content.length);
-
-  // If message doesn't start with the command prefix, we don't do anything
-  if (message.content.startsWith(client.commandPrefix)) {
-    // Shortform text only has a textname without spaces.
-    if (args.includes(" ")) {
-      return
-    }
-    // Check if it is a command
-    client.logger.debug("Message received -- Is " + args + " in Commands? : " + Commands.has(args));
-    if (Commands.has(args)) {
-      return
-    }
-
-    const textFiles = client.txtFiles.get(message.guild.id);
-    // Check if message exists in textfiles
-    if (textFiles[args]) {
-      const txtName = args
-      const txtToSend = textFiles[args];
-      // Sends the text
-      let embed = client.makeBillEmbed();
-      embed.setDescription(txtToSend)
-        .setTitle(txtName);
-      client.logger.info("Short form of txt ran: --- " + message.guild.name + " " + message.content)
-      return message.channel.send({
-        embed
-      });
-    } else {
-      return client.logger.info("Invalid command by: " + message.author.username + " on " + message.guild.name);
-    }
-  }
-});
-
-process.on('uncaughtException', function(err) {
-  client.logger.error(err);
-  console.log(err);
-  //process.exit(1);
-});
-
-// Check if a user is administrator of his guild
-client.checkIfAdmin = function(member, guild) {
-  const guildOwner = guild.owner
-  const ownerRole = guild.ownerID
-  const adminRole = guildOwner.highestRole
-  var isAdmin = member.roles.has(adminRole.id);
-  client.logger.debug("Checking if " + member.user.username + " is admin. " + isAdmin);
-  if (isAdmin || client.isOwner(member.user)) {
-    return true
-  } else {
-    return false
-  }
-}
-// Sets default request options
-client.getRequestOptions = async function(guild, apiModule) {
-  try {
-    const thisConf = await client.guildConf.get(guild.id);
-    const serverip = thisConf.serverip;
-    const webPort = thisConf.webPort;
-    const authName = thisConf.authName;
-    const authToken = thisConf.authToken;
-    const baseUrl = "http://" + serverip + ":" + webPort + "/api";
-    let requestOptions = {
-      uri: baseUrl + apiModule,
-      json: true,
-      timeout: 10000,
-      qs: {
-        adminuser: authName,
-        admintoken: authToken
-      },
-      useQuerystring: true
-    };
-    return requestOptions
-  } catch (error) {
-    client.logger.error("Error! getRequestOptions for " + guild.name + error);
-    return msg.channel.send("Error getting web request options. See the website for info on configuration");
-  }
-}
-// Format for sending messages that look consistent
-client.makeBillEmbed = function() {
-  const Colours = [
-    'D2FF28',
-    'D6F599',
-    '436436',
-    'C84C09'
-  ]
-  var randomColour = Colours[Math.floor(Math.random() * Colours.length)]
-  var embed = new Discord.RichEmbed()
-    //    .setTitle("Bill - A discord bot for 7 days to die")
-    .setColor(randomColour)
-    .setTimestamp()
-    .setURL("https://niekcandaele.github.io/Bill/")
-    .setFooter("-", "http://i.imgur.com/5bm3jzh.png")
-    .setThumbnail("http://i.imgur.com/5bm3jzh.png")
-  return embed
-}
-// Takes a string of seconds and calculates a date object from that
-String.prototype.toHHMMSS = function() {
-  var seconds = parseInt(this, 10);
-  var days = Math.floor(seconds / 86400);
-  var hours = Math.floor((seconds % 86400) / 3600);
-  var minutes = Math.floor(((seconds % 86400) % 3600) / 60);
-  var seconds = ((seconds % 86400) % 3600) % 60;
-  if (days < 10) {
-    days = "0" + days;
-  }
-  if (hours < 10) {
-    hours = "0" + hours;
-  }
-  if (minutes < 10) {
-    minutes = "0" + minutes;
-  }
-  if (seconds < 10) {
-    seconds = "0" + seconds;
-  }
-  var time = {
-    days: days,
-    hours: hours,
-    minutes: minutes,
-    seconds: seconds
-  };
-  return time;
-}
-
-function initData() {
-  let guildConf = client.guildConf
-  let txtFiles = client.txtFiles
-  const Guilds = client.guilds
-
-  client.logger.info("Initializing data");
-
-  //client.botStats.set('cmdsRan', 0);
-  client.logger.info("Loading botStats info");
-  client.botStats.set('githubLink', "https://github.com/niekcandaele/Bill");
-  client.botStats.set('website', "https://niekcandaele.github.io/Bill/");
-
-}
+})
 
 
 
-
-client.txtFiles = new persistentCollection({
-  name: 'txtFiles',
-  dataDir: '../data'
-});
 client.botStats = new persistentCollection({
   name: 'botStats',
   dataDir: '../data'
@@ -223,12 +77,12 @@ client.botStats = new persistentCollection({
 
 
 // Registers all built-in groups, commands, and argument types
-client.registry.registerDefaults();
-client.registry.registerGroup("7dtd");
-client.registry.registerGroup("config");
-client.registry.registerGroup("admin");
+client.registry.registerGroups([
+    ['7dtd', '7 Days to die commands'],
+    ['admin', 'Administrator commands'],
+    ['config', 'configuration commands']
+  ])
+  .registerDefaults()
+  .registerCommandsIn(path.join(__dirname, 'commands'));
 // Registers all commands in the ./commands/ directory
-client.registry.registerCommandsIn(path.join(__dirname, '/commands'));
-
-// To handle persistent prefixes
-const prefixCommand = client.registry.commands.get('prefix');
+//client.registry.registerCommandsIn(path.join(__dirname, '/commands'));

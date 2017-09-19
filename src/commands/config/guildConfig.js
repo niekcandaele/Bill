@@ -14,27 +14,17 @@ class GuildConfig extends Commando.Command {
 
   async run(msg, args) {
     const client = this.client;
-    const thisConf = await client.guildConf.get(msg.guild.id);
-    const guildOwner = msg.guild.owner
+    const guild =  msg.guild
+    const ip = guild.settings.get("serverip");
+    const port = guild.settings.get("webPort");
 
-    // Check if author of command is guild administrator or bot owner
-    if (!client.checkIfAdmin(msg.member, msg.guild)) {
-      client.logger.error(msg.author.username + " tried to run " + msg.content + " command but is not authorized!");
-      return msg.channel.send("You need to have the administrator role to view the server config");
-    }
+    let embed = client.makeBillEmbed().setTitle("Current config for " + msg.guild.name)
+    .addField("IP", ip).addField("Port", port);
 
-    let confKeys = Object.keys(thisConf);
-    let confValues = Object.values(thisConf);
 
-    let embed = client.makeBillEmbed().setTitle("Current config for " + msg.guild.name);
-
-    for (var i = 0; i < confKeys.length; i++) {
-      // We don't want to post the authname and token to the public!
-      if (confKeys[i] != 'authName' && confKeys[i] != 'authToken') {
-        embed.addField(confKeys[i], confValues[i], true)
-      }
-    }
-    msg.channel.send({embed})
+    msg.channel.send({
+      embed
+    })
   }
 }
 module.exports = GuildConfig;

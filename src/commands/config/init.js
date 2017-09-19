@@ -150,13 +150,11 @@ class Init extends Commando.Command {
     }
 
     function saveToConfig(guildsConfig, guild) {
-      let thisConf = guildsConfig.get(guild.id);
-      thisConf.serverip = ip;
-      thisConf.webPort = port;
-      thisConf.authName = name;
-      thisConf.authToken = token;
       client.logger.debug("Saving config for " + guild.name);
-      return guildsConfig.set(guild.id, thisConf);
+      guild.settings.set("serverip", ip)
+      guild.settings.set("webPort", port)
+      guild.settings.set("authName", name)
+      guild.settings.set("authToken", token)
     }
 
     function resolveErrorCode(error) {
