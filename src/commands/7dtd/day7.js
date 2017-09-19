@@ -17,14 +17,10 @@ class Day7 extends Commando.Command {
   }
 
   async run(msg, args) {
-    const client = msg.client;
-    const thisConf = await client.guildConf.get(msg.guild.id);
-    let messageData = []
-
-    // Requests the player data from server
-    let requestOptions = await client.getRequestOptions(msg.guild, '/getplayerslocation');
-    await request(requestOptions)
-      .then(function(data) {
+    const client = this.client;
+    try {
+      const onlinePlayers = await client.sevendtdRequest.doRequest(msg.guild, "getplayerslocation").then(function(data) {
+        // parse data into a useful format
         let onlinePlayerList = ""
         for (var i = 0; i < data.length; i++) {
           var player = data[i];
@@ -35,77 +31,56 @@ class Day7 extends Commando.Command {
         if (onlinePlayerList == "") {
           onlinePlayerList = "No players online!"
         }
-        messageData[0] = onlinePlayerList
+        return onlinePlayerList
       })
-      .catch(function(error) {
-        client.logger.error("Error! day7 getPlayerData " + error);
-        return msg.channel.send("Error! Request to api/getplayerslocation failed, did you set correct IP:port and authorization token?");
-      })
-    // Requests the day7 data from server
-    requestOptions = await client.getRequestOptions(msg.guild, '/getstats');
-    await request(requestOptions)
-      .then(function(data) {
-        messageData[1] = data
-      })
-      .catch(function(error) {
-        client.logger.error("Error! day7 getPlayerData " + error);
-        return msg.channel.send("Error! Request to api/getstats failed, did you set correct IP:port and authorization token?");
-      })
-
-    // Requests the FPS data from server
-    requestOptions = await client.getRequestOptions(msg.guild, '/executeconsolecommand');
-    requestOptions.qs.command = 'mem'
-    await request(requestOptions)
-      .then(function(data) {
+      const day7data = await client.sevendtdRequest.doRequest(msg.guild, "getstats");
+      const fps = await client.sevendtdRequest.doRequest(msg.guild, "executeconsolecommand", {
+        command: "mem"
+      }).then(function(data) {
         var tempData = data.result.split(" ");
         var fpsIdx = tempData.findIndex(dataEntry => {
           return dataEntry == 'FPS:'
         });
-        messageData[2] = tempData[fpsIdx + 1]
-      })
-      .catch(function(error) {
-        client.logger.error("Error! day7 getFPSData " + error);
-        return;
+        return tempData[fpsIdx + 1]
       })
 
-    async function sendMsg(dataArray) {
-      try {
-        const onlinePlayers = dataArray[0];
-        const day7data = dataArray[1];
-        const fps = dataArray[2];
-        let nextHorde = (Math.trunc(day7data.gametime.days/7) + 1) * 7
-        const daysUntilHorde = nextHorde - day7data.gametime.days;
-        client.logger.debug("COMMAND DAY7: buildmsg data: onlinePlayers: " + onlinePlayers + "  day7data: " + JSON.stringify(day7data) + " FPS: " + fps);
 
-        var embed = client.makeBillEmbed();
-        handleFPS()
-        embed.addField("Gametime", day7data.gametime.days + " days " + day7data.gametime.hours + " hours " + day7data.gametime.minutes + " minutes\nNext horde in " + daysUntilHorde + " days", true)
-          .addField("Online players: " + day7data.players, onlinePlayers)
-          .addField(day7data.hostiles + " Hostiles", day7data.animals + " Animals", true)
 
-        function handleFPS() {
-          if (fps < 5) {
-            embed.setColor('ff0000')
-          }
-          if (5 < fps < 15) {
-            embed.setColor('#ffe500')
-          }
-          if (fps > 15) {
-            embed.setColor('#00ff2a')
-          }
-          embed.addField("FPS", fps, true)
-        }
-        return msg.channel.send({
-          embed
-        })
-      } catch (error) {
-        client.logger.error("Error! day7 buildMsg " + error);
-        return msg.channel.send("Error building the message. Verify the data is correct");
+
+      let nextHorde = (Math.trunc(day7data.gametime.days / 7) + 1) * 7
+      const daysUntilHorde = nextHorde - day7data.gametime.days;
+      client.logger.debug("day7 command - buildmsg data: onlinePlayers: " + onlinePlayers + "  day7data: " + JSON.stringify(day7data) + " FPS: " + fps);
+
+      var embed = client.makeBillEmbed();
+      if (fps) {
+        handleFPS();
       }
-    }
-    sendMsg(messageData)
+      embed.addField("Gametime", day7data.gametime.days + " days " + day7data.gametime.hours + " hours " + day7data.gametime.minutes + " minutes\nNext horde in " + daysUntilHorde + " days", true)
+        .addField("Online players: " + day7data.players, onlinePlayers)
+        .addField(day7data.hostiles + " Hostiles", day7data.animals + " Animals", true)
 
+      function handleFPS() {
+        if (fps < 5) {
+          embed.setColor('ff0000')
+        }
+        if (5 < fps < 15) {
+          embed.setColor('#ffe500')
+        }
+        if (fps > 15) {
+          embed.setColor('#00ff2a')
+        }
+        embed.addField("FPS", fps, true)
+      }
+      return msg.channel.send({
+        embed
+      })
+    } catch (error) {
+      client.logger.error("day7 command - buildMsg " + error);
+      return msg.channel.send("Error - day 7. Verify your server is set up correctly please");
+    }
   }
+
 }
+
 
 module.exports = Day7;
