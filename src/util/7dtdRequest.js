@@ -5,22 +5,24 @@ class sevendtdRequest {
     client.logger.debug("Constructing a new sevendtdRequest");
     this.client = client;
     // Sets default request options
-    function getRequestOptions (guild, apiModule) {
+    async function getRequestOptions(guild, apiModule) {
       try {
-        client.logger.debug("getRequestOptions - Loading guild data for request");
         const thisConf = guild.settings;
-        const serverip = thisConf.get("serverip");
-        const webPort = thisConf.get("webPort");
-        const authName = thisConf.get('authName');
-        const authToken = thisConf.get("authToken");
+        const serverip = await thisConf.get("serverip");
+        const webPort = await thisConf.get("webPort");
+        const authName = await thisConf.get('authName');
+        const authToken = await thisConf.get("authToken");
+
+        client.logger.debug("getRequestOptions - Loading guild data for request " + serverip + webPort + authName + authToken);
         const baseUrl = "http://" + serverip + ":" + webPort + "/api/";
         let requestOptions = {
-          uri: baseUrl + apiModule,
+          url: baseUrl + apiModule,
           json: true,
           timeout: 5000,
           headers: {
             'User-Agent': 'Bill discord bot'
           },
+          useQuerystring: true,
           qs: {
             adminuser: authName,
             admintoken: authToken
@@ -34,14 +36,20 @@ class sevendtdRequest {
       }
     }
 
-    this.doRequest = function (guild, apiModule) {
-      request(getRequestOptions(guild, apiModule))
-      .then(function (response) {
-        client.logger.debug("Succesful request to " + apiModule);
-      })
-      .catch(function(error) {
-        client.logger.error(error);
-      })
+    this.doRequest = async function(guild, apiModule, extraqs = false) {
+      let options = await getRequestOptions(guild, apiModule)
+      if (extraqs) {
+        options.qs = Object.assign(options.qs, extraqs)
+      }
+      return request(options)
+        .then(function(response) {
+          client.logger.debug("7dtdRequest - Succesful request to " + apiModule);
+          return response
+        })
+        .catch(function(error) {
+          client.logger.error("7dtdRequest - " + error);
+          throw error
+        })
     }
 
   }

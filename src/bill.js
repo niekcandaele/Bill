@@ -21,7 +21,7 @@ const client = new Commando.Client({
 client.config = appConfig
 
 client.logger = billLogger(client);
-client.sevendtdRequest = new sevendtdRequest(client)
+client.sevendtdRequest = new sevendtdRequest(client);
 client.setProvider(
     sqlite.open(path.join(client.config.dataDir, 'settings.sqlite3')).then(db => new Commando.SQLiteProvider(db))
 ).catch(client.logger.error);
@@ -53,17 +53,7 @@ client.on('ready', () => {
 
 
 
-  // -!-!-!--!-!-!--!-!--!-!-!--!-!-!--!-!--!-!-!
-  // DEV DATA CONTROL
-  // -!-!-!--!-!-!--!-!--!-!-!--!-!-!--!-!--!-!-!
-  const devGuild = client.guilds.get(client.config.devGuildID);
-  /*
-  guildSettingProvider.set(devGuild, "test" , "supertest")
-  console.log(guildSettingProvider.get(devGuild, "test"));
-  guildSettingProvider.remove(devGuild, "test");
-  console.log(guildSettingProvider.get(devGuild, "test"));
-  */
-  //guildSettingProvider.clear(devGuild)
+
   client.logger.info('Bill\'s  ready!');
 })
 
