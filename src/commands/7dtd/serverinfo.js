@@ -18,27 +18,27 @@ class ServerInfo extends Commando.Command {
 
   async run(msg, args) {
     const client = msg.client;
-    const thisConf = await client.guildConf.get(msg.guild.id);
     var amountPlayersToShow = 10
     var players = new Array();
     var date = new Date();
-    let requestOptions = await client.getRequestOptions(msg.guild, '/getserverinfo');
 
-    // Requests the player data from server
-    request(requestOptions)
+    await client.sevendtdRequest.doRequest(msg.guild, "getserverinfo")
       .then(function(body) {
         // Changes booleans in the data to emoji checkmark or X
         function boolToEmoji(data) {
-          const Props = client.getProperties(data)
-          for (var i = 0; i < Props.length; i++) {
-            if (data[Props[i]].type == "bool") {
-              if (data[Props[i]].value) {
-                data[Props[i]].value = ':white_check_mark:'
-              } else {
-                data[Props[i]].value = ':x:'
+          console.log(data);
+          for (var prop in data) {
+            if (data.hasOwnProperty(prop)) {
+              if (data[prop].type == "bool") {
+                if (data[prop].value) {
+                  data[prop].value = ':white_check_mark:'
+                } else {
+                  data[prop].value = ':x:'
+                }
               }
             }
           }
+
         }
         boolToEmoji(body);
         var serverData = {
@@ -66,6 +66,7 @@ class ServerInfo extends Commando.Command {
           maxSpawnedZombies: body.MaxSpawnedZombies.value,
         }
 
+        // Change data to a nice string
         switch (serverData.playerKillingMode) {
           case 0:
             serverData.playerKillingMode = "PvE";
