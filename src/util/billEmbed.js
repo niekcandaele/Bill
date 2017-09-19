@@ -1,5 +1,7 @@
+const Discord = require('discord.js');
+
 // Format for sending messages that look consistent
-makeBillEmbed = function() {
+function makeBillEmbed() {
   const Colours = [
     'D2FF28',
     'D6F599',
@@ -16,3 +18,5 @@ makeBillEmbed = function() {
     .setThumbnail("http://i.imgur.com/5bm3jzh.png")
   return embed
 }
+
+module. exports = makeBillEmbed
