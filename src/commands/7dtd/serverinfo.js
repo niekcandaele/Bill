@@ -26,7 +26,6 @@ class ServerInfo extends Commando.Command {
       .then(function(body) {
         // Changes booleans in the data to emoji checkmark or X
         function boolToEmoji(data) {
-          console.log(data);
           for (var prop in data) {
             if (data.hasOwnProperty(prop)) {
               if (data[prop].type == "bool") {

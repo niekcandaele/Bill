@@ -46,17 +46,16 @@ class ExecConsole extends Commando.Command {
 
         if (output.length > 1000) {
           let filePath = path.dirname(process.cwd())
-          let fileName = msg.guild.name + "_" + data.command + ".txt"
-          fs.writeFile(filePath + fileName, data.result, function(err) {
+          let fileName = `${msg.guild.name} ${data.command}.txt`
+          fs.writeFile(filePath + "/data/commands/" + fileName, data.result, function(err) {
             if (err) {
               throw err
             }
             embed.setDescription(input + "\n\n" + ":outbox_tray: \n```\n Logging to file. \n```");
             msg.channel.send({
               embed: embed,
-              files: [filePath + fileName]
+              files: [filePath + "/data/commands/" + fileName]
             })
-            fs.unlink(filePath + fileName)
           })
         } else {
           embed.setDescription(input + "\n\n" + output);
