@@ -15,7 +15,7 @@ class TopTime extends Commando.Command {
       examples: ['toptime', 'toptime 5'],
       args: [{
         key: 'amountPlayersToShow',
-        label: 'How many players to show',
+        label: 'amount of players to show',
         prompt: 'Specify ow many players to show please.',
         type: 'integer',
         default: '5',

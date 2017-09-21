@@ -27,6 +27,10 @@ client.logger.info('Bill signing in.');
 client.login(client.config.token);
 
 client.on('ready', () => {
+  client.botStats = new persistentCollection({
+    name: 'botStats',
+    dataDir: client.config.dataDir
+  });
   client.user.setGame(client.commandPrefix + "botinfo");
   client.makeBillEmbed = makeBillEmbed
   client.sevendtdRequest = new sevendtdRequest(client);
@@ -49,10 +53,7 @@ client.on('commandRun', (command, promise, message, args) => {
   client.botStats.set('cmdsRan', cmdsRan + 1);
 });
 
-client.botStats = new persistentCollection({
-  name: 'botStats',
-  dataDir: '../data'
-});
+
 
 // Registers all built-in groups, commands, and argument types
 client.registry.registerGroups([
