@@ -31,6 +31,7 @@ client.on('ready', () => {
   client.makeBillEmbed = makeBillEmbed
   client.sevendtdRequest = new sevendtdRequest(client);
   client.logger.info('Bill\'s  ready!');
+  client.user.setGame(client.config.website)
 })
 
 client.on("guildCreate", guild => {

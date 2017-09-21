@@ -13,49 +13,40 @@ class ExecConsole extends Commando.Command {
       guildOnly: true,
       group: 'admin',
       args: [{
-          key: 'command',
-          label: 'Command to be executed',
-          prompt: 'Specify a command please',
-          type: 'string'
-        },
-        {
-          key: 'parameters',
-          label: 'Parameters to go with the command',
-          prompt: 'Specify parameters please',
-          default: ' ',
-          type: 'string'
-        },
-      ],
+        key: 'command',
+        label: 'Command to be executed',
+        prompt: 'Specify a command please',
+        type: 'string'
+      }],
       memberName: 'execconsole',
       description: 'Executes a console command',
       details: "Only administrators can use this command",
       examples: ['day7']
-    });
+    })
+
+  }
+  hasPermission(msg) {
+    let isBotOwner = this.client.isOwner(msg.author);
+    let isGuildOwner = msg.guild.ownerID == msg.author.id
+    let hasPerm = (isBotOwner || isGuildOwner)
+    return hasPerm
   }
 
   async run(msg, args) {
     const client = this.client
-  /*  // Check if author of command is guild administrator or bot owner
-    if (!client.checkIfAdmin(msg.member, msg.guild)) {
-      client.logger.error(msg.author.username + " tried to run " + msg.content + " command but is not authorized!");
-      return msg.channel.send("You need to have the administrator role to run console commands");
-    }*/
+    const command = args.command
 
-    const cmdToRun = args.command
-    const params = args.parameters
-
-    let requestOptions = await client.getRequestOptions(msg.guild, '/executeconsolecommand')
-    requestOptions.qs.command = cmdToRun + " " + params
-
-    await request(requestOptions)
+    client.sevendtdRequest.doRequest(msg.guild, "executeconsolecommand", {
+        command
+      })
       .then(function(data) {
-        let input = ":inbox_tray: `" + data.command + " " + data.parameters + "`"
+        let input = ":inbox_tray: `" + data.command + "`"
         let output = ":outbox_tray: \n```" + data.result + "\n```"
-        let filePath = path.dirname(process.cwd()) + "/data/output/"
-        let fileName = msg.guild.name + "_" + data.command + ".txt"
         let embed = client.makeBillEmbed().setTitle("Console command ran");
 
         if (output.length > 1000) {
+          let filePath = path.dirname(process.cwd())
+          let fileName = msg.guild.name + "_" + data.command + ".txt"
           fs.writeFile(filePath + fileName, data.result, function(err) {
             if (err) {
               throw err
@@ -65,24 +56,17 @@ class ExecConsole extends Commando.Command {
               embed: embed,
               files: [filePath + fileName]
             })
+            fs.unlink(filePath + fileName)
           })
         } else {
           embed.setDescription(input + "\n\n" + output);
           msg.channel.send({
             embed: embed
           })
-
         }
-
       })
-      .catch(function(error, response) {
-        client.logger.error("Error! Exec Console request failed: " + error);
-        return msg.channel.send("Error! Request to api/executeconsolecommand failed. \n" + error);
-      })
-
+      .catch(function() {})
   }
 }
-
-
 
 module.exports = ExecConsole;
