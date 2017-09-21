@@ -1,8 +1,6 @@
 // Takes a string of seconds and calculates a date object from that
 function toDDHHMMSS(timeInSeconds) {
-  console.log(timeInSeconds);
   var seconds = parseInt(timeInSeconds, 10);
-  console.log(typeof seconds);
   var days = Math.floor(seconds / 86400);
   var hours = Math.floor((seconds % 86400) / 3600);
   var minutes = Math.floor(((seconds % 86400) % 3600) / 60);
