@@ -35,11 +35,11 @@ class ExecConsole extends Commando.Command {
 
   async run(msg, args) {
     const client = this.client
-    // Check if author of command is guild administrator or bot owner
+  /*  // Check if author of command is guild administrator or bot owner
     if (!client.checkIfAdmin(msg.member, msg.guild)) {
       client.logger.error(msg.author.username + " tried to run " + msg.content + " command but is not authorized!");
       return msg.channel.send("You need to have the administrator role to run console commands");
-    }
+    }*/
 
     const cmdToRun = args.command
     const params = args.parameters

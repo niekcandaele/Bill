@@ -7,7 +7,7 @@ class Init extends Commando.Command {
   constructor(client) {
     super(client, {
       name: 'init',
-      aliases: ['setup', 'setupinit', 'serverinit', 'serversetup'],
+      aliases: ['setupinit', 'serverinit', 'serversetup'],
       group: 'config',
       memberName: 'init',
       guildOnly: true,

@@ -22,9 +22,11 @@
     "erlpack": "github:hammerandchisel/erlpack",
     "frontail": "^4.0.4",
     "logger": "0.0.1",
+    "rand-token": "^0.3.0",
     "request": "^2.81.0",
     "request-promise": "^4.2.1",
     "sqlite": "^2.8.0",
+    "telnet-client": "^0.15.3",
     "uws": "^8.14.0",
     "validate-ip-node": "^1.0.6",
     "winston": "^2.3.1"

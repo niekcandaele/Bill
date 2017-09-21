@@ -13,7 +13,7 @@ class sevendtdRequest {
         const authName = await thisConf.get('authName');
         const authToken = await thisConf.get("authToken");
 
-        client.logger.debug("getRequestOptions - Loading guild data for request " + serverip + webPort + authName + authToken);
+        client.logger.debug(`getRequestOptions - Loading guild data for request IP: ${serverip} Port: ${webPort}`);
         const baseUrl = "http://" + serverip + ":" + webPort + "/api/";
         let requestOptions = {
           url: baseUrl + apiModule,
