@@ -26,9 +26,11 @@ class ExecConsole extends Commando.Command {
 
   }
   hasPermission(msg) {
+    const adminRole = msg.guild.settings.get("adminRole")
     let isBotOwner = this.client.isOwner(msg.author);
-    let isGuildOwner = msg.guild.ownerID == msg.author.id
-    let hasPerm = (isBotOwner || isGuildOwner)
+    let isGuildOwner = msg.guild.ownerID == msg.author.id;
+    let isAdminUser = msg.member.roles.has(adminRole)
+    let hasPerm = (isBotOwner || isGuildOwner || isAdminUser)
     return hasPerm
   }
 
