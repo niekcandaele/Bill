@@ -18,6 +18,13 @@ class AddAdmin extends Commando.Command {
     });
   }
 
+  hasPermission(msg) {
+    let isBotOwner = this.client.isOwner(msg.author);
+    let isGuildOwner = msg.guild.ownerID == msg.author.id;
+    let hasPerm = (isBotOwner || isGuildOwner)
+    return hasPerm
+  }
+
   async run(msg, args) {
     const client = msg.client;
     let roleID = args.role.slice(3, args.role.length-1);
