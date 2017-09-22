@@ -1,17 +1,108 @@
-require('../util/7dtdRequest')
+//require('../service/sevendtdLogs')
+const request = require('request-promise')
 
 class sevendtdServer {
-  constructor(discordClient, discordGuild) {
-    this.client = discordClient
+  constructor(discordGuild) {
     this.guild = discordGuild
+    //this.client = discordGuild.client
+    const client = discordGuild.client
+    const thisConf = this.guild.settings;
+    const serverip = thisConf.get("serverip");
+    const webPort = thisConf.get("webPort");
+    const authName = thisConf.get('authName');
+    const authToken = thisConf.get("authToken");
 
-    sevendtdRequest = new sevendtdRequest(discordClient);
-    this.doRequest(apiModule, extraqs = false) => {
-      sevendtdRequest.doRequest(this.guild, apiModule, extraqs)
+    this.getStats = function() {
+      return doRequest("getstats")
     }
 
-    //this.gameLogService = new gameLogService(discordClient, discordGuild)
+    this.getPlayerList = function() {
+      return doRequest("getplayerlist")
+    }
+    this.getPlayersOnline = function() {
+      return doRequest("getplayersonline")
+    }
+
+    this.getPlayersLocation = function() {
+      return doRequest("getplayerslocation")
+    }
+
+    this.executeConsoleCommand = function(command) {
+      return doRequest("executeconsolecommand", {
+        'command': command
+      })
+    }
+
+    this.getAllowedCommands = function() {
+      return doRequest("getallowedcommands")
+    }
+
+    this.getAnimalsLocation = function() {
+      return doRequest("getanimalslocations")
+    }
+
+    this.getHostileLocation = function() {
+      return doRequest("gethostilelocation")
+    }
+
+    this.getLandClaims = function() {
+      return doRequest("getlandclaims")
+    }
+
+    this.getPlayerInventory = function() {
+      return doRequest("getplayerinventory")
+    }
+
+    this.getServerInfo = function() {
+      return doRequest("getServerInfo")
+    }
+
+    //this.logService = new sevendtdLogs(discordClient, discordGuild)
+
+    async function doRequest(apiModule, extraqs = false) {
+      let options = await getRequestOptions(apiModule)
+      if (extraqs) {
+        options.qs = Object.assign(options.qs, extraqs)
+      }
+      return request(options)
+        .then(function(response) {
+          client.logger.debug("7dtdRequest - Succesful request to " + apiModule);
+          return response
+        })
+        .catch(function(error) {
+          client.logger.error("7dtdRequest - " + error);
+          throw error
+        })
+    }
+    async function getRequestOptions(apiModule) {
+      try {
+        client.logger.debug(`getRequestOptions - Loading guild data for request IP: ${serverip} Port: ${webPort} Module: ${apiModule}`);
+        const baseUrl = "http://" + serverip + ":" + webPort + "/api/";
+        let requestOptions = {
+          url: baseUrl + apiModule,
+          json: true,
+          timeout: 5000,
+          headers: {
+            'User-Agent': 'Bill discord bot'
+          },
+          useQuerystring: true,
+          qs: {
+            adminuser: authName,
+            admintoken: authToken
+          }
+        };
+        return requestOptions
+
+      } catch (error) {
+        client.logger.error("Error! getRequestOptions for " + guild.name + error);
+        throw error
+      }
+    }
   }
 
 
+
+
 }
+
+module.exports = sevendtdServer
