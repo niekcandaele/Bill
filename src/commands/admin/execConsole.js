@@ -37,10 +37,13 @@ class ExecConsole extends Commando.Command {
   async run(msg, args) {
     const client = this.client
     const command = args.command
+    const sevendtdServer = msg.guild.sevendtdServer
 
-    client.sevendtdRequest.doRequest(msg.guild, "executeconsolecommand", {
-        command
-      })
+    if (!sevendtdServer) {
+      return msg.channel.send("No 7DTD Server initialized. Please set up your server before using commands")
+    }
+
+    sevendtdServer.executeConsoleCommand(command)
       .then(function(data) {
         let input = ":inbox_tray: `" + data.command + "`"
         let output = ":outbox_tray: \n```" + data.result + "\n```"

@@ -18,11 +18,17 @@ class ServerInfo extends Commando.Command {
 
   async run(msg, args) {
     const client = msg.client;
+    const sevendtdServer = msg.guild.sevendtdServer
+
+    if (!sevendtdServer) {
+      return msg.channel.send("No 7DTD Server initialized. Please set up your server before using commands")
+    }
+
     var amountPlayersToShow = 10
     var players = new Array();
     var date = new Date();
 
-    await client.sevendtdRequest.doRequest(msg.guild, "getserverinfo")
+    sevendtdServer.getServerInfo()
       .then(function(body) {
         // Changes booleans in the data to emoji checkmark or X
         function boolToEmoji(data) {

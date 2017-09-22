@@ -17,49 +17,51 @@ class Day7 extends Commando.Command {
   }
 
   async run(msg, args) {
-    const client = this.client;
-    try {
-      const onlinePlayers = await client.sevendtdRequest.doRequest(msg.guild, "getplayerslocation").then(function(data) {
-        // parse data into a useful format
-        let onlinePlayerList = ""
-        for (var i = 0; i < data.length; i++) {
-          var player = data[i];
-          if (player.online == true) {
-            onlinePlayerList += player.name + ", ";
-          }
+    const sevendtdServer = msg.guild.sevendtdServer
+    const client = this.client
+
+    if (!sevendtdServer) {
+      return msg.channel.send("No 7DTD Server initialized. Please set up your server before using commands")
+    }
+
+    const day7data = await sevendtdServer.getStats()
+    const onlinePlayers = await sevendtdServer.getPlayersLocation().then(function(data) {
+      // parse data into a useful format
+      let onlinePlayerList = ""
+      for (var i = 0; i < data.length; i++) {
+        var player = data[i];
+        if (player.online == true) {
+          onlinePlayerList += player.name + ", ";
         }
-        if (onlinePlayerList == "") {
-          onlinePlayerList = "No players online!"
-        }
-        return onlinePlayerList
-      })
-      const day7data = await client.sevendtdRequest.doRequest(msg.guild, "getstats");
-      const fps = await client.sevendtdRequest.doRequest(msg.guild, "executeconsolecommand", {
-        command: "mem"
-      }).then(function(data) {
-        var tempData = data.result.split(" ");
-        var fpsIdx = tempData.findIndex(dataEntry => {
-          return dataEntry == 'FPS:'
-        });
-        return tempData[fpsIdx + 1]
-      })
+      }
+      if (onlinePlayerList == "") {
+        onlinePlayerList = "No players online!"
+      }
+      return onlinePlayerList
+    })
+    const FPS = await sevendtdServer.executeConsoleCommand("mem").then(function(data) {
+      var tempData = data.result.split(" ");
+      var fpsIdx = tempData.findIndex(dataEntry => {
+        return dataEntry == 'FPS:'
+      });
+      return tempData[fpsIdx + 1]
+    })
 
+    let embed = client.makeBillEmbed();
 
-
-
+    function buildMsg() {
       let nextHorde = (Math.trunc(day7data.gametime.days / 7) + 1) * 7
       const daysUntilHorde = nextHorde - day7data.gametime.days;
-      client.logger.debug("day7 command - buildmsg data: onlinePlayers: " + onlinePlayers + "  day7data: " + JSON.stringify(day7data) + " FPS: " + fps);
 
-      var embed = client.makeBillEmbed();
-      if (fps) {
-        handleFPS();
-      }
+      client.logger.debug("day7 command - buildmsg data: onlinePlayers: " + onlinePlayers + "  day7data: " + JSON.stringify(day7data) + " FPS: " + FPS);
+      handleFPS(FPS);
+
       embed.addField("Gametime", day7data.gametime.days + " days " + day7data.gametime.hours + " hours " + day7data.gametime.minutes + " minutes\nNext horde in " + daysUntilHorde + " days", true)
         .addField("Online players: " + day7data.players, onlinePlayers)
-        .addField(day7data.hostiles + " Hostiles", day7data.animals + " Animals", true)
+        .addField(day7data.hostiles + " Hostiles", day7data.animals + " Animals", true);
+      return embed
 
-      function handleFPS() {
+      function handleFPS(fps) {
         if (fps < 5) {
           embed.setColor('ff0000')
         }
@@ -71,13 +73,10 @@ class Day7 extends Commando.Command {
         }
         embed.addField("FPS", fps, true)
       }
-      return msg.channel.send({
-        embed
-      })
-    } catch (error) {
-      client.logger.error("day7 command - buildMsg " + error);
-      return msg.channel.send("Error - day 7. Verify your server is set up correctly please");
     }
+
+    buildMsg()
+    msg.channel.send({embed})
   }
 
 }

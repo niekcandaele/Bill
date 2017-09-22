@@ -29,10 +29,15 @@ class TopTime extends Commando.Command {
     const client = msg.client;
     var amountPlayersToShow = args.amountPlayersToShow
     var date = new Date();
+    const sevendtdServer = msg.guild.sevendtdServer
+
+    if (!sevendtdServer) {
+      return msg.channel.send("No 7DTD Server initialized. Please set up your server before using commands")
+    }
 
 
 
-    client.sevendtdRequest.doRequest(msg.guild, "getplayerslocation")
+    sevendtdServer.getPlayersLocation()
       .then(function(body) {
         let players = new Array();
         let playersCounter = 0

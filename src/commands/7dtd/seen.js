@@ -17,9 +17,13 @@ class Seen extends Commando.Command {
 
   async run(msg, args) {
     const client = msg.client;
-    const thisConf = msg.guild.settings
+    const sevendtdServer = msg.guild.sevendtdServer
 
-    client.sevendtdRequest.doRequest(msg.guild, "getplayerslocation")
+    if (!sevendtdServer) {
+      return msg.channel.send("No 7DTD Server initialized. Please set up your server before using commands")
+    }
+
+    sevendtdServer.getPlayersLocation()
       .then(function(response) {
         buildMsg(response);
       })

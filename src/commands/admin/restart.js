@@ -37,6 +37,11 @@ class Restart extends Commando.Command {
     const client = this.client
     let minutes = args.minutes;
     const timeout = minutes * 60000;
+    const sevendtdServer = msg.guild.sevendtdServer
+
+    if (!sevendtdServer) {
+      return msg.channel.send("No 7DTD Server initialized. Please set up your server before using commands")
+    }
 
     if (args.minutes == "stop") {
       msg.channel.send("Cancelling server restart (if there is one)")
@@ -53,14 +58,9 @@ class Restart extends Commando.Command {
 
       msg.guild.restartTimeout = setTimeout(function() {
         msg.channel.send(`Restarting the server!`)
-        client.sevendtdRequest.doRequest(msg.guild, "executeconsolecommand", {
-            command: "sa"
-          })
-          .then(() => client.sevendtdRequest.doRequest(msg.guild, "executeconsolecommand", {
-            command: "help"
-          }))
-          .then(() => {
-            msg.guild.backOnlineInterval = setInterval(function() {
+        sevendtdServer.executeConsoleCommand("sa")
+          .then(() => sevendtdServer.executeConsoleCommand("shutdown"))
+          .then(() => msg.guild.backOnlineInterval = setInterval(function() {
               amountOfTimesToCheckIfBackOnline -= 1
               if (CheckIfServerBackOnline()) {
                 msg.channel.send("Server is back online!")
@@ -71,7 +71,7 @@ class Restart extends Commando.Command {
                 clearInterval(msg.guild.backOnlineInterval)
               }
             }, 1000)
-          })
+          )
       }, timeout)
       msg.channel.send(`Restarting the server in ${args.minutes} minutes!`)
     }
@@ -79,9 +79,7 @@ class Restart extends Commando.Command {
 
     function sendRemainingTime(msg, timeLeft) {
       if (timeLeft > 0) {
-        client.sevendtdRequest.doRequest(msg.guild, "executeconsolecommand", {
-            command: "say server_restart_in_" + timeLeft + "_minutes"
-          })
+        sevendtdServer.executeConsoleCommand("say server_restart_in_" + timeLeft + "_minutes")
           .then(function() {
             return msg.channel.send(`${timeLeft} minutes(s) until server restart`);
           })
@@ -92,7 +90,7 @@ class Restart extends Commando.Command {
     }
 
     function CheckIfServerBackOnline() {
-      return client.sevendtdRequest.doRequest(msg.guild, "getstats").then(() => true).catch(() => false)
+      return sevendtdServer.getStats().then(() => true).catch(() => false)
     }
 
 

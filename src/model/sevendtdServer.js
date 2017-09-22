@@ -28,9 +28,7 @@ class sevendtdServer {
     }
 
     this.executeConsoleCommand = function(command) {
-      return doRequest("executeconsolecommand", {
-        'command': command
-      })
+      return doRequest("executeconsolecommand", {command})
     }
 
     this.getAllowedCommands = function() {
@@ -54,7 +52,7 @@ class sevendtdServer {
     }
 
     this.getServerInfo = function() {
-      return doRequest("getServerInfo")
+      return doRequest("getserverinfo")
     }
 
     //this.logService = new sevendtdLogs(discordClient, discordGuild)

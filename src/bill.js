@@ -5,8 +5,9 @@ const path = require('path');
 const persistentCollection = require('djs-collection-persistent');
 const sqlite = require('sqlite');
 
-const makeBillEmbed = require("./util/billEmbed.js")
 const sevendtdRequest = require("./util/7dtdRequest.js")
+const sevendtdServer = require("./model/sevendtdServer.js")
+const makeBillEmbed = require("./util/billEmbed.js")
 const billLogger = require("./service/billLogging.js")
 const appConfig = require('../config.json');
 
@@ -34,8 +35,26 @@ client.on('ready', () => {
   client.user.setGame(client.commandPrefix + "botinfo");
   client.makeBillEmbed = makeBillEmbed
   client.sevendtdRequest = new sevendtdRequest(client);
-  client.logger.info('Bill\'s  ready!');
   client.user.setGame(client.config.website)
+  client.logger.info('Bill\'s  ready!');
+
+  // Wait a couple seconds to init 7DTD servers so the guild settings can init first
+  setTimeout(function() {
+    client.logger.info("Initializing 7DTD server instances")
+    init7DTD()
+  }, 5000)
+
+  async function init7DTD() {
+    const Guilds = client.guilds.values()
+    for (var guild of Guilds) {
+      let IP = await guild.settings.get("webPort")
+      if (IP) {
+        client.logger.debug(`Guild ${guild.id} has a 7DTD server! Creating class`)
+        guild.sevendtdServer = new sevendtdServer(guild)
+      }
+    }
+  }
+
 })
 
 client.on("guildCreate", guild => {
@@ -43,8 +62,8 @@ client.on("guildCreate", guild => {
 });
 
 client.on("guildDelete", guild => {
-    client.logger.info("Deleting guild -- " + guild.name);
-    guild.settings.clear()
+  client.logger.info("Deleting guild -- " + guild.name);
+  guild.settings.clear()
 });
 
 client.on('commandRun', (command, promise, message, args) => {
@@ -64,6 +83,6 @@ client.registry.registerGroups([
   .registerDefaults()
   .registerCommandsIn(path.join(__dirname, 'commands'));
 
-  process.on('uncaughtException', function(err) {
+process.on('uncaughtException', function(err) {
   client.logger.error(err);
 });
