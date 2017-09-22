@@ -44,7 +44,7 @@ class TopTime extends Commando.Command {
             playersCounter += 1;
           }
         }
-        let embed = buildMsg(players)
+        let embed = buildMsg(sort(players))
         return msg.channel.send({
           embed
         })
