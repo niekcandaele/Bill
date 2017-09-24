@@ -155,6 +155,7 @@ class Init extends Commando.Command {
       guild.settings.set("webPort", port)
       guild.settings.set("authName", name)
       guild.settings.set("authToken", token)
+      guild.sevendtdServer = new sevendtdServer(guild)
     }
 
     function resolveErrorCode(error) {
