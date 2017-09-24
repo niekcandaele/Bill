@@ -2,6 +2,7 @@ const Commando = require('discord.js-commando');
 const validateIP = require('validate-ip-node');
 const randtoken = require('rand-token');
 const Telnet = require('telnet-client')
+const sevendtdServer = require("../../model/sevendtdServer.js")
 
 
 class Setup extends Commando.Command {
@@ -106,6 +107,7 @@ class Setup extends Commando.Command {
     msg.guild.settings.set("webPort", apiPort);
     msg.guild.settings.set('authName', name);
     msg.guild.settings.set("authToken", token);
+    guild.sevendtdServer = new sevendtdServer(guild)
 
     client.logger.debug("Command setup - Connecting to telnet.")
     connection.connect(telnetParams)

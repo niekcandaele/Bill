@@ -2,6 +2,7 @@ const Discord = require('discord.js');
 const Commando = require('discord.js-commando');
 const validateIP = require('validate-ip-node');
 const request = require('request-promise');
+const sevendtdServer = require("../../model/sevendtdServer.js")
 
 class Init extends Commando.Command {
   constructor(client) {
