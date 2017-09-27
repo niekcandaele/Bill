@@ -1,10 +1,12 @@
 
 
 class sevendtdLogs {
-  constructor (
-    
+  constructor (discordClient, discordGuild) {
+    this.guild = discordGuild
+    this.client = discordClient
+  }
 
-  )
+  
 
 
 }

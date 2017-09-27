@@ -1,4 +1,4 @@
-//require('../service/sevendtdLogs')
+const sevendtdLogs = require('../service/sevendtdLogs')
 const request = require('request-promise')
 
 class sevendtdServer {
@@ -47,15 +47,19 @@ class sevendtdServer {
       return doRequest("getlandclaims")
     }
 
-    this.getPlayerInventory = function() {
-      return doRequest("getplayerinventory")
+    this.getPlayerInventory = function(steamid) {
+      return doRequest("getplayerinventory", {steamid})
     }
 
     this.getServerInfo = function() {
       return doRequest("getserverinfo")
     }
 
-    //this.logService = new sevendtdLogs(discordClient, discordGuild)
+    this.getLogs = function(firstLine) {
+      return doRequest("getlogs", {firstLine})
+    }
+
+    this.logService = new sevendtdLogs(client, this.guild)
 
     async function doRequest(apiModule, extraqs = false) {
       let options = await getRequestOptions(apiModule)

@@ -10,6 +10,7 @@ const sevendtdServer = require("./model/sevendtdServer.js")
 const makeBillEmbed = require("./util/billEmbed.js")
 const billLogger = require("./service/billLogging.js")
 const appConfig = require('../config.json');
+const webApp = require("./web/app.js")
 
 const client = new Commando.Client({
   owner: appConfig.owner,
@@ -19,7 +20,9 @@ const client = new Commando.Client({
 });
 
 client.config = appConfig
+webApp.discordClient = client;
 client.logger = billLogger(client);
+webApp.logger = client.logger
 client.setProvider(
   sqlite.open(path.join(client.config.dataDir, 'settings.sqlite3')).then(db => new Commando.SQLiteProvider(db))
 ).catch(client.logger.error);
@@ -42,7 +45,7 @@ client.on('ready', () => {
   setTimeout(function() {
     client.logger.info("Initializing 7DTD server instances")
     init7DTD()
-  }, 5000)
+  }, 1000)
 
   async function init7DTD() {
     const Guilds = client.guilds.values()
