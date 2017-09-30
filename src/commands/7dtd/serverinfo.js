@@ -90,7 +90,7 @@ class ServerInfo extends Commando.Command {
 
         switch (serverData.dropOnDeath) {
           case 0:
-            serverData.dropOnDeath = "Nothing";
+            serverData.dropOnDeath = "Drop all";
             break;
           case 1:
             serverData.dropOnDeath = "Belt";
