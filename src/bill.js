@@ -37,7 +37,7 @@ client.on('ready', () => {
   });
   client.user.setGame(client.commandPrefix + "botinfo");
   client.makeBillEmbed = makeBillEmbed
-  client.sevendtdRequest = new sevendtdRequest(client);
+//  client.sevendtdRequest = new sevendtdRequest(client);
   client.user.setGame(client.config.website)
   client.logger.info('Bill\'s  ready!');
 
@@ -54,6 +54,9 @@ client.on('ready', () => {
       if (IP) {
         client.logger.debug(`Guild ${guild.id} has a 7DTD server! Creating class`)
         guild.sevendtdServer = new sevendtdServer(guild)
+        if (guild.settings.get("chatChannel")) {
+          guild.sevendtdServer.logService.initialize()
+        }
       }
     }
   }
@@ -75,7 +78,16 @@ client.on('commandRun', (command, promise, message, args) => {
   client.botStats.set('cmdsRan', cmdsRan + 1);
 });
 
-
+/* Not fully functional yet
+client.on('message', (message) => {
+  if (message.channel.id == message.guild.settings.get("chatChannel") && message.author.id != client.user.id && message.guild.sevendtdServer) {
+    const msgToSend = message.content
+    const author = message.author.username
+    console.log(`say [${author}] ${msgToSend}`);
+    message.guild.sevendtdServer.executeConsoleCommand(`say [${author}]${msgToSend}`)
+  }
+})
+*/
 
 // Registers all built-in groups, commands, and argument types
 client.registry.registerGroups([

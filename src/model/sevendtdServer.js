@@ -51,6 +51,10 @@ class sevendtdServer {
       return doRequest("getplayerinventory", {steamid})
     }
 
+    this.getWebUIUpdates = function() {
+      return doRequest("getwebuiupdates")
+    }
+
     this.getServerInfo = function() {
       return doRequest("getserverinfo")
     }
@@ -59,7 +63,7 @@ class sevendtdServer {
       return doRequest("getlogs", {firstLine})
     }
 
-    this.logService = new sevendtdLogs(client, this.guild)
+    this.logService = new sevendtdLogs(client, this.guild, this)
 
     async function doRequest(apiModule, extraqs = false) {
       let options = await getRequestOptions(apiModule)
