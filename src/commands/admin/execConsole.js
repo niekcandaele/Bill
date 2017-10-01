@@ -69,7 +69,9 @@ class ExecConsole extends Commando.Command {
           })
         }
       })
-      .catch(function() {})
+      .catch(function(error) {
+        msg.channel.send(`Something went wrong! Verify the server is up, configuration is correct and make sure you're trying to do a valid command! \n Error: ${error}`)
+      })
   }
 }
 
