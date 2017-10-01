@@ -24,7 +24,9 @@ class Day7 extends Commando.Command {
       return msg.channel.send("No 7DTD Server initialized. Please set up your server before using commands")
     }
 
-    const day7data = await sevendtdServer.getStats()
+    const day7data = await sevendtdServer.getStats().then().catch(e => {
+      client.logger.error(`D7 error gettings day7data ${e}`)
+    })
     const onlinePlayers = await sevendtdServer.getPlayersLocation().then(function(data) {
       // parse data into a useful format
       let onlinePlayerList = ""
@@ -38,6 +40,9 @@ class Day7 extends Commando.Command {
         onlinePlayerList = "No players online!"
       }
       return onlinePlayerList
+    }).catch(e => {
+      client.logger.error(`D7 error gettings onlinePlayers ${e}`)
+      return
     })
     const FPS = await sevendtdServer.executeConsoleCommand("mem").then(function(data) {
       var tempData = data.result.split(" ");
@@ -45,6 +50,8 @@ class Day7 extends Commando.Command {
         return dataEntry == 'FPS:'
       });
       return tempData[fpsIdx + 1]
+    }).catch(e => {
+      client.logger.error(`D7 error gettings fps data ${e}`)
     })
 
     let embed = client.makeBillEmbed();
@@ -75,8 +82,13 @@ class Day7 extends Commando.Command {
       }
     }
 
-    buildMsg()
-    msg.channel.send({embed})
+    if (day7data && onlinePlayers && FPS) {
+      buildMsg()
+      msg.channel.send({embed})
+    } else {
+      return msg.channel.send("Error getting data from the server, server down?")
+    }
+
   }
 
 }
