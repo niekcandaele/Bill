@@ -24,6 +24,10 @@ class Day7 extends Commando.Command {
       return msg.channel.send("No 7DTD Server initialized. Please set up your server before using commands")
     }
 
+    if (!await sevendtdServer.checkIfOnline()) {
+      return msg.channel.send("Could not connect to the server, is it offline?")
+    }
+
     const day7data = await sevendtdServer.getStats().then().catch(e => {
       client.logger.error(`D7 error gettings day7data ${e}`)
     })
