@@ -51,8 +51,8 @@ class sevendtdLogs {
       }).catch(e => {
         client.logger.error(`Request to ${discordGuild.name} failed! Server offline? Switching to passive logging.`)
         chatChannel.send("Oh no! I can't get logs for your server! Maybe it went down? I'll check every so often for you.")
-        this.stop();
-        passiveLogging();
+        clearInterval(discordGuild.loggingIntervalObj)
+        return passiveLogging();
       })
     }
 
@@ -70,8 +70,9 @@ class sevendtdLogs {
       client.logger.debug(`Starting passive logging for ${discordGuild.name}`)
       discordGuild.loggingIntervalObj = setInterval(function () {
         if (sevendtdServer.checkIfOnline()) {
-          client.logger.info(`Srver for ${discordGuild.name} is back online.`)
+          client.logger.info(`Server for ${discordGuild.name} is back online.`)
           chatChannel.send("Hey good news, your server is back online! Wooo")
+          initLogs()
         } 
       }, loggingInterval*10)
     }
