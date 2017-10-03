@@ -50,13 +50,10 @@ client.on('ready', () => {
   async function init7DTD() {
     const Guilds = client.guilds.values()
     for (var guild of Guilds) {
-      let IP = await guild.settings.get("webPort")
+      let IP = await guild.settings.get("serverip")
       if (IP) {
         client.logger.debug(`Guild ${guild.id} has a 7DTD server! Creating class`)
         guild.sevendtdServer = new sevendtdServer(guild)
-        if (guild.settings.get("chatChannel")) {
-          guild.sevendtdServer.logService.initialize()
-        }
       }
     }
   }

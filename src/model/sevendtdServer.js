@@ -63,6 +63,10 @@ class sevendtdServer {
       return doRequest("getlogs", { firstLine })
     }
 
+    this.sayIngame = function (message) {
+      return doRequest("executeconsolecommand")
+    }
+
     this.checkIfOnline = function () {
       client.logger.debug(`Checking is server is online for ${this.guild.name}`)
       return doRequest("getstats").then(result => true
