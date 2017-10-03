@@ -12,55 +12,61 @@ class sevendtdServer {
     const authName = thisConf.get('authName');
     const authToken = thisConf.get("authToken");
 
-    this.getStats = function() {
+    this.getStats = function () {
       return doRequest("getstats")
     }
 
-    this.getPlayerList = function() {
+    this.getPlayerList = function () {
       return doRequest("getplayerlist")
     }
-    this.getPlayersOnline = function() {
+    this.getPlayersOnline = function () {
       return doRequest("getplayersonline")
     }
 
-    this.getPlayersLocation = function() {
+    this.getPlayersLocation = function () {
       return doRequest("getplayerslocation")
     }
 
-    this.executeConsoleCommand = function(command) {
-      return doRequest("executeconsolecommand", {command})
+    this.executeConsoleCommand = function (command) {
+      return doRequest("executeconsolecommand", { command })
     }
 
-    this.getAllowedCommands = function() {
+    this.getAllowedCommands = function () {
       return doRequest("getallowedcommands")
     }
 
-    this.getAnimalsLocation = function() {
+    this.getAnimalsLocation = function () {
       return doRequest("getanimalslocations")
     }
 
-    this.getHostileLocation = function() {
+    this.getHostileLocation = function () {
       return doRequest("gethostilelocation")
     }
 
-    this.getLandClaims = function() {
+    this.getLandClaims = function () {
       return doRequest("getlandclaims")
     }
 
-    this.getPlayerInventory = function(steamid) {
-      return doRequest("getplayerinventory", {steamid})
+    this.getPlayerInventory = function (steamid) {
+      return doRequest("getplayerinventory", { steamid })
     }
 
-    this.getWebUIUpdates = function() {
+    this.getWebUIUpdates = function () {
       return doRequest("getwebuiupdates")
     }
 
-    this.getServerInfo = function() {
+    this.getServerInfo = function () {
       return doRequest("getserverinfo")
     }
 
-    this.getLogs = function(firstLine) {
-      return doRequest("getlogs", {firstLine})
+    this.getLogs = function (firstLine) {
+      return doRequest("getlogs", { firstLine })
+    }
+
+    this.checkIfOnline = function () {
+      client.logger.debug(`Checking is server is online for ${this.guild.name}`)
+      return doRequest("getstats").then(result => true
+      ).catch(e => false)
     }
 
     this.logService = new sevendtdLogs(client, this.guild, this)
@@ -71,11 +77,11 @@ class sevendtdServer {
         options.qs = Object.assign(options.qs, extraqs)
       }
       return request(options)
-        .then(function(response) {
+        .then(function (response) {
           client.logger.debug("7dtdRequest - Succesful request to " + apiModule);
           return response
         })
-        .catch(function(error) {
+        .catch(function (error) {
           client.logger.error("7dtdRequest - " + error);
           throw error
         })
