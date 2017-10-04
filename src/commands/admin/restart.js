@@ -79,7 +79,7 @@ class Restart extends Commando.Command {
 
     function sendRemainingTime(msg, timeLeft) {
       if (timeLeft > 0) {
-        sevendtdServer.executeConsoleCommand("say server_restart_in_" + timeLeft + "_minutes")
+        sevendtdServer.sayIngame("server restart in " + timeLeft + " minutes")
           .then(function() {
             return msg.channel.send(`${timeLeft} minutes(s) until server restart`);
           })
