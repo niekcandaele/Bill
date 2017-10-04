@@ -18,8 +18,15 @@ class sevendtdLogs {
       initLogs()
     }
 
+
+    client.on('message', (message) => {
+      if (message.channel === chatChannel && message.author != client.user && !message.content.startsWith(discordGuild.commandPrefix)) {
+        sevendtdServer.sayIngame(`[${message.author.username}] ${message.content}`)
+      }
+    });
+
     function initLogs() {
-      client.logger.info("Initializing a new logging service")
+      client.logger.info(`Initializing a new logging service for ${discordGuild.name}`)
       if (discordGuild.loggingIntervalObj) {
         client.logger.info(`${discordGuild.name} already has a logging object, replacing the old one.`)
         clearInterval(discordGuild.loggingIntervalObj)
@@ -73,8 +80,8 @@ class sevendtdLogs {
           client.logger.info(`Server for ${discordGuild.name} is back online.`)
           chatChannel.send("Hey good news, your server is back online! Wooo")
           initLogs()
-        } 
-      }, loggingInterval*10)
+        }
+      }, loggingInterval * 10)
     }
 
     this.initialize = function () {
@@ -82,14 +89,14 @@ class sevendtdLogs {
       initLogs()
     }
 
-    this.stop = function() {
+    this.stop = function () {
       client.logger.info(`Stopping logging for ${discordGuild.name}`)
       chatChannel = false
       chatChannelID = false
       return clearInterval(discordGuild.loggingIntervalObj)
     }
 
-    this.setChatChannel = function(newChatChannel) {
+    this.setChatChannel = function (newChatChannel) {
       chatChannel = newChatChannel
       chatChannelID = newChatChannel.id
     }

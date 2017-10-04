@@ -17,9 +17,9 @@ class GuildConfig extends Commando.Command {
     const guild =  msg.guild
     const ip = guild.settings.get("serverip");
     const port = guild.settings.get("webPort");
-
+    const prefix = guild.commandPrefix
     let embed = client.makeBillEmbed().setTitle("Current config for " + msg.guild.name)
-    .addField("IP", ip).addField("Port", port);
+    .addField("IP", ip).addField("Port", port).addField("Prefix", prefix)
 
 
     msg.channel.send({

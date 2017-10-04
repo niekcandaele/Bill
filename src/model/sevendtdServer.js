@@ -64,7 +64,7 @@ class sevendtdServer {
     }
 
     this.sayIngame = function (message) {
-      return doRequest("executeconsolecommand")
+      return doRequest("executeconsolecommand", {command: "say \"" + message + "\""})
     }
 
     this.checkIfOnline = function () {
