@@ -32,23 +32,21 @@ class IngameChat extends Commando.Command {
 
     if (args.action == "init") {
       if (msg.guild.settings.get("chatChannel")) {
-        msg.channel.send("Looks like you already chat a chat channel set, switching to this channel.")
-        msg.guild.sevendtdServer.logService.setChatChannel(msg.channel)
+        msg.channel.send("You've already got a chat bridge set up! Switching to this channel")
       } else {
-        msg.guild.settings.set("chatChannel", msg.channel.id);
-        msg.guild.sevendtdServer.logService.setChatChannel(msg.channel)
-        msg.guild.sevendtdServer.logService.initialize();
-        msg.channel.send("Initialized a chat bridge in this channel.")
+        msg.channel.send("Initializing a chat bridge in this channel!")
       }
-
+      msg.guild.settings.set("chatChannel", msg.channel.id);
+      msg.guild.sevendtdServer.logService.chatBridge.initialize(msg.channel)
+      
     }
 
     if (args.action == "stop") {
       msg.guild.settings.set("chatChannel", false)
-      msg.guild.sevendtdServer.logService.stop()
+      msg.guild.sevendtdServer.logService.chatBridge.stop()
       return msg.channel.send("Stopping chat channel.")
     }
-  
+
   }
 }
 

@@ -54,10 +54,21 @@ client.on('ready', () => {
       if (IP) {
         client.logger.debug(`Guild ${guild.id} has a 7DTD server! Creating class`)
         guild.sevendtdServer = new sevendtdServer(guild)
+        guild.sevendtdServer.logService.initialize()
       }
     }
   }
 
+})
+
+// Listen for messages in chat bridge channels
+client.on("message", message => {
+  let guild = message.guild
+  let channel = message.channel
+  if (guild.sevendtdServer && guild.settings.get("chatChannel") == channel.id && message.author != client.user && !message.content.startsWith(guild.commandPrefix)) {
+    client.logger.debug("Message in chat channel detected, sending to game!")
+    guild.sevendtdServer.sayIngame(`[${message.author.username}]: ${message.content}`)
+  }
 })
 
 client.on("guildCreate", guild => {
@@ -75,16 +86,8 @@ client.on('commandRun', (command, promise, message, args) => {
   client.botStats.set('cmdsRan', cmdsRan + 1);
 });
 
-/* Not fully functional yet
-client.on('message', (message) => {
-  if (message.channel.id == message.guild.settings.get("chatChannel") && message.author.id != client.user.id && message.guild.sevendtdServer) {
-    const msgToSend = message.content
-    const author = message.author.username
-    console.log(`say [${author}] ${msgToSend}`);
-    message.guild.sevendtdServer.executeConsoleCommand(`say [${author}]${msgToSend}`)
-  }
-})
-*/
+
+
 
 // Registers all built-in groups, commands, and argument types
 client.registry.registerGroups([

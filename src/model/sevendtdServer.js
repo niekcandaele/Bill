@@ -1,9 +1,10 @@
-const sevendtdLogs = require('../service/sevendtdLogs')
+const sevendtdLogService = require('../service/sevendtdLogService.js')
 const request = require('request-promise')
 
 class sevendtdServer {
   constructor(discordGuild) {
     this.guild = discordGuild
+    this.logService = new sevendtdLogService(discordGuild.client, discordGuild, this)
     //this.client = discordGuild.client
     const client = discordGuild.client
     const thisConf = this.guild.settings;
@@ -72,8 +73,6 @@ class sevendtdServer {
       return doRequest("getstats").then(result => true
       ).catch(e => false)
     }
-
-    this.logService = new sevendtdLogs(client, this.guild, this)
 
     async function doRequest(apiModule, extraqs = false) {
       let options = await getRequestOptions(apiModule)
