@@ -1,5 +1,6 @@
 const EventEmitter = require('events');
 const chatService = require("./sevendtdChatService.js")
+const ipCountry = require('ip-country')
 
 class sevendtdLogService extends EventEmitter {
     constructor(discordClient, discordGuild, sevendtdServer) {
@@ -12,6 +13,11 @@ class sevendtdLogService extends EventEmitter {
         if (!loggingInterval) {
             loggingInterval = 5000
         }
+        ipCountry.init({
+            // Return a default country when the country can not be detected from the IP. 
+            fallbackCountry: 'Unknown',
+            exposeInfo: false
+        })
         this.chatBridge = new chatService(discordClient, discordGuild, sevendtdServer, this)
 
         this.initialize = function () {
@@ -84,6 +90,7 @@ class sevendtdLogService extends EventEmitter {
             let steamID = logMsg[3].replace("steamid=", "").trim()
             let steamOwner = logMsg[4].replace("steamOwner=", "").trim()
             let ip = logMsg[5].replace("ip=", "").trim()
+            let country = ipCountry.country(ip)
 
             let connectedMsg = {
                 entityID,
@@ -91,6 +98,7 @@ class sevendtdLogService extends EventEmitter {
                 steamID,
                 steamOwner,
                 ip,
+                country,
                 date,
                 time
             }

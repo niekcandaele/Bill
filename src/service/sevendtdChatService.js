@@ -40,6 +40,7 @@ class sevendtdChatService {
             .setTitle("Player Connected")
             .addField("Name", connectedMsg.playerName, true)
             .addField("Steam ID", connectedMsg.steamID, true)
+            .addField("Country", connectedMsg.country)
             chatChannel.send({embed})
         })
 
