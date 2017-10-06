@@ -61,8 +61,8 @@ class sevendtdLogService extends EventEmitter {
         this.emit("newlogline", logLine)
         if (logLine.msg.startsWith("Chat:")) {
             // Chat: 'Dave': can you enter the radiated zone with full hazmat>?
-            let chatMessage = logLine.msg.split(":")
-            let playerName = chatMessage[1];
+            let chatMessage = logLine.msg.split(" ")
+            let playerName = chatMessage[1].replace(/'/g, "").replace(":", "").trim();
             let messageText = chatMessage.slice(2, chatMessage.length).join(' ');
             let date = logLine.date
             let time = logLine.time
@@ -78,21 +78,21 @@ class sevendtdLogService extends EventEmitter {
             let date = logLine.date
             let time = logLine.time
             let logMsg = logLine.msg.split(",")
-            
+
             let entityID = logMsg[1].replace("entityid=", "").trim()
             let playerName = logMsg[2].replace("name=", "").trim()
             let steamID = logMsg[3].replace("steamid=", "").trim()
             let steamOwner = logMsg[4].replace("steamOwner=", "").trim()
             let ip = logMsg[5].replace("ip=", "").trim()
-            
+
             let connectedMsg = {
-              entityID,
-              playerName,
-              steamID,
-              steamOwner,
-              ip,
-              date,
-              time
+                entityID,
+                playerName,
+                steamID,
+                steamOwner,
+                ip,
+                date,
+                time
             }
             this.emit("playerconnected", connectedMsg)
         }
@@ -103,24 +103,24 @@ class sevendtdLogService extends EventEmitter {
             let logMsg = logLine.msg
             logMsg = logMsg.replace("Player disconnected", "")
             logMsg = logMsg.split(",")
-            
-            
+
+
             let entityID = logMsg[0].replace(": EntityID=", "").trim()
             let playerID = logMsg[1].replace("PlayerID=", "").replace(/'/g, "").trim()
             let ownerID = logMsg[2].replace("OwnerID=", "").replace(/'/g, "").trim()
             let playerName = logMsg[3].replace("PlayerName=", "").replace(/'/g, "").trim()
-            
+
             let disconnectedMsg = {
-              entityID,
-              playerName,
-              ownerID,
-              playerID,
-              date,
-              time
+                entityID,
+                playerName,
+                ownerID,
+                playerID,
+                date,
+                time
             }
             this.emit("playerdisconnected", disconnectedMsg)
-            
-            
+
+
         }
 
     }
