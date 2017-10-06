@@ -44,9 +44,9 @@ class sevendtdLogService extends EventEmitter {
                             }).catch(e => discordClient.logger.error(e))
                         }
                     }).catch(e => {
-                        discordClient.logger.error(`Request to ${discordGuild.name} failed! Server offline? ${e}`)
-                        that.emit("connectionlost", e)
                         clearInterval(discordGuild.loggingIntervalObj)
+                        discordClient.logger.warn(`Request to ${discordGuild.name} failed! Server offline? ${e}`)
+                        that.emit("connectionlost", e)
                         return that.passiveLogging();
                     })
 
@@ -60,6 +60,17 @@ class sevendtdLogService extends EventEmitter {
             return stopLogging(discordClient, discordGuild, sevendtdServer)
         }
 
+    }
+
+    passiveLogging() {
+        discordGuild.loggingIntervalObj = setInterval(function() {
+            if (sevendtdServer.checkIfOnline()) {
+                discordClient.logger.info(`Server for ${discordGuild.name} is available again. Restarting regular logging.`)
+                clearInterval(discordGuild.loggingIntervalObj)
+                this.emit("connectionregained")
+                this.initialize()
+            }
+        }, loggingInterval*10)
     }
 
     // Detect what log line is for and send out an event

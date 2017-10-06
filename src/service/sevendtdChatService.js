@@ -49,7 +49,7 @@ class sevendtdChatService {
             let embed = discordClient.makeBillEmbed()
             .setTitle("Player left")
             .addField("Name", disconnectedMsg.playerName, true)
-            .addField("Player ID", disconnectedMsg.playerID, true)
+            .addField("Steam ID", disconnectedMsg.playerID, true)
             chatChannel.send({embed})
         })
 

@@ -22,6 +22,7 @@
     "erlpack": "github:hammerandchisel/erlpack",
     "express": "^4.15.5",
     "frontail": "^4.0.4",
+    "ip-country": "^1.0.2",
     "logger": "0.0.1",
     "rand-token": "^0.3.0",
     "request": "^2.81.0",
