@@ -47,7 +47,7 @@ class sevendtdLogService extends EventEmitter {
                         clearInterval(discordGuild.loggingIntervalObj)
                         discordClient.logger.warn(`Request to ${discordGuild.name} failed! Server offline? ${e}`)
                         that.emit("connectionlost", e)
-                        return that.passiveLogging();
+                        that.passiveLogging()
                     })
 
                 }, loggingInterval)
@@ -114,6 +114,19 @@ class sevendtdLogService extends EventEmitter {
                 time
             }
             this.emit("playerconnected", connectedMsg)
+        }
+
+        if (logLine.msg.includes("GMSG: Player") && logLine.msg.includes("died")) {
+            let deathMessage = logLine.msg.split(" ")
+            let playerName = deathMessage.slice(2,deathMessage.length-1).join(" ").replace(/'/g, "")
+            let date = logLine.date
+            let time = logLine.time
+            deathMessage = {
+                playerName,
+                date,
+                time
+            }
+            this.emit("playerdeath", deathMessage)
         }
 
         if (logLine.msg.startsWith("Player disconnected:")) {

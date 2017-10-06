@@ -59,6 +59,12 @@ class sevendtdChatService {
             }
         })
 
+        logService.on("playerdeath", deathMessage => {
+            if (this.enabled) {
+                chatChannel.send(`${deathMessage.playerName} just died.`)
+            }
+        })
+
     }
 
 }
