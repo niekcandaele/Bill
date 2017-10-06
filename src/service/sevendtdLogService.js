@@ -44,10 +44,10 @@ class sevendtdLogService extends EventEmitter {
                             }).catch(e => discordClient.logger.error(e))
                         }
                     }).catch(e => {
-                        clearInterval(discordGuild.loggingIntervalObj)
                         discordClient.logger.warn(`Request to ${discordGuild.name} failed! Server offline? ${e}`)
                         that.emit("connectionlost", e)
                         that.passiveLogging()
+                        clearInterval(discordGuild.loggingIntervalObj)
                     })
 
                 }, loggingInterval)
@@ -63,10 +63,10 @@ class sevendtdLogService extends EventEmitter {
     }
 
     passiveLogging() {
-        discordGuild.loggingIntervalObj = setInterval(function() {
+        discordGuild.passiveLoggingIntervalObj = setInterval(function() {
             if (sevendtdServer.checkIfOnline()) {
                 discordClient.logger.info(`Server for ${discordGuild.name} is available again. Restarting regular logging.`)
-                clearInterval(discordGuild.loggingIntervalObj)
+                clearInterval(discordGuild.passiveLoggingIntervalObj)
                 this.emit("connectionregained")
                 this.initialize()
             }
