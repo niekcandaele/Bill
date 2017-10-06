@@ -19,12 +19,12 @@ class sevendtdChatService {
 
         if (discordGuild.settings.get("chatChannel")) {
             discordClient.logger.debug(`${discordGuild.name} has a chat bridge configured, starting it.`)
-            this.enabled = true  
+            this.enabled = true
         }
 
         logService.on("chatmessage", chatMessage => {
-            if (this.enabled) {
-                chatChannel.send(`${chatMessage.playerName}${chatMessage.messageText}`)
+            if (this.enabled && chatMessage.playerName != "Server") {
+                chatChannel.send(`${chatMessage.playerName} : ${chatMessage.messageText}`)
             }
         })
 
@@ -35,22 +35,28 @@ class sevendtdChatService {
         })
 
         logService.on("playerconnected", connectedMsg => {
-            discordClient.logger.debug(`${connectedMsg.playerName} has connected to ${discordGuild.name}`)
-            let embed = discordClient.makeBillEmbed()
-            .setTitle("Player Connected")
-            .addField("Name", connectedMsg.playerName, true)
-            .addField("Steam ID", connectedMsg.steamID, true)
-            .addField("Country", connectedMsg.country)
-            chatChannel.send({embed})
+            if (this.enabled) {
+                discordClient.logger.debug(`${connectedMsg.playerName} has connected to ${discordGuild.name}`)
+                let embed = discordClient.makeBillEmbed()
+                    .setTitle("Player Connected")
+                    .addField("Name", connectedMsg.playerName, true)
+                    .addField("Steam ID", connectedMsg.steamID, true)
+                    .addField("Country", connectedMsg.country)
+                    .setColor("GREEN")
+                chatChannel.send({ embed })
+            }
         })
 
         logService.on("playerdisconnected", disconnectedMsg => {
-            discordClient.logger.debug(`${disconnectedMsg.playerName} has disconnected to ${discordGuild.name}`)
-            let embed = discordClient.makeBillEmbed()
-            .setTitle("Player left")
-            .addField("Name", disconnectedMsg.playerName, true)
-            .addField("Steam ID", disconnectedMsg.playerID, true)
-            chatChannel.send({embed})
+            if (this.enabled) {
+                discordClient.logger.debug(`${disconnectedMsg.playerName} has disconnected to ${discordGuild.name}`)
+                let embed = discordClient.makeBillEmbed()
+                    .setTitle("Player left")
+                    .addField("Name", disconnectedMsg.playerName, true)
+                    .addField("Steam ID", disconnectedMsg.playerID, true)
+                    .setColor("RED")
+                chatChannel.send({ embed })
+            }
         })
 
     }
