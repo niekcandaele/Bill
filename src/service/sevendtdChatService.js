@@ -68,18 +68,23 @@ class sevendtdChatService {
         let sent = false
         if (chatMessage.type == "server" && currentConfig.serverMessages && !sent) {
             this.chatBridge.chatChannel.send(`\`SERVER : ${chatMessage.messageText}\``)
+            sent = true
         }
         if (chatMessage.type == "publicCommand" && currentConfig.publicCommands && !sent) {
             this.chatBridge.chatChannel.send(`\`Public command ran by ${chatMessage.playerName}: ${chatMessage.messageText}\``)
+            sent = true
         }
         if (chatMessage.type == "privateCommand" && currentConfig.privateCommands && !sent) {
             this.chatBridge.chatChannel.send(`\`Private command ran by ${chatMessage.playerName}: ${chatMessage.messageText}\``)
-        }
-        if (chatMessage.type == "chat" && !sent) {
-            this.chatBridge.chatChannel.send(`${chatMessage.playerName} : ${chatMessage.messageText}`)
+            sent = true
         }
         if (chatMessage.type == "billCommand" && currentConfig.billCommands && !sent) {
             this.chatBridge.chatChannel.send(`\`Bill command ran by ${chatMessage.playerName}: ${chatMessage.messageText}\``)
+            sent = true
+        }
+        if (chatMessage.type == "chat" && !sent) {
+            this.chatBridge.chatChannel.send(`${chatMessage.playerName} : ${chatMessage.messageText}`)
+            sent = true
         }
        
     }

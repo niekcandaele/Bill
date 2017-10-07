@@ -1,8 +1,6 @@
 const Commando = require('discord.js-commando');
 const Discord = require('discord.js');
 
-const toDDHHMMSS = require('../../util/toDDHHMMSS.js')
-
 class IngameChat extends Commando.Command {
   constructor(client) {
     super(client, {
@@ -34,6 +32,10 @@ class IngameChat extends Commando.Command {
     const currentConfig = msg.guild.settings.get("chatBridge")
     let newConfig = currentConfig
 
+    if (!msg.guild.sevendtdServer) {
+      return msg.channel.send("No 7DTD Server initialized. Please set up your server before using commands")
+    }
+
     if (args.action == "init") {
       if (currentConfig.enabled) {
         msg.channel.send("You've already got a chat bridge set up! Reloading your configuration")
@@ -41,6 +43,7 @@ class IngameChat extends Commando.Command {
       } else {
         msg.channel.send("Initializing a chat bridge in this channel!")
       }
+      newConfig.enabled = true
       newConfig.chatChannelID = msg.channel.id
       msg.guild.sevendtdServer.logService.chatBridge.initialize(msg.channel)
     }
@@ -114,6 +117,21 @@ class IngameChat extends Commando.Command {
         msg.channel.send("Turning on Bill commands")
       }
       newConfig.billCommands = !currentConfig.billCommands
+    }
+
+    if (args.action == "config") {
+      let embed = this.client.makeBillEmbed()
+      .addField("Status", currentConfig.enabled, true)
+      .addField("Chat channel ID", currentConfig.chatChannelID, true)
+      .addField("Server messages", currentConfig.serverMessages, true)
+      .addField("Death messages", currentConfig.deathMessages, true)
+      .addField("Connected messages", currentConfig.connectedMessages, true)
+      .addField("Disconnected messages", currentConfig.disconnectedMessages, true)
+      .addField("Public commands", currentConfig.publicCommands, true)
+      .addField("Private commands", currentConfig.privateCommands, true)
+      .addField("Bill Commands", currentConfig.billCommands, true)
+      .setTitle("Current chat bridge config")
+    msg.channel.send({embed})
     }
 
     msg.guild.settings.set("chatBridge", newConfig)
