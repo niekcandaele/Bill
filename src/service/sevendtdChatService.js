@@ -2,76 +2,79 @@ class sevendtdChatService {
     constructor(discordClient, discordGuild, sevendtdServer, logService) {
         this.enabled = false
         let chatChannelID = logService.discordGuild.settings.get("chatChannel")
-        let chatChannel = logService.discordGuild.channels.get(chatChannelID)
+        this.chatChannel = logService.discordGuild.channels.get(chatChannelID)
+
 
         this.initialize = function (channel) {
             discordClient.logger.info(`Initializing chat bridge for ${discordGuild.name}`)
             this.enabled = true
-            chatChannel = channel
-            chatChannelID = channel.id
+            this.chatChannel = channel
+            this.chatChannelID = channel.id
+            logService.on("chatmessage", this.sendChatToDiscord)
+            logService.on("connectionlost", this.sendConnectionLostToDiscord)
+            logService.on("connectionregained", this.sendConnectionRegainedToDiscord)
+            logService.on("playerconnected", this.sendPlayerConnectedToDiscord)
+            logService.on("playerdisconnected", this.sendPlayerDisconnectedToDiscord)
+            logService.on("playerdeath", this.sendPlayerDiedToDiscord)
+
         }
 
         this.stop = function () {
             discordClient.logger.info(`Stopping chat bridge for ${discordGuild.name}`)
-            this.enabled = false
+            logService.removeListener("chatmessage", this.sendChatToDiscord)
+            logService.removeListener("connectionlost", this.sendConnectionLostToDiscord)
+            logService.removeListener("connectionregained", this.sendConnectionRegainedToDiscord)
+            logService.removeListener("playerconnected", this.sendPlayerConnectedToDiscord)
+            logService.removeListener("playerdisconnected", this.sendPlayerDisconnectedToDiscord)
+            logService.removeListener("playerdeath", this.sendPlayerDiedToDiscord)
         }
 
 
         if (discordGuild.settings.get("chatChannel")) {
             discordClient.logger.debug(`${discordGuild.name} has a chat bridge configured, starting it.`)
-            this.enabled = true
+            let channelID = discordGuild.settings.get("chatChannel")
+            this.initialize(discordGuild.channels.get(channelID))
         }
-
-        logService.on("chatmessage", chatMessage => {
-            if (this.enabled && chatMessage.playerName != "Server") {
-                chatChannel.send(`${chatMessage.playerName} : ${chatMessage.messageText}`)
-            }
-        })
-
-        logService.on("connectionlost", error => {
-            if (this.enabled) {
-                chatChannel.send(`Whoa, I can't read logs! Server might be offline...`)
-            }
-        })
-
-        logService.on("connectionregained", error => {
-            if (this.enabled) {
-                chatChannel.send(`Hey good news, your server is back online!`)
-            }
-        })
-
-        logService.on("playerconnected", connectedMsg => {
-            if (this.enabled) {
-                discordClient.logger.debug(`${connectedMsg.playerName} has connected to ${discordGuild.name}`)
-                let embed = discordClient.makeBillEmbed()
-                    .setTitle("Player Connected")
-                    .addField("Name", connectedMsg.playerName, true)
-                    .addField("Steam ID", connectedMsg.steamID, true)
-                    .addField("Country", connectedMsg.country)
-                    .setColor("GREEN")
-                chatChannel.send({ embed })
-            }
-        })
-
-        logService.on("playerdisconnected", disconnectedMsg => {
-            if (this.enabled) {
-                discordClient.logger.debug(`${disconnectedMsg.playerName} has disconnected to ${discordGuild.name}`)
-                let embed = discordClient.makeBillEmbed()
-                    .setTitle("Player left")
-                    .addField("Name", disconnectedMsg.playerName, true)
-                    .addField("Steam ID", disconnectedMsg.playerID, true)
-                    .setColor("RED")
-                chatChannel.send({ embed })
-            }
-        })
-
-        logService.on("playerdeath", deathMessage => {
-            if (this.enabled) {
-                chatChannel.send(`${deathMessage.playerName} just died.`)
-            }
-        })
-
     }
+
+
+
+    sendChatToDiscord(chatMessage) {
+        this.chatBridge.chatChannel.send(`${chatMessage.playerName} : ${chatMessage.messageText}`)
+    }
+
+    sendPlayerConnectedToDiscord(connectedMsg) {
+        let embed = discordClient.makeBillEmbed()
+            .setTitle("Player Connected")
+            .addField("Name", connectedMsg.playerName, true)
+            .addField("Steam ID", connectedMsg.steamID, true)
+            .addField("Country", connectedMsg.country)
+            .setColor("GREEN")
+        this.chatBridge.chatChannel.send({ embed })
+    }
+
+    sendPlayerDisconnectedToDiscord(disconnectedMsg) {
+        let embed = discordClient.makeBillEmbed()
+            .setTitle("Player left")
+            .addField("Name", disconnectedMsg.playerName, true)
+            .addField("Steam ID", disconnectedMsg.playerID, true)
+            .setColor("RED")
+        this.chatBridge.chatChannel.send({ embed })
+    }
+
+    sendPlayerDiedToDiscord(deathMessage) {
+        this.chatBridge.chatChannel.send(`${deathMessage.playerName} just died.`)
+    }
+
+    sendConnectionLostToDiscord() {
+        this.chatBridge.chatChannel.send(`Whoa, I can't read logs! Server might be offline...`)
+    }
+
+    sendConnectionRegainedToDiscord() {
+        this.chatBridge.chatChannel.send(`Hey good news, your server is back online!`)
+    }
+
+
 
 }
 

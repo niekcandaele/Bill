@@ -42,14 +42,14 @@ class sevendtdLogService extends EventEmitter {
                                     that.handleLog(logLine)
                                 }
                             }).catch(e => {
-                                discordClient.logger.warn(`Getting logs for ${discordGuild.name} failed! Server offline? ${e}`)
-                                that.emit("connectionlost", e)
-                                clearInterval(that.loggingIntervalObj)
-                                that.passiveLogging(discordClient, discordGuild, sevendtdServer)
+                                discordClient.logger.error(e)
                             })
                         }
                     }).catch(e => {
-                        discordClient.logger.error(e)
+                        discordClient.logger.warn(`Getting logs for ${discordGuild.name} failed! Server offline? ${e}`)
+                        that.emit("connectionlost", e)
+                        clearInterval(that.loggingIntervalObj)
+                        that.passiveLogging(discordClient, discordGuild, sevendtdServer)
                     })
 
                 }, loggingInterval)
@@ -96,6 +96,7 @@ class sevendtdLogService extends EventEmitter {
             this.emit("chatmessage", chatMessage)
         }
         if (logLine.msg.startsWith("Player connected,")) {
+            this.discordClient.logger.debug(`${connectedMsg.playerName} has connected to ${discordGuild.name}`)
             let date = logLine.date
             let time = logLine.time
             let logMsg = logLine.msg.split(",")
@@ -134,6 +135,7 @@ class sevendtdLogService extends EventEmitter {
         }
 
         if (logLine.msg.startsWith("Player disconnected:")) {
+            this.discordClient.logger.debug(`${disconnectedMsg.playerName} has disconnected from ${discordGuild.name}`) 
             let date = logLine.date
             let time = logLine.time
             let logMsg = logLine.msg
