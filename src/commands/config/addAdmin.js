@@ -6,6 +6,7 @@ class AddAdmin extends Commando.Command {
     super(client, {
       name: 'addadmin',
       group: 'config',
+      guildOnly: true,
       memberName: 'addadmin',
       description: 'adds a new admin role.',
       examples: ['addadmin'],

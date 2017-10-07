@@ -105,27 +105,6 @@ Time to run the command `$init *serverip* *port* *name* *token*`
 
 The bot will test if it can connect to the server and report errors.
 
-# Custom messages with txt
-
-Arguments for the txt command:
-
-- Set adds a new message. The usage is: $txt set textname text
-
-  - textname is what you will type to send a message
-  - text is the message that will be displayed
-  - You can also use [Discord markdown](https://support.discordapp.com/hc/en-us/articles/210298617-Markdown-Text-101-Chat-Formatting-Bold-Italic-Underline-)!
-  - List lists all currently configured txt files
-
-- Reset resets back to the default message
-
-- Delete deletes a message. The usage is: $txt delete textname
-
-Users can then call your message with $textname
-
-Note: textname is case sensitive!
-
-![example_txt](http://imgur.com/ntOXWoM.png "Example for txt config")
-
 # Contact & support
 
 Need help with the set up? Happy to help on [Bill discord developer server](https://discordapp.com/invite/kuDJG6e)

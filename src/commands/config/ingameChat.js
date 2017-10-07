@@ -9,6 +9,7 @@ class IngameChat extends Commando.Command {
       name: 'ingamechat',
       group: 'config',
       memberName: 'ingamechat',
+      guildOnly: true,
       description: 'Command to control the ingame chat bridge',
       args: [{
         key: 'action',
@@ -38,7 +39,7 @@ class IngameChat extends Commando.Command {
       }
       msg.guild.settings.set("chatChannel", msg.channel.id);
       msg.guild.sevendtdServer.logService.chatBridge.initialize(msg.channel)
-      
+
     }
 
     if (args.action == "stop") {

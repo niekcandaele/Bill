@@ -37,8 +37,6 @@ client.on('ready', () => {
   });
   client.user.setGame(client.commandPrefix + "botinfo");
   client.makeBillEmbed = makeBillEmbed
-//  client.sevendtdRequest = new sevendtdRequest(client);
-  client.user.setGame(client.config.website)
   client.logger.info('Bill\'s  ready!');
 
   // Wait a couple seconds to init 7DTD servers so the guild settings can init first
@@ -61,11 +59,15 @@ client.on('ready', () => {
 
 })
 
+client.on("commandError", (command, error) => {
+  client.logger.error(`Command error! ${command.memberName} trace: ${error.stack}`)
+})
+
 // Listen for messages in chat bridge channels
 client.on("message", message => {
   let guild = message.guild
   let channel = message.channel
-  if (guild.sevendtdServer && guild.settings.get("chatChannel") == channel.id && message.author != client.user && !message.content.startsWith(guild.commandPrefix)) {
+  if (channel.type == "text" && guild.sevendtdServer && guild.settings.get("chatChannel") == channel.id && message.author != client.user && !message.content.startsWith(guild.commandPrefix)) {
     client.logger.debug("Message in chat channel detected, sending to game!")
     guild.sevendtdServer.sayIngame(`[${message.author.username}]: ${message.content}`)
   }
@@ -81,7 +83,11 @@ client.on("guildDelete", guild => {
 });
 
 client.on('commandRun', (command, promise, message, args) => {
-  client.logger.info("COMMAND RAN: " + message.author.username + " ran " + command.name + " on " + message.guild.name);
+  if (message.channel.type == "dm" || message.channel.type == "group") {
+    client.logger.info(`COMMAND RAN: ${message.author.username} ran ${command.name} in a DM channel.`)
+  } else {
+    client.logger.info("COMMAND RAN: " + message.author.username + " ran " + command.name + " on " + message.guild.name);
+  }
   var cmdsRan = client.botStats.get('cmdsRan');
   client.botStats.set('cmdsRan', cmdsRan + 1);
 });

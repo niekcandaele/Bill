@@ -52,7 +52,7 @@ class sevendtdLogService extends EventEmitter {
 
                 }, loggingInterval)
             }).catch(function (error) {
-                discordClient.logger.error(`Error Initializing 7dtd log service \n ${error}`)
+                discordClient.logger.error(`Error Initializing 7dtd log service for ${discordGuild.name} \n ${error}`)
             })
         }
 
