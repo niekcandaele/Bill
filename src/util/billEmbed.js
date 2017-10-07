@@ -13,7 +13,7 @@ function makeBillEmbed() {
     .setTitle("Bill - A discord bot for 7 days to die")
     .setColor(randomColour)
     .setTimestamp()
-    .setURL("http://www.billbot.xyz")
+    .setURL("http://billbot.xyz")
     .setFooter("-", "http://i.imgur.com/5bm3jzh.png")
     .setThumbnail("http://i.imgur.com/5bm3jzh.png")
   return embed
