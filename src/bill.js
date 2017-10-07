@@ -40,7 +40,7 @@ client.on('ready', () => {
   client.logger.info('Bill\'s  ready!');
 
   // Wait a couple seconds to init 7DTD servers so the guild settings can init first
-  setTimeout(function() {
+  setTimeout(function () {
     client.logger.info("Initializing 7DTD server instances")
     init7DTD()
   }, 1000)
@@ -65,12 +65,14 @@ client.on("commandError", (command, error) => {
 
 // Listen for messages in chat bridge channels
 client.on("message", message => {
-  let guild = message.guild
-  let channel = message.channel
-  const chatConfig = guild.settings.get("chatBridge")
-  if (channel.type == "text" && guild.sevendtdServer && chatConfig.chatChannelID == channel.id && message.author != client.user && !message.content.startsWith(guild.commandPrefix)) {
-    client.logger.debug("Message in chat channel detected, sending to game!")
-    guild.sevendtdServer.sayIngame(`[${message.author.username}]: ${message.content}`)
+  if (message.channel.type == "text") {
+    let guild = message.guild
+    let channel = message.channel
+    const chatConfig = guild.settings.get("chatBridge")
+    if (guild.sevendtdServer && chatConfig.chatChannelID == channel.id && message.author != client.user && !message.content.startsWith(guild.commandPrefix)) {
+      client.logger.debug("Message in chat channel detected, sending to game!")
+      guild.sevendtdServer.sayIngame(`[${message.author.username}]: ${message.content}`)
+    }
   }
 })
 
@@ -98,13 +100,13 @@ client.on('commandRun', (command, promise, message, args) => {
 
 // Registers all built-in groups, commands, and argument types
 client.registry.registerGroups([
-    ['7dtd', '7 Days to die commands'],
-    ['admin', 'Administrator commands'],
-    ['config', 'configuration commands']
-  ])
+  ['7dtd', '7 Days to die commands'],
+  ['admin', 'Administrator commands'],
+  ['config', 'configuration commands']
+])
   .registerDefaults()
   .registerCommandsIn(path.join(__dirname, 'commands'));
 
-process.on('uncaughtException', function(err) {
+process.on('uncaughtException', function (err) {
   client.logger.error(err);
 });
