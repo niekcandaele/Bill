@@ -68,7 +68,7 @@ class sevendtdServer {
       return doRequest("executeconsolecommand", {command: "say \"" + message + "\""})
     }
 
-    this.checkIfOnline = function () {
+    this.checkIfOnline = async function () {
       client.logger.debug(`Checking is server is online for ${this.guild.name}`)
       return doRequest("getstats").then(result => true
       ).catch(e => false)

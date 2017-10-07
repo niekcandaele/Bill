@@ -1,7 +1,21 @@
 class sevendtdChatService {
     constructor(discordClient, discordGuild, sevendtdServer, logService) {
         this.enabled = false
-        let chatChannelID = logService.discordGuild.settings.get("chatChannel")
+        const defaultConfig = {
+            chatChannelID: false,
+            serverMessages: false,
+            deathMessages: true,
+            connectedMessages: true,
+            disconnectedMessages: true,
+        }
+        this.config = discordGuild.settings.get("chatBridge")
+        if (!this.config) {
+            discordClient.logger.warn(`${discordGuild.name} has no chat config! Settings defaults`)
+            discordGuild.settings.set("chatBridge", defaultConfig)
+            this.config = defaultConfig
+        }
+
+        let chatChannelID = this.config.chatChannelID
         this.chatChannel = logService.discordGuild.channels.get(chatChannelID)
 
 
@@ -10,12 +24,19 @@ class sevendtdChatService {
             this.enabled = true
             this.chatChannel = channel
             this.chatChannelID = channel.id
+            if (this.config.connectedMessages) {
+                logService.on("playerconnected", this.sendPlayerConnectedToDiscord)
+            }
+            if (this.config.disconnectedMessages) {
+                logService.on("playerdisconnected", this.sendPlayerDisconnectedToDiscord)
+            }
+            if (this.config.deathMessages) {
+            logService.on("playerdeath", this.sendPlayerDiedToDiscord)
+            }
+
             logService.on("chatmessage", this.sendChatToDiscord)
             logService.on("connectionlost", this.sendConnectionLostToDiscord)
             logService.on("connectionregained", this.sendConnectionRegainedToDiscord)
-            logService.on("playerconnected", this.sendPlayerConnectedToDiscord)
-            logService.on("playerdisconnected", this.sendPlayerDisconnectedToDiscord)
-            logService.on("playerdeath", this.sendPlayerDiedToDiscord)
 
         }
 
@@ -44,7 +65,7 @@ class sevendtdChatService {
     }
 
     sendPlayerConnectedToDiscord(connectedMsg) {
-        let embed = discordClient.makeBillEmbed()
+        let embed = this.discordClient.makeBillEmbed()
             .setTitle("Player Connected")
             .addField("Name", connectedMsg.playerName, true)
             .addField("Steam ID", connectedMsg.steamID, true)
@@ -54,7 +75,7 @@ class sevendtdChatService {
     }
 
     sendPlayerDisconnectedToDiscord(disconnectedMsg) {
-        let embed = discordClient.makeBillEmbed()
+        let embed = this.discordClient.makeBillEmbed()
             .setTitle("Player left")
             .addField("Name", disconnectedMsg.playerName, true)
             .addField("Steam ID", disconnectedMsg.playerID, true)
