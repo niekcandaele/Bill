@@ -2,11 +2,15 @@ class sevendtdChatService {
     constructor(discordClient, discordGuild, sevendtdServer, logService) {
         this.enabled = false
         const defaultConfig = {
+            enabled: false,
             chatChannelID: false,
             serverMessages: false,
             deathMessages: true,
             connectedMessages: true,
             disconnectedMessages: true,
+            publicCommands: true,
+            privateCommands: false,
+            billCommands: true
         }
         this.config = discordGuild.settings.get("chatBridge")
         if (!this.config) {
@@ -37,7 +41,6 @@ class sevendtdChatService {
             logService.on("chatmessage", this.sendChatToDiscord)
             logService.on("connectionlost", this.sendConnectionLostToDiscord)
             logService.on("connectionregained", this.sendConnectionRegainedToDiscord)
-
         }
 
         this.stop = function () {
@@ -61,7 +64,24 @@ class sevendtdChatService {
 
 
     sendChatToDiscord(chatMessage) {
-        this.chatBridge.chatChannel.send(`${chatMessage.playerName} : ${chatMessage.messageText}`)
+        let currentConfig = this.chatBridge.config
+        let sent = false
+        if (chatMessage.type == "server" && currentConfig.serverMessages && !sent) {
+            this.chatBridge.chatChannel.send(`\`SERVER : ${chatMessage.messageText}\``)
+        }
+        if (chatMessage.type == "publicCommand" && currentConfig.publicCommands && !sent) {
+            this.chatBridge.chatChannel.send(`\`Public command ran by ${chatMessage.playerName}: ${chatMessage.messageText}\``)
+        }
+        if (chatMessage.type == "privateCommand" && currentConfig.privateCommands && !sent) {
+            this.chatBridge.chatChannel.send(`\`Private command ran by ${chatMessage.playerName}: ${chatMessage.messageText}\``)
+        }
+        if (chatMessage.type == "chat" && currentConfig.privateCommands && !sent) {
+            this.chatBridge.chatChannel.send(`${chatMessage.playerName} : ${chatMessage.messageText}`)
+        }
+        if (chatMessage.type == "billCommand" && currentConfig.billCommands && !sent) {
+            this.chatBridge.chatChannel.send(`\`Bill command ran by ${chatMessage.playerName}: ${chatMessage.messageText}\``)
+        }
+       
     }
 
     sendPlayerConnectedToDiscord(connectedMsg) {

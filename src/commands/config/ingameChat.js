@@ -11,6 +11,7 @@ class IngameChat extends Commando.Command {
       memberName: 'ingamechat',
       guildOnly: true,
       description: 'Command to control the ingame chat bridge',
+      aliases: ['chatbrige', 'igc'],
       args: [{
         key: 'action',
         label: 'What action to perform on the chat bridge',
@@ -34,7 +35,7 @@ class IngameChat extends Commando.Command {
     let newConfig = currentConfig
 
     if (args.action == "init") {
-      if (currentConfig.chatChannelID) {
+      if (currentConfig.enabled) {
         msg.channel.send("You've already got a chat bridge set up! Reloading your configuration")
         msg.guild.sevendtdServer.logService.chatBridge.stop()
       } else {
@@ -68,13 +69,51 @@ class IngameChat extends Commando.Command {
       newConfig.disconnectedMessages = !currentConfig.disconnectedMessages
     }
 
-    if (args.actions == "deathMessages") {
+    if (args.action == "deathMessages") {
       if (currentConfig.deathMessages) {
         msg.channel.send("Turning off player death messages")
       } else {
         msg.channel.send("Turning on player death messages")
       }
       newConfig.deathMessages = !currentConfig.deathMessages
+    }
+
+
+    if (args.action == "serverMessages") {
+      if (currentConfig.serverMessages) {
+        msg.channel.send("Turning off server messages")
+      } else {
+        msg.channel.send("Turning on server messages")
+      }
+      newConfig.serverMessages = !currentConfig.serverMessages
+    }
+
+
+    if (args.action == "publicCommands") {
+      if (currentConfig.publicCommands) {
+        msg.channel.send("Turning off public commands")
+      } else {
+        msg.channel.send("Turning on public commands")
+      }
+      newConfig.publicCommands = !currentConfig.publicCommands
+    }
+
+    if (args.action == "privateCommands") {
+      if (currentConfig.privateCommands) {
+        msg.channel.send("Turning off private commands")
+      } else {
+        msg.channel.send("Turning on private commands")
+      }
+      newConfig.privateCommands = !currentConfig.privateCommands
+    }
+
+    if (args.action == "billCommands") {
+      if (currentConfig.billCommands) {
+        msg.channel.send("Turning off Bill commands")
+      } else {
+        msg.channel.send("Turning on Bill commands")
+      }
+      newConfig.billCommands = !currentConfig.billCommands
     }
 
     msg.guild.settings.set("chatBridge", newConfig)

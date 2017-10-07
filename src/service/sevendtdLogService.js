@@ -104,9 +104,24 @@ class sevendtdLogService extends EventEmitter {
             let messageText = chatMessage.slice(2, chatMessage.length).join(' ');
             let date = logLine.date
             let time = logLine.time
+            let type = "chat"
+            if (playerName == 'Server') {
+                type = "server"
+            }
+            if (messageText.startsWith("!")) {
+                type = "publicCommand"
+            }
+            if (messageText.startsWith("/")) {
+                type = "privateCommand"
+            }
+            if (messageText.startsWith(this.discordGuild.commandPrefix)) {
+                type = "billCommand"
+                this.emit("billCommand", chatMessage)
+            }
             chatMessage = {
                 playerName,
                 messageText,
+                type,
                 date,
                 time
             }
