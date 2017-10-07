@@ -67,7 +67,8 @@ client.on("commandError", (command, error) => {
 client.on("message", message => {
   let guild = message.guild
   let channel = message.channel
-  if (channel.type == "text" && guild.sevendtdServer && guild.settings.get("chatChannel") == channel.id && message.author != client.user && !message.content.startsWith(guild.commandPrefix)) {
+  const chatConfig = guild.settings.get("chatBridge")
+  if (channel.type == "text" && guild.sevendtdServer && chatConfig.chatChannelID == channel.id && message.author != client.user && !message.content.startsWith(guild.commandPrefix)) {
     client.logger.debug("Message in chat channel detected, sending to game!")
     guild.sevendtdServer.sayIngame(`[${message.author.username}]: ${message.content}`)
   }
