@@ -75,7 +75,7 @@ class sevendtdChatService {
         if (chatMessage.type == "privateCommand" && currentConfig.privateCommands && !sent) {
             this.chatBridge.chatChannel.send(`\`Private command ran by ${chatMessage.playerName}: ${chatMessage.messageText}\``)
         }
-        if (chatMessage.type == "chat" && currentConfig.privateCommands && !sent) {
+        if (chatMessage.type == "chat" && !sent) {
             this.chatBridge.chatChannel.send(`${chatMessage.playerName} : ${chatMessage.messageText}`)
         }
         if (chatMessage.type == "billCommand" && currentConfig.billCommands && !sent) {
