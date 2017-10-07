@@ -85,7 +85,7 @@ class sevendtdServer {
           return response
         })
         .catch(function (error) {
-          client.logger.error("7dtdRequest - " + error);
+          client.logger.warn(`Error doing request to ${discordGuild.name} error: ${error}`);
           throw error
         })
     }

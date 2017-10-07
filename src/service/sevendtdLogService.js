@@ -32,7 +32,7 @@ class sevendtdLogService extends EventEmitter {
             // Get the latest logline and start a interval for getting new logs.
             sevendtdServer.getWebUIUpdates().then(function (result) {
                 let firstLine = result.newlogs;
-                discordGuild.loggingIntervalObj = setInterval(function () {
+                that.loggingIntervalObj = setInterval(function () {
                     // Get new logs
                     sevendtdServer.getWebUIUpdates().then(function (result) {
                         if (result.newlogs > firstLine) {
@@ -41,13 +41,15 @@ class sevendtdLogService extends EventEmitter {
                                 for (var logLine of result.entries) {
                                     that.handleLog(logLine)
                                 }
-                            }).catch(e => discordClient.logger.error(e))
+                            }).catch(e => {
+                                discordClient.logger.warn(`Getting logs for ${discordGuild.name} failed! Server offline? ${e}`)
+                                that.emit("connectionlost", e)
+                                clearInterval(that.loggingIntervalObj)
+                                that.passiveLogging(discordClient, discordGuild, sevendtdServer)
+                            })
                         }
                     }).catch(e => {
-                        discordClient.logger.warn(`Request to ${discordGuild.name} failed! Server offline? ${e}`)
-                        that.emit("connectionlost", e)
-                        that.passiveLogging()
-                        clearInterval(discordGuild.loggingIntervalObj)
+                        discordClient.logger.error(e)
                     })
 
                 }, loggingInterval)
@@ -62,15 +64,17 @@ class sevendtdLogService extends EventEmitter {
 
     }
 
-    passiveLogging() {
-        discordGuild.passiveLoggingIntervalObj = setInterval(function() {
+    passiveLogging(discordClient, discordGuild, sevendtdServer) {
+        discordClient.logger.info(`Starting passive logging for ${discordGuild.name}`)
+        var that = this
+        discordGuild.passiveLoggingIntervalObj = setInterval(function () {
             if (sevendtdServer.checkIfOnline()) {
                 discordClient.logger.info(`Server for ${discordGuild.name} is available again. Restarting regular logging.`)
                 clearInterval(discordGuild.passiveLoggingIntervalObj)
-                this.emit("connectionregained")
-                this.initialize()
+                that.emit("connectionregained")
+                that.initialize()
             }
-        }, loggingInterval*10)
+        }, this.loggingInterval * 10)
     }
 
     // Detect what log line is for and send out an event
@@ -118,7 +122,7 @@ class sevendtdLogService extends EventEmitter {
 
         if (logLine.msg.includes("GMSG: Player") && logLine.msg.includes("died")) {
             let deathMessage = logLine.msg.split(" ")
-            let playerName = deathMessage.slice(2,deathMessage.length-1).join(" ").replace(/'/g, "")
+            let playerName = deathMessage.slice(2, deathMessage.length - 1).join(" ").replace(/'/g, "")
             let date = logLine.date
             let time = logLine.time
             deathMessage = {
@@ -158,7 +162,8 @@ class sevendtdLogService extends EventEmitter {
     }
 
     static stopLogging() {
-
+        clearInterval(this.loggingIntervalObj)
+        clearInterval(this.passiveLoggingIntervalObj)
     }
 
 

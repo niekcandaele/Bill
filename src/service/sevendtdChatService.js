@@ -34,6 +34,12 @@ class sevendtdChatService {
             }
         })
 
+        logService.on("connectionregained", error => {
+            if (this.enabled) {
+                chatChannel.send(`Hey good news, your server is back online!`)
+            }
+        })
+
         logService.on("playerconnected", connectedMsg => {
             if (this.enabled) {
                 discordClient.logger.debug(`${connectedMsg.playerName} has connected to ${discordGuild.name}`)
