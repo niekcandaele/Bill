@@ -60,7 +60,12 @@ class sevendtdLogService extends EventEmitter {
                         discordClient.logger.warn(`Getting web ui updates for ${discordGuild.name} failed! Server offline? ${e}`)
                         that.emit("connectionlost", e)
                         clearInterval(that.loggingIntervalObj)
-                        that.passiveLogging(discordClient, discordGuild, sevendtdServer)
+                        if (discordGuild.passiveLoggingIntervalObj) {
+                            discordClient.logger.info("There's already passive logging going on.")
+                        } else {
+                            that.passiveLogging(discordClient, discordGuild, sevendtdServer)
+                        }
+                    
                     })
 
                 }, that.config.loggingInterval)
