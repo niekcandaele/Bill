@@ -50,15 +50,14 @@ class sevendtdLogService extends EventEmitter {
                                 for (var logLine of result.entries) {
                                     that.handleLog(logLine)
                                 }
-                            }).catch(e => {
-                                discordClient.logger.warn(`Getting logs for ${discordGuild.name} failed! Server offline? ${e}`)
-                                that.emit("connectionlost", e)
-                                clearInterval(that.loggingIntervalObj)
-                                that.passiveLogging(discordClient, discordGuild, sevendtdServer)
+                            })
+                            .catch(e => {
+                                discordClient.logger.warn(`Error getting logs for ${discordGuild.name}`)
+                                throw e
                             })
                         }
                     }).catch(e => {
-                        discordClient.logger.warn(`Getting logs for ${discordGuild.name} failed! Server offline? ${e}`)
+                        discordClient.logger.warn(`Getting web ui updates for ${discordGuild.name} failed! Server offline? ${e}`)
                         that.emit("connectionlost", e)
                         clearInterval(that.loggingIntervalObj)
                         that.passiveLogging(discordClient, discordGuild, sevendtdServer)
