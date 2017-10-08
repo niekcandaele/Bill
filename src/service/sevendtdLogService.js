@@ -61,7 +61,9 @@ class sevendtdLogService extends EventEmitter {
                         that.emit("connectionlost", e)
                         clearInterval(that.loggingIntervalObj)
                         if (discordGuild.passiveLoggingIntervalObj) {
-                            discordClient.logger.info("There's already passive logging going on.")
+                            discordClient.logger.info("There's already passive logging going on. Restarting it.")
+                            clearInterval(discordGuild.passiveLoggingIntervalObj)
+                            that.passiveLogging(discordClient, discordGuild, sevendtdServer)
                         } else {
                             that.passiveLogging(discordClient, discordGuild, sevendtdServer)
                         }

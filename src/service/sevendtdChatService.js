@@ -103,7 +103,7 @@ class sevendtdChatService {
         let embed = this.discordClient.makeBillEmbed()
             .setTitle("Player left")
             .addField("Name", disconnectedMsg.playerName, true)
-            .addField("Steam ID", disconnectedMsg.playerID, true)
+            .addField("Steam ID", `[${disconnectedMsg.playerID}](https://steamidfinder.com/lookup/${disconnectedMsg.playerID}/)`, true)
             .setColor("RED")
         this.chatBridge.chatChannel.send({ embed })
     }
