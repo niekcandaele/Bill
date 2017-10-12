@@ -81,17 +81,17 @@ class sevendtdServer {
       }
       return request(options)
         .then(function (response) {
-          client.logger.debug("7dtdRequest - Succesful request to " + apiModule);
+          client.logger.silly("7dtdRequest - Succesful request to " + apiModule);
           return response
         })
         .catch(function (error) {
-          client.logger.warn(`Error doing request to ${discordGuild.name} error: ${error}`);
+          client.logger.silly(`Error doing request to ${discordGuild.name} error: ${error}`);
           throw error
         })
     }
     async function getRequestOptions(apiModule) {
       try {
-        client.logger.debug(`getRequestOptions - Loading guild data for request IP: ${serverip} Port: ${webPort} Module: ${apiModule}`);
+        client.logger.silly(`getRequestOptions - Loading guild data for request IP: ${serverip} Port: ${webPort} Module: ${apiModule}`);
         const baseUrl = "http://" + serverip + ":" + webPort + "/api/";
         let requestOptions = {
           url: baseUrl + apiModule,
