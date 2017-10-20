@@ -55,9 +55,14 @@ class sevendtdChatService {
 
 
         if (discordGuild.settings.get("chatChannel")) {
+          try {
             discordClient.logger.debug(`${discordGuild.name} has a chat bridge configured, starting it.`)
             let channelID = discordGuild.settings.get("chatChannel")
             this.initialize(discordGuild.channels.get(channelID))
+          } catch (e) {
+            discordClient.logger.warn(`${discordGuild.name} has failed chat bridge initialization. Skipping.`)
+          }
+
         }
     }
 
@@ -86,7 +91,7 @@ class sevendtdChatService {
             this.chatBridge.chatChannel.send(`${chatMessage.playerName} : ${chatMessage.messageText}`)
             sent = true
         }
-       
+
     }
 
     sendPlayerConnectedToDiscord(connectedMsg) {
@@ -125,4 +130,3 @@ class sevendtdChatService {
 }
 
 module.exports = sevendtdChatService
-
