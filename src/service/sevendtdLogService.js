@@ -1,6 +1,7 @@
 const EventEmitter = require('events');
-const chatService = require("./sevendtdChatService.js")
-const ipCountry = require('ip-country')
+const ipCountry = require('ip-country');
+
+var sevenDays = require('machinepack-7daystodiewebapi');
 
 class sevendtdLogService extends EventEmitter {
     constructor(discordClient, discordGuild, sevendtdServer) {
@@ -9,9 +10,16 @@ class sevendtdLogService extends EventEmitter {
         this.discordGuild = discordGuild
         this.sevendtdServer = sevendtdServer
         var that = this
+        var eventEmitter = this
         const defaultConfig = {
             loggingInterval: "5000"
         }
+
+        const sdtdServerConf = discordGuild.settings;
+        const serverip = sdtdServerConf.get("serverip");
+        const webPort = sdtdServerConf.get("webPort");
+        const authName = sdtdServerConf.get('authName');
+        const authToken = sdtdServerConf.get("authToken");
 
         // Make sure a config is loaded
         this.config = discordGuild.settings.get("loggingService")
@@ -27,78 +35,44 @@ class sevendtdLogService extends EventEmitter {
             fallbackCountry: 'Unknown',
             exposeInfo: false
         })
-        this.chatBridge = new chatService(discordClient, discordGuild, sevendtdServer, this)
 
-        this.initialize = function () {
-            that.emit("initialize")
-            discordClient.logger.info(`Initializing logging for ${this.discordGuild.name}`)
 
-            if (discordGuild.loggingIntervalObj) {
-                discordClient.logger.info(`${discordGuild.name} already has a logging object, replacing the old one.`)
-                clearInterval(discordGuild.loggingIntervalObj)
-            }
-
-            // Get the latest logline and start a interval for getting new logs.
-            sevendtdServer.getWebUIUpdates().then(function (result) {
-                let firstLine = result.newlogs;
-                that.loggingIntervalObj = setInterval(function () {
-                    // Get new logs
-                    sevendtdServer.getWebUIUpdates().then(function (result) {
-                        if (result.newlogs > firstLine) {
-                            sevendtdServer.getLogs(firstLine).then(function (result) {
-                                firstLine = result.lastLine
-                                for (var logLine of result.entries) {
-                                    that.handleLog(logLine)
-                                }
-                            })
-                            .catch(e => {
-                                discordClient.logger.warn(`Error getting logs for ${discordGuild.name}`)
-                                throw e
-                            })
-                        }
-                    }).catch(e => {
-                        discordClient.logger.warn(`Getting web ui updates for ${discordGuild.name} failed! Server offline? ${e}`)
-                        that.emit("connectionlost", e)
-                        clearInterval(that.loggingIntervalObj)
-                        if (discordGuild.passiveLoggingIntervalObj) {
-                            discordClient.logger.info("There's already passive logging going on. Restarting it.")
-                            clearInterval(discordGuild.passiveLoggingIntervalObj)
-                            that.passiveLogging(discordClient, discordGuild, sevendtdServer)
-                        } else {
-                            that.passiveLogging(discordClient, discordGuild, sevendtdServer)
-                        }
-                    
+        this.initialize = function() {
+            sevenDays.startLoggingEvents({
+                ip: serverip,
+                port: webPort,
+                authName: authName,
+                authToken: authToken
+            }).exec({
+                error: function() {
+                    discordClient.logger.warn(`Error getting logs for ${discordGuild.name}`)
+                    throw e
+                },
+                success: function(logEmitter) {
+                    discordClient.logger.debug(`Successfully got a log emitter object for ${discordGuild.name}`)
+                    logEmitter.on('logLine', function newLogLine(logLine) {
+                        that.handleLog(logLine)
                     })
+                    logEmitter.on('connectionLost', function connectionLost(conLostMsg) {
+                        eventEmitter.emit('connectionlost')
+                    })
+                    logEmitter.on('connected', function connectionLost(conLostMsg) {
+                        eventEmitter.emit('connected')
+                    })
+                }
 
-                }, that.config.loggingInterval)
-            }).catch(function (error) {
-                discordClient.logger.error(`Error Initializing 7dtd log service for ${discordGuild.name} \n ${error}`)
             })
         }
 
-        this.stop = function () {
+
+
+        this.stop = function() {
             return stopLogging()
         }
 
     }
 
-    passiveLogging(discordClient, discordGuild, sevendtdServer) {
-        discordClient.logger.info(`Starting passive logging for ${discordGuild.name}`)
-        const currentConfig = discordGuild.settings.get("loggingService")
-        const passiveLoggingInterval = currentConfig.loggingInterval * 5
-        var that = this
-        discordGuild.passiveLoggingIntervalObj = setInterval(function () {
-            sevendtdServer.checkIfOnline().then(serverOnline => {
-                if (serverOnline) {
-                    discordClient.logger.info(`Server for ${discordGuild.name} is available again. Restarting regular logging.`)
-                    clearInterval(discordGuild.passiveLoggingIntervalObj)
-                    that.emit("connectionregained")
-                    that.initialize()
-                }
-            })
 
-        }, passiveLoggingInterval)
-    }
 
     // Detect what log line is for and send out an event
     handleLog(logLine) {
@@ -201,7 +175,7 @@ class sevendtdLogService extends EventEmitter {
 
     }
 
-    static stopLogging() {
+    stopLogging() {
         clearInterval(this.loggingIntervalObj)
         clearInterval(this.passiveLoggingIntervalObj)
     }
@@ -210,5 +184,3 @@ class sevendtdLogService extends EventEmitter {
 }
 
 module.exports = sevendtdLogService
-
-

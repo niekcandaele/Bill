@@ -1,6 +1,8 @@
 class sevendtdChatService {
     constructor(discordClient, discordGuild, sevendtdServer, logService) {
-        this.enabled = false
+        this.discordClient = discordClient
+        this.discordGuild = discordGuild
+        this.logService = logService
         const defaultConfig = {
             enabled: false,
             chatChannelID: false,
@@ -22,107 +24,111 @@ class sevendtdChatService {
         let chatChannelID = this.config.chatChannelID
         this.chatChannel = logService.discordGuild.channels.get(chatChannelID)
 
-
-        this.initialize = function (channel) {
-            discordClient.logger.info(`Initializing chat bridge for ${discordGuild.name}`)
-            this.enabled = true
-            this.chatChannel = channel
-            this.chatChannelID = channel.id
-            if (this.config.connectedMessages) {
-                logService.on("playerconnected", this.sendPlayerConnectedToDiscord)
-            }
-            if (this.config.disconnectedMessages) {
-                logService.on("playerdisconnected", this.sendPlayerDisconnectedToDiscord)
-            }
-            if (this.config.deathMessages) {
-            logService.on("playerdeath", this.sendPlayerDiedToDiscord)
-            }
-
-            logService.on("chatmessage", this.sendChatToDiscord)
-            logService.on("connectionlost", this.sendConnectionLostToDiscord)
-            logService.on("connectionregained", this.sendConnectionRegainedToDiscord)
-        }
-
-        this.stop = function () {
-            discordClient.logger.info(`Stopping chat bridge for ${discordGuild.name}`)
-            logService.removeListener("chatmessage", this.sendChatToDiscord)
-            logService.removeListener("connectionlost", this.sendConnectionLostToDiscord)
-            logService.removeListener("connectionregained", this.sendConnectionRegainedToDiscord)
-            logService.removeListener("playerconnected", this.sendPlayerConnectedToDiscord)
-            logService.removeListener("playerdisconnected", this.sendPlayerDisconnectedToDiscord)
-            logService.removeListener("playerdeath", this.sendPlayerDiedToDiscord)
-        }
-
-
-        if (discordGuild.settings.get("chatChannel")) {
-          try {
+        if (this.config.enabled) {
             discordClient.logger.debug(`${discordGuild.name} has a chat bridge configured, starting it.`)
             let channelID = discordGuild.settings.get("chatChannel")
-            this.initialize(discordGuild.channels.get(channelID))
-          } catch (e) {
-            discordClient.logger.warn(`${discordGuild.name} has failed chat bridge initialization. Skipping.`)
-          }
-
+            this.initialize(channelID)
         }
+
+    }
+
+    initialize(channelID) {
+        this.discordClient.logger.info(`Initializing chat bridge for ${this.discordGuild.name}`)
+        this.enabled = true
+        var chatChannel = this.discordGuild.channels.get(channelID)
+        if (this.config.connectedMessages) {
+            this.logService.on("playerconnected", this.sendPlayerConnectedToDiscord)
+        }
+        if (this.config.disconnectedMessages) {
+            this.logService.on("playerdisconnected", this.sendPlayerDisconnectedToDiscord)
+        }
+        if (this.config.deathMessages) {
+            this.logService.on("playerdeath", this.sendPlayerDiedToDiscord)
+        }
+
+        this.logService.on("chatmessage", this.sendChatToDiscord)
+        this.logService.on("connectionlost", this.sendConnectionLostToDiscord)
+        this.logService.on("connected", this.sendConnectedToDiscord)
+    }
+
+    stop() {
+        this.discordClient.logger.info(`Stopping chat bridge for ${this.discordGuild.name}`)
+        this.logService.removeListener("chatmessage", this.sendChatToDiscord)
+        this.logService.removeListener("connectionlost", this.sendConnectionLostToDiscord)
+        this.logService.removeListener("connected", this.sendConnectedToDiscord)
+        this.logService.removeListener("playerconnected", this.sendPlayerConnectedToDiscord)
+        this.logService.removeListener("playerdisconnected", this.sendPlayerDisconnectedToDiscord)
+        this.logService.removeListener("playerdeath", this.sendPlayerDiedToDiscord)
     }
 
 
-
     sendChatToDiscord(chatMessage) {
-        let currentConfig = this.chatBridge.config
+        let currentConfig = this.discordGuild.settings.get("chatBridge")
+        let chatChannel = this.discordGuild.channels.get(currentConfig.chatChannelID)
         let sent = false
+
         if (chatMessage.type == "server" && currentConfig.serverMessages && !sent) {
-            this.chatBridge.chatChannel.send(`\`SERVER : ${chatMessage.messageText}\``)
+            chatChannel.send(`\`SERVER : ${chatMessage.messageText}\``)
             sent = true
         }
         if (chatMessage.type == "publicCommand" && currentConfig.publicCommands && !sent) {
-            this.chatBridge.chatChannel.send(`\`Public command ran by ${chatMessage.playerName}: ${chatMessage.messageText}\``)
+            chatChannel.send(`\`Public command ran by ${chatMessage.playerName}: ${chatMessage.messageText}\``)
             sent = true
         }
         if (chatMessage.type == "privateCommand" && currentConfig.privateCommands && !sent) {
-            this.chatBridge.chatChannel.send(`\`Private command ran by ${chatMessage.playerName}: ${chatMessage.messageText}\``)
+            chatChannel.send(`\`Private command ran by ${chatMessage.playerName}: ${chatMessage.messageText}\``)
             sent = true
         }
         if (chatMessage.type == "billCommand" && currentConfig.billCommands && !sent) {
-            this.chatBridge.chatChannel.send(`\`Bill command ran by ${chatMessage.playerName}: ${chatMessage.messageText}\``)
+            chatChannel.send(`\`Bill command ran by ${chatMessage.playerName}: ${chatMessage.messageText}\``)
             sent = true
         }
         if (chatMessage.type == "chat" && !sent) {
-            this.chatBridge.chatChannel.send(`${chatMessage.playerName} : ${chatMessage.messageText}`)
+            chatChannel.send(`${chatMessage.playerName} : ${chatMessage.messageText}`)
             sent = true
         }
 
     }
 
     sendPlayerConnectedToDiscord(connectedMsg) {
+        let currentConfig = this.discordGuild.settings.get("chatBridge")
+        let chatChannel = this.discordGuild.channels.get(currentConfig.chatChannelID)
         let embed = this.discordClient.makeBillEmbed()
             .setTitle("Player Connected")
             .addField("Name", connectedMsg.playerName, true)
             .addField("Steam ID", `[${connectedMsg.steamID}](https://steamidfinder.com/lookup/${connectedMsg.steamID}/)`, true)
             .addField("Country", connectedMsg.country)
             .setColor("GREEN")
-        this.chatBridge.chatChannel.send({ embed })
+        chatChannel.send({ embed })
     }
 
     sendPlayerDisconnectedToDiscord(disconnectedMsg) {
+        let currentConfig = this.discordGuild.settings.get("chatBridge")
+        let chatChannel = this.discordGuild.channels.get(currentConfig.chatChannelID)
         let embed = this.discordClient.makeBillEmbed()
             .setTitle("Player left")
             .addField("Name", disconnectedMsg.playerName, true)
             .addField("Steam ID", `[${disconnectedMsg.playerID}](https://steamidfinder.com/lookup/${disconnectedMsg.playerID}/)`, true)
             .setColor("RED")
-        this.chatBridge.chatChannel.send({ embed })
+        chatChannel.send({ embed })
     }
 
     sendPlayerDiedToDiscord(deathMessage) {
-        this.chatBridge.chatChannel.send(`${deathMessage.playerName} just died.`)
+        let currentConfig = this.discordGuild.settings.get("chatBridge")
+        let chatChannel = this.discordGuild.channels.get(currentConfig.chatChannelID)
+        chatChannel.send(`${deathMessage.playerName} just died.`)
     }
 
     sendConnectionLostToDiscord() {
-        this.chatBridge.chatChannel.send(`Whoa, I can't read logs! Server might be offline...`)
+        let currentConfig = this.discordGuild.settings.get("chatBridge")
+        let chatChannel = this.discordGuild.channels.get(currentConfig.chatChannelID)
+        chatChannel.send(`Whoa, I can't read logs! Server might be offline...`)
     }
 
-    sendConnectionRegainedToDiscord() {
-        this.chatBridge.chatChannel.send(`Hey good news, your server is back online!`)
+    sendConnectedToDiscord() {
+        let currentConfig = this.discordGuild.settings.get("chatBridge")
+        let chatChannel = this.discordGuild.channels.get(currentConfig.chatChannelID)
+        chatChannel.send(`Connected to your server!`)
     }
 
 

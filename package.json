@@ -18,23 +18,24 @@
     "babyparse": "^0.4.6",
     "discord.js": "^11.2.1",
     "discord.js-commando": "^0.9.0",
-    "djs-collection-persistent": "^0.1.4",
+    "djs-collection-persistent": "^0.1.5",
     "erlpack": "github:hammerandchisel/erlpack",
-    "express": "^4.16.1",
+    "express": "^4.16.2",
     "frontail": "^4.0.4",
     "ip-country": "^1.0.2",
     "logger": "0.0.1",
+    "machinepack-7daystodiewebapi": "^0.1.3",
     "rand-token": "^0.3.0",
     "request": "^2.83.0",
     "request-promise": "^4.2.2",
     "sqlite": "^2.8.0",
-    "telnet-client": "^0.15.4",
+    "telnet-client": "^0.15.5",
     "uws": "^8.14.1",
     "validate-ip-node": "^1.0.6",
     "winston": "^2.4.0"
   },
   "devDependencies": {
-    "eslint": "^4.8.0",
+    "eslint": "^4.11.0",
     "eslint-config-google": "^0.9.1"
   }
 }
