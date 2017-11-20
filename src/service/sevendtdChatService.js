@@ -52,6 +52,7 @@ class sevendtdChatService {
     }
 
     stop() {
+        this.enabled = false
         this.discordClient.logger.info(`Stopping chat bridge for ${this.discordGuild.name}`)
         this.logService.removeListener("chatmessage", this.sendChatToDiscord)
         this.logService.removeListener("connectionlost", this.sendConnectionLostToDiscord)

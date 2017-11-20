@@ -118,6 +118,11 @@ class sevendtdServer {
         }
     }
 
+    destroy() {
+        this.logService.stop()
+        this.chatBridge.stop()
+    }
+
 
 
 

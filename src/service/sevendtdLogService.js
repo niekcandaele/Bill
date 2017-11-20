@@ -64,12 +64,6 @@ class sevendtdLogService extends EventEmitter {
             })
         }
 
-
-
-        this.stop = function() {
-            return stopLogging()
-        }
-
     }
 
 
@@ -175,7 +169,7 @@ class sevendtdLogService extends EventEmitter {
 
     }
 
-    stopLogging() {
+    stop() {
         clearInterval(this.loggingIntervalObj)
         clearInterval(this.passiveLoggingIntervalObj)
     }

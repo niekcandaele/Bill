@@ -88,6 +88,7 @@ client.on("guildCreate", guild => {
 
 client.on("guildDelete", guild => {
     client.logger.info("Deleting guild -- " + guild.name);
+    guild.sevendtdServer.destroy()
     guild.settings.clear()
 });
 
