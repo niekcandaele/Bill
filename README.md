@@ -1,41 +1,12 @@
 # Features
 
-- **day7**
+- **Game info displayed on discord**
+  - Online players, game time, ...
+- **Execute console commands from discord**
+- **Chat Bridge**
+  - Talk ingame via discord
 
-  - Shows game information about the server.
-
-- **seen**
-
-  - When was a player last online?
-
- ![example_d7_seen](https://imgur.com/sFpWZcA.png)
-
-- **toptime**
-
-  - Shows top players by playtime on server.
-
-- **serverinfo**
-
-  - Shows detailed information about the server.
-
- ![example_toptime_serverinfo](https://imgur.com/I1Q9l47.png)
-
-- **exec Console**
-
-  - Allows admins to execute console commands from discord.
- ![example_ex](https://imgur.com/A5HCHgT.png)
-
-- **restart**
-
-  - Admins can schedule a server restart.
-
-- **prefix**
-
-  - Change the bot prefix
-
-- **help**
-
-  - help _command_ for detailed info
+Run help to see a list of all possible commands
 
 # Installation instructions
 
@@ -67,43 +38,25 @@ Make sure the [integrated webserver](https://7dtd.illy.bz/wiki/Integrated%20Webs
 
 ### 2.3 Name and token
 
-Go to your webpermissions.xml file and add in this part:
+Login to your telnet/control panel and execute the command `webtokens add *authName* *authToken* 0`
 
-```xml
-    <admintokens>
-        <token name="*bill*" token="*supersecrettoken*" permission_level="0" />
-    </admintokens>
-```
+**Note: Change the values for name and token and keep these confidential!**
 
 _Note: This will give Bill permission to execute console commands. If you want to be more restrictive and disable certain functions refer to [webserver documentation](https://7dtd.illy.bz/wiki/Integrated%20Webserver#Permissions)_
 
-So that your webpermissions.xml file looks like this. It's possible other services already have added permissions, make sure not to overwrite them.
-
-```xml
-<?xml version="1.0" encoding="UTF-8"?>
-<webpermissions>
-    <admintokens>
-        <token name="*bill*" token="*supersecrettoken*" permission_level="0" />
-    </admintokens>
-    <permissions>
-      <permission module="webapi.executeconsolecommand" permission_level="1" />
-      <permission module="webapi.getlog" permission_level="1" />
-      <permission module="webapi.getstats" permission_level="1" />
-      <permission module="webapi.getplayersonline" permission_level="1" />
-      <permission module="webapi.getplayerslocation" permission_level="1" />
-      <permission module="webapi.getserverinfo" permission_level="2000" />
-      <permission module="webapi.getallowedcommands" permission_level="2000" />
-    </permissions>
-</webpermissions>
-```
-
-**Note: Change the values for name and token and keep these confidential!**
 
 ## 3\. Initializing your server
 
 Time to run the command `$init *serverip* *port* *name* *token*`
 
 The bot will test if it can connect to the server and report errors.
+
+# Chat bridge
+
+![chatbridge_discord](https://i.imgur.com/ddgHeAy.png)
+![chatbridge_ingame](https://i.imgur.com/5dYtcnW.png)
+
+To set up a chat bridge, create a new discord text channel and run `$igc init` in that channel. You can see your configuration with `igc config`. Example: `$igc serverMessages`
 
 # Contact & support
 
