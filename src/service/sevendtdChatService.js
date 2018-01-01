@@ -98,7 +98,6 @@ class sevendtdChatService {
             .setTitle("Player Connected")
             .addField("Name", connectedMsg.playerName, true)
             .addField("Steam ID", `[${connectedMsg.steamID}](https://steamidfinder.com/lookup/${connectedMsg.steamID}/)`, true)
-            .addField("Country", connectedMsg.country)
             .setColor("GREEN")
         chatChannel.send({ embed })
     }
