@@ -110,7 +110,6 @@ class sevendtdLogService extends EventEmitter {
                 steamID,
                 steamOwner,
                 ip,
-                country,
                 date,
                 time
             }
