@@ -1,5 +1,4 @@
 const EventEmitter = require('events');
-const ipCountry = require('ip-country');
 
 var sevenDays = require('machinepack-7daystodiewebapi');
 
@@ -28,13 +27,6 @@ class sevendtdLogService extends EventEmitter {
             discordGuild.settings.set("loggingService", defaultConfig)
             this.config = defaultConfig
         }
-
-        // Initialize IP to country checker
-        ipCountry.init({
-            // Return a default country when the country can not be detected from the IP. 
-            fallbackCountry: 'Unknown',
-            exposeInfo: false
-        })
 
 
         this.initialize = function() {
@@ -111,7 +103,6 @@ class sevendtdLogService extends EventEmitter {
             let steamID = logMsg[3].replace("steamid=", "").trim()
             let steamOwner = logMsg[4].replace("steamOwner=", "").trim()
             let ip = logMsg[5].replace("ip=", "").trim()
-            let country = ipCountry.country(ip)
 
             let connectedMsg = {
                 entityID,

@@ -1,0 +1,125 @@
+*** Generic Console Help ***
+To get further help on a specific topic or command type (without the brackets)
+    help <topic / command>
+
+Generic notation of command parameters:
+   <param name>              Required parameter
+   <entityId / player name>  Possible types of parameter values
+   [param name]              Optional parameter
+
+*** List of Help Topics ***
+None yet
+
+*** List of Commands ***
+ admin => Manage user permission levels
+ aiddebug => Toggles AIDirector debug output.
+ audio => Watch audio stats
+ ban => Manage ban entries
+ BiomeParticles => Debug
+ buff => Applies a buff to the local player
+ buffplayer => Apply a buff to a player
+ chunkcache cc => shows all loaded chunks in cache
+ commandpermission cp => Manage command permission levels
+ creativemenu cm => enables/disables the creativemenu
+ DeathScreen => Display DeathScreen
+ debuff => Removes a buff from the local player
+ debuffplayer => Remove a buff from a player
+ debugmenu dm => enables/disables the debugmenu 
+ debugweather => Dumps internal weather state to the console.
+ dof => Control DOF
+ enablerendering => enable/disable live map rendering
+ enablescope es => toggle debug scope
+ entityremove er => Removes a entity from the game
+ exhausted => Makes the player exhausted.
+ exportitemicons => Exports all ItemIcons
+ gamestage => usage: gamestage - displays the gamestage of the local player.
+ getgamepref gg => Gets game preferences
+ getgamestat ggs => Gets game stats
+ gettime gt => Get the current game time
+ give  => give an item to a player (entity id or name)
+ givequest => usage: givequest questname
+ giveself => usage: giveself itemName qualityLevel (default quality is 600)
+ giveselfskillxp => usage: giveselfskillxp Mining Tools 10000
+ giveselfxp => usage: giveselfxp 10000
+ help => Help on console and specific commands
+ jail  => Puts a player in jail.
+ kick => Kicks user with optional reason. "kick playername reason"
+ kickall => Kicks all users with optional reason. "kickall reason"
+ kill => Kill a given entity
+ killall => Kill all players
+ lgo listgameobjects => List all active game objects
+ lights => Debug views to optimize lights
+ listents le => lists all entities
+ listitems li => lists all items that contain the given substring
+ listknownplayers lkp => lists all players that were ever online
+ listlandprotection llp => lists all land protection blocks and owners
+ listplayerids lpi => Lists all players with their IDs for ingame commands
+ listplayers lp => lists all players
+ listthreads lt => lists all threads
+ loggamestate lgs => Log the current state of the game
+ loglevel => Telnet/Web only: Select which types of log messages are shown
+ maxping  => Sets the Max Ping limit for the server.
+ mem => Prints memory information and calls garbage collector
+ memcl => Prints memory information on client and calls garbage collector
+ mute  => Mutes a players chat.
+ pingimmunity pi => Add, Remove and View steamids on the PingImmunity list.
+ pplist => Lists all PersistentPlayer data
+ prefab => 
+ profilenetwork => Writes network profiling information
+ profiling => Enable Unity profiling for 5 seconds
+ reloadwebpermissions => force reload of web permissions file
+ removelandprotection rlp => removes the association of a land protection block to the owner
+ removequest => usage: removequest questname
+ rendermap => render the current map to a file
+ repairchunkdensity rcd => check and optionally fix densities of a chunk
+ reply re => send a message to  the player who last sent you a PM
+ reservedslot rs => Add, Remove and View steamids on the ReservedSlots list.
+ resetplayer rp => Reset a players profile.
+ saveworld sa => Saves the world manually.
+ say => Sends a message to all connected clients
+ sayplayer pm => send a message to a single player
+ setgamepref sg => sets a game pref
+ setgamestat sgs => sets a game stat
+ settargetfps => Set the target FPS the game should run at (upper limit)
+ settempunit stu => Set the current temperature units.
+ settime st => Set the current game time
+ showalbedo albedo => enables/disables display of albedo in gBuffer
+ showchunkdata sc => shows some date of the current chunk
+ showClouds => Artist command to show one layer of clouds.
+ showhits => Show hit entity locations
+ showinventory si => list inventory of a given player
+ shownexthordetime => Displays the wandering horde time
+ shownormals norms => enables/disables display of normal maps in gBuffer
+ showspecular spec => enables/disables display of specular values in gBuffer
+ shutdown => shuts down the game
+ sounddebug => Toggles SoundManager debug output.
+ spawnairdrop => Spawns an air drop
+ spawnentity se => spawns an entity
+ spawnentityat sea => Spawns an entity at a give position
+ spawnscouts => Spawns zombie scouts
+ SpawnScreen => Display SpawnScreen
+ spawnsupplycrate => Spawns a supply crate where the player is
+ spawnwanderinghorde => Spawns a wandering horde of zombies
+ spectrum => Force a particular lighting spectrum.
+ stab => stability
+ starve => Makes the player starve.
+ staticmap => Switches Navazgane map between static and dynamic
+ stopserver  => Stops the game server with a warning countdown every minute.
+ switchview sv => Switch between fpv and tpv
+ SystemInfo => List SystemInfo
+ teleport tp => Teleport the local player
+ teleportplayer tele => Teleport a given player
+ thirsty => Makes the player thirsty.
+ traderarea => ...
+ updatelighton => Commands for UpdateLightOnAllMaterials and UpdateLightOnPlayers
+ version => Get the currently running version of the game and loaded mods
+ visitmap => Visit an given area of the map. Optionally run the density check on each visited chunk.
+ watchlist wl => Add, Remove and View steamids on the Watchlist.
+ water => Control water settings
+ weather => Control weather settings
+ weathersurvival => Enables/disables weather survival
+ webpermission => Manage web permission levels
+ webstat => DEBUG PURPOSES ONLY
+ webtokens => Manage web tokens
+ whitelist => Manage whitelist entries
+ zip => Control zipline settings

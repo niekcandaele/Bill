@@ -10,7 +10,6 @@ const sevendtdServer = require("./model/sevendtdServer.js")
 const makeBillEmbed = require("./util/billEmbed.js")
 const billLogger = require("./service/billLogging.js")
 const appConfig = require('../config.json');
-const webApp = require("./web/app.js")
 
 process.on('unhandledRejection', (reason, p) => {
     console.log('Unhandled Rejection at: Promise', p, 'reason:', reason);
@@ -26,9 +25,7 @@ const client = new Commando.Client({
 });
 
 client.config = appConfig
-webApp.discordClient = client;
 client.logger = billLogger(client);
-webApp.logger = client.logger
 client.setProvider(
     sqlite.open(path.join(client.config.dataDir, 'settings.sqlite3')).then(db => new Commando.SQLiteProvider(db))
 ).catch(client.logger.error);
