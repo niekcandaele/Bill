@@ -61,3 +61,8 @@ To set up a chat bridge, create a new discord text channel and run `$igc init` i
 # Contact & support
 
 Need help with the set up? Happy to help on [Bill discord developer server](https://discordapp.com/invite/kuDJG6e)
+
+
+Made possible by
+[![LDH](https://i.imgur.com/rfmQjA2.png)](https://letsdohosting.com/?p=Register&ref=Cata)
+All game servers € 0.35/day
