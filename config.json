@@ -1,0 +1,19 @@
+{
+  "owner": ["DiscordUserID"],
+  "token": "xxx",
+  "prefix": "$",
+  "developerServer": "https://discordapp.com/invite/kuDJG6e",
+
+  "loggerLevel": "debug",
+  "dataDir": "../data",
+  "website": "billbot.xyz",
+  "github": "https://github.com/niekcandaele/Bill",
+  "defaultGuildSettings": {
+    "prefix": "$",
+    "adminRole" : "",
+    "serverip": "defaultIP",
+    "webPort": "defaultPort",
+    "authName": "defaultName",
+    "authToken": "defaultToken"
+  }
+}
