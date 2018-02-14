@@ -14,7 +14,17 @@ Make sure you have [Allocs Server Fixes](https://7dtd.illy.bz/wiki) installed on
 
 Note: replace all values encased in `* *` in the examples with the values for your server.
 
-## 1\. [Add the bot to your server](https://discordapp.com/oauth2/authorize?client_id=340416036610244609&scope=bot&permissions=27648)
+## 1\. Get the bot running
+
+- Clone/download this repo
+- Install Node.js 8.9 https://nodejs.org/en/
+- Open up config.json in the root folder
+- AT LEAST change these values:
+ - Owner : Bot owner's discord id
+ - token : Bot token. (Reactiflux has a great page with info: https://github.com/reactiflux/discord-irc/wiki/Creating-a-discord-bot-&-getting-a-token )
+- I recommend only changing these values the first time, you can mess around with the config once you have Bill running.
+
+- Run 'npm start' in the root folder
 
 ## 2\. Init command
 
