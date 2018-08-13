@@ -16,7 +16,7 @@
   "author": "Niek Candaele",
   "license": "ISC",
   "dependencies": {
-    "discord.js": "^11.2.1",
+    "discord.js": "^11.4.2",
     "discord.js-commando": "^0.9.0",
     "djs-collection-persistent": "^0.1.5",
     "erlpack": "github:hammerandchisel/erlpack",
