@@ -22,7 +22,7 @@
     "erlpack": "github:hammerandchisel/erlpack",
     "machinepack-7daystodiewebapi": "^0.3.1",
     "request": "^2.83.0",
-    "request-promise": "^4.2.2",
+    "request-promise": "^4.2.3",
     "sqlite": "^2.8.0",
     "uws": "^9.14.0",
     "validate-ip-node": "^1.0.6",
